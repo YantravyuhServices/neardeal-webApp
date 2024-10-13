@@ -58,9 +58,9 @@ const CampaignCoupon = () => {
           <div className='item' key={index}>
             <div className='left' style={{ width: '84%' }}>
               <img src='https://avatars.githubusercontent.com/u/97161064?v=4' alt="Coupon" />
-              <div>
+              {/* <div> */}
                 <span>{coupon.CouponTitle}</span>
-                <div>
+                {/* <div>
                   <div>
                     <img style={{ width: 'max-content' }} src={eye1} alt="Views" />
                     <span style={{ color: 'grey' }}>{coupon.views || '1000 views'}</span>
@@ -69,8 +69,8 @@ const CampaignCoupon = () => {
                     <img style={{ width: 'max-content' }} src={likes} alt="Likes" />
                     <span style={{ color: 'grey' }}>{coupon.likes || '1000 likes'}</span>
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
             </div>
             <div className='right' style={{ width: '15%', justifyContent: 'space-between' }}>
               <div>

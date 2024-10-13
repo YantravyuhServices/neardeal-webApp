@@ -56,7 +56,7 @@ const CampaignDiscounts = () => {
             <div className='left' style={{ width: '84%' }}>
               <div style={{ padding: '10px' }}>
                 <span style={{ color: '#00A76F' }}>{discount.CouponTitle}</span>
-                <span>Father's day offer</span>
+                {/* <span>Father's day offer</span> */}
               </div>
             </div>
             <div className='right' style={{ width: '15%', justifyContent: 'space-between' }}>
