@@ -40,7 +40,7 @@ const RedeemRecord = () => {
                                     <th>Price</th>
                                     <th>Customer</th>
                                     <th>Package Name</th>
-                                    <th>Invoice ID <span>&#x25BC;</span></th>
+                                    <th>Coupon Code<span>&#x25BC;</span></th>
                                     <th>Date & Time</th>
                                     <th>Status</th>
                                 </tr>

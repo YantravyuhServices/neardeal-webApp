@@ -129,7 +129,7 @@ const CreatePackage = () => {
             <img style={{ position: 'absolute', top: 0, zIndex: '-1', width: '100%' }} src={background} alt="background" />
             <div className="create-package" style={{ width: '80%' }}>
                 <span className="heading">
-                    <Link to="/package"><img src={leftArrow} alt="left arrow" /></Link> Create Coupon
+                    <Link to="/campaign"><img src={leftArrow} alt="left arrow" /></Link> Create Coupon
                 </span>
 
                 <div>
