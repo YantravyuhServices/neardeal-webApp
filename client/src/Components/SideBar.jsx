@@ -7,16 +7,17 @@ import transaction from "../assets/transaction.svg";
 import storeSetting from "../assets/storeSetting.svg";
 import booking from "../assets/booking.svg";
 import packageLogo from "../assets/package.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const SideBar = () => {
+    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const location = useLocation();
     var cookieValue = Cookies.get('user_token');
     cookieValue = JSON.parse(cookieValue);
 
-    console.log("Cookie Value:", cookieValue.ID); 
+    console.log("Cookie Value:", cookieValue.ID);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -48,6 +49,23 @@ const SideBar = () => {
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const handleProfileClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleLogout = () => {
+        Cookies.remove('user_token'); // Remove the cookie
+        setIsDropdownOpen(false); // Close dropdown after logout
+        // Optionally, redirect the user or perform any additional actions after logout
+        navigate('/login');
+    };    
+
+    const handleCloseDropdown = () => {
+        setIsDropdownOpen(false);
+    };
+
     return (
         <div className="sidebar">
             <div className="sidebar-navigation">
@@ -57,7 +75,7 @@ const SideBar = () => {
                 <span className="sidebar-subtitle">CUSTOMER</span>
                 <div className="sidebar-list">
                     <span className={isActive('/')}>
-                        <img  src={booking} alt="Booking" />
+                        <img src={booking} alt="Booking" />
                         <Link style={{ textDecoration: 'none' }} to="/">Booking</Link>
                     </span>
                     <span className={isActive('/package') || isActive('/availability') || isActive('/limits') || isActive('/create-package') || isActive('/package/:id')}>
@@ -90,13 +108,29 @@ const SideBar = () => {
                 </div>
             </div>
 
-            <div className="sidebar-profile">
-                <img src="https://avatars.githubusercontent.com/u/97161064?v=4" alt="Profile" />
-                {/* <img src={`${userData && userData.Link}`} alt="Profile" /> */}
-                <span>{ userData && userData.Name }</span>
-                <span style={{ fontWeight: "400", color: 'grey' }}>{ userData && userData.Email }</span>
+            <div className="sidebar-profile-container">
+                <div className="sidebar-profile">
+                    <div className="profile-container" onClick={handleProfileClick}>
+                        <img
+                            src="https://avatars.githubusercontent.com/u/97161064?v=4"
+                            alt="Profile"
+                            className="profile-pic"
+                        />
+                        <div className="profile-info">
+                            <span style={{ textAlign:'center' }} className="profile-name">{userData && userData.Name}</span>
+                            <span style={{ textAlign:'center' }} className="profile-email">{userData && userData.Email}</span>
+                        </div>
+                    </div>
 
+                    {isDropdownOpen && (
+                        <div className="dropdown-menu">
+                            <button className="close-button" onClick={handleCloseDropdown}>✖</button>
+                            <button className="logout-button" onClick={handleLogout}>Logout</button>
+                        </div>
+                    )}
+                </div>
             </div>
+
         </div>
     );
 }

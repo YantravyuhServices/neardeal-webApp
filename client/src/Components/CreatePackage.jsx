@@ -20,6 +20,18 @@ import { motion } from "framer-motion";
 const CreatePackage = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const handleProfileClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleLogout = () => {
+        onLogout();
+        setIsDropdownOpen(false); // Close dropdown after logout
+    };
+
     const [availabilityGroups, setAvailabilityGroups] = useState([
         {
             timeSlots: [
