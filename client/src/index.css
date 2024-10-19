@@ -252,3 +252,14 @@ body{
   background: #007BFF; /* Checked background color */
   border-color: #0056b3; /* Checked border color */
 }
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+  background-color: black;
+  color: white; /* Change text color if needed */
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: gray; /* Optional: change disabled button color */
+  color: white; /* Optional: change text color for disabled button */
+}

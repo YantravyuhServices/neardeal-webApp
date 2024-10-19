@@ -94,10 +94,12 @@ const Booking = () => {
     }
   };
 
+  var currentBookings;
+
   const [selectedFilter, setSelectedFilter] = useState("Featured");
   useEffect(() => {
     handleSubmit(active);
-  }, [active, selectedFilter]);
+  }, [active, selectedFilter, currentBookings]);
 
   const [filter, setFilter] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
@@ -119,7 +121,7 @@ const Booking = () => {
 
   // Slice booking data for the current page
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentBookings = bookingData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  currentBookings = bookingData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   // Handle page change
   const handlePageChange = (newPage) => {
@@ -306,7 +308,7 @@ const Booking = () => {
                     </a>
                   </li>
                   {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'active' : ''}`} key={index}>
+                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
                       <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
                         {index + 1}
                       </a>
@@ -440,52 +442,34 @@ const Booking = () => {
             <motion.div>
               <table className="table table-hover mt-5">
                 <tbody>
-                  {bookingData.length === 0 ? (
+                  {currentBookings.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No booking available
                       </td>
                     </tr>
                   ) : (
-                    bookingData.map((data) => (
+                    currentBookings.map((data) => (
                       <tr className="align-middle" key={data.BookingID}>
-                        <td
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
+                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
                           {data.BookingStatus === "Started" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={started}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={started} />
                               <span>Started</span>
                             </>
                           ) : data.BookingStatus === "Absent" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={dotedCircle}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={dotedCircle} />
                               <span>Absent</span>
                             </>
                           ) : data.BookingStatus === "Accepted" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
                               <span>Accepted</span>
                             </>
                           ) : data.BookingStatus === "Declined" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
                               <span>Declined</span>
                             </>
                           ) : data.BookingStatus === "Finished" ? (
@@ -497,18 +481,12 @@ const Booking = () => {
                             </>
                           ) : data.BookingStatus === "Cancelled" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={cross}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={cross} />
                               <span>Cancelled</span>
                             </>
                           ) : (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
                               <span>Attend</span>
                             </>
                           )}
@@ -516,13 +494,7 @@ const Booking = () => {
                         <td>{data.BookingStartDate}</td>
                         <td>{data.InventoryName}</td>
                         <td>{data.AssignedTo}</td>
-                        <td
-                          className={
-                            data.PaymentStatus === "Paid"
-                              ? "text-success"
-                              : "text-danger"
-                          }
-                        >
+                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
                           {data.PaymentStatus}
                         </td>
                         <td>
@@ -533,9 +505,7 @@ const Booking = () => {
                             data-bs-target="#demo"
                           >
                             <i
-                              onClick={() => {
-                                setSelectedBookingId(data.BookingID);
-                              }}
+                              onClick={() => setSelectedBookingId(data.BookingID)}
                               className="fa fa-pencil p-0 me-3"
                               style={{ fontSize: "large" }}
                             ></i>
@@ -546,6 +516,29 @@ const Booking = () => {
                   )}
                 </tbody>
               </table>
+
+              {/* Pagination for Upcoming */}
+              <nav>
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
+                      Previous
+                    </a>
+                  </li>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
+                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </motion.div>
           )}
 
@@ -553,89 +546,25 @@ const Booking = () => {
             <motion.div>
               <table className="table table-hover mt-5">
                 <tbody>
-                  {bookingData.length === 0 ? (
+                  {currentBookings.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No booking available
                       </td>
                     </tr>
                   ) : (
-                    bookingData.map((data) => (
+                    currentBookings.map((data) => (
                       <tr className="align-middle" key={data.BookingID}>
-                        <td
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
-                          {data.BookingStatus === "Started" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={started}
-                              />
-                              <span>Started</span>
-                            </>
-                          ) : data.BookingStatus === "Absent" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={dotedCircle}
-                              />
-                              <span>Absent</span>
-                            </>
-                          ) : data.BookingStatus === "Accepted" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Accepted</span>
-                            </>
-                          ) : data.BookingStatus === "Declined" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Declined</span>
-                            </>
-                          ) : data.BookingStatus === "Finished" ? (
-                            <>
-                              <div style={{ width: "30%", margin: "auto" }}>
-                                <IoCheckmarkDoneCircle size={32} />
-                              </div>
-                              <span>Finished</span>
-                            </>
-                          ) : data.BookingStatus === "Cancelled" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={cross}
-                              />
-                              <span>Cancelled</span>
-                            </>
-                          ) : (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Attend</span>
-                            </>
-                          )}
+                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
+                          <div style={{ width: "30%", margin: "auto" }}>
+                            <IoCheckmarkDoneCircle size={32} />
+                          </div>
+                          <span>Finished</span>
                         </td>
                         <td>{data.BookingStartDate}</td>
                         <td>{data.InventoryName}</td>
                         <td>{data.AssignedTo}</td>
-                        <td
-                          className={
-                            data.PaymentStatus === "Paid"
-                              ? "text-success"
-                              : "text-danger"
-                          }
-                        >
+                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
                           {data.PaymentStatus}
                         </td>
                         <td>
@@ -646,9 +575,7 @@ const Booking = () => {
                             data-bs-target="#demo"
                           >
                             <i
-                              onClick={() => {
-                                setSelectedBookingId(data.BookingID);
-                              }}
+                              onClick={() => setSelectedBookingId(data.BookingID)}
                               className="fa fa-pencil p-0 me-3"
                               style={{ fontSize: "large" }}
                             ></i>
@@ -659,6 +586,29 @@ const Booking = () => {
                   )}
                 </tbody>
               </table>
+
+              {/* Pagination for Finished */}
+              <nav>
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
+                      Previous
+                    </a>
+                  </li>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
+                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </motion.div>
           )}
 
@@ -666,89 +616,23 @@ const Booking = () => {
             <motion.div>
               <table className="table table-hover mt-5">
                 <tbody>
-                  {bookingData.length === 0 ? (
+                  {currentBookings.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No booking available
                       </td>
                     </tr>
                   ) : (
-                    bookingData.map((data) => (
+                    currentBookings.map((data) => (
                       <tr className="align-middle" key={data.BookingID}>
-                        <td
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
-                          {data.BookingStatus === "Started" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={started}
-                              />
-                              <span>Started</span>
-                            </>
-                          ) : data.BookingStatus === "Absent" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={dotedCircle}
-                              />
-                              <span>Absent</span>
-                            </>
-                          ) : data.BookingStatus === "Accepted" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Accepted</span>
-                            </>
-                          ) : data.BookingStatus === "Declined" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Declined</span>
-                            </>
-                          ) : data.BookingStatus === "Finished" ? (
-                            <>
-                              <div style={{ width: "30%", margin: "auto" }}>
-                                <IoCheckmarkDoneCircle size={32} />
-                              </div>
-                              <span>Finished</span>
-                            </>
-                          ) : data.BookingStatus === "Cancelled" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={cross}
-                              />
-                              <span>Cancelled</span>
-                            </>
-                          ) : (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Attend</span>
-                            </>
-                          )}
+                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
+                          <img style={{ width: "30%", margin: "auto" }} src={cross} />
+                          <span>Cancelled</span>
                         </td>
                         <td>{data.BookingStartDate}</td>
                         <td>{data.InventoryName}</td>
                         <td>{data.AssignedTo}</td>
-                        <td
-                          className={
-                            data.PaymentStatus === "Paid"
-                              ? "text-success"
-                              : "text-danger"
-                          }
-                        >
+                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
                           {data.PaymentStatus}
                         </td>
                         <td>
@@ -759,9 +643,7 @@ const Booking = () => {
                             data-bs-target="#demo"
                           >
                             <i
-                              onClick={() => {
-                                setSelectedBookingId(data.BookingID);
-                              }}
+                              onClick={() => setSelectedBookingId(data.BookingID)}
                               className="fa fa-pencil p-0 me-3"
                               style={{ fontSize: "large" }}
                             ></i>
@@ -772,10 +654,32 @@ const Booking = () => {
                   )}
                 </tbody>
               </table>
+
+              {/* Pagination for Cancelled */}
+              <nav>
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
+                      Previous
+                    </a>
+                  </li>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
+                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </motion.div>
           )}
 
-         
         </div>
 
         <div className="offcanvas offcanvas-end" id="demo">
