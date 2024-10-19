@@ -173,7 +173,7 @@ const CreatePackage = () => {
                             <div className="body">
                                 <div>
                                     <span className="grey">Add this package to
-                                        <select className="select" value={selectedCategory} onChange={handleCategoryChange}>
+                                        <select disabled className="select" value={selectedCategory} onChange={handleCategoryChange}>
                                             <option>Spa</option>
                                         </select>
                                     </span>
