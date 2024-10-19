@@ -60,7 +60,7 @@ const Login = () => {
                         <ul className="navbar-nav me-auto"></ul>
                     </div>
                     <button className="btn px-0" type="button" style={{ color: 'rgba(0, 0, 0, 0.50)' }}>
-                        Go to Website
+                       <Link style={{ textDecoration:'none' }} to='https://neardl.com '>Go to Website</Link>
                     </button>
                 </div>
             </nav>

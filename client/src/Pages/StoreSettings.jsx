@@ -160,8 +160,8 @@ const StoreSetting = () => {
                                     />
                                 </div>
 
-                                <div className="grey" style={{ marginTop: '20px' }}>Banner image</div>
-                                <Link style={{ textDecoration:'none', border:'1px solid black', width:'fit-content', padding:'5px', borderRadius:'20px' }}><img src={ai} /> Generate Image with Near.AI</Link>
+                                {/* <div className="grey" style={{ marginTop: '20px' }}>Banner image</div>
+                                <Link style={{ textDecoration:'none', border:'1px solid black', width:'fit-content', padding:'5px', borderRadius:'20px' }}><img src={ai} /> Generate Image with Near.AI</Link> */}
 
                                 <div
                                     className="image-upload"
@@ -238,9 +238,9 @@ const StoreSetting = () => {
                                     </div>
                                 </div>
 
-                                <div>
+                                {/* <div>
                                     <button className="button" onClick={handleSaveChanges}>Save changes</button>
-                                </div>
+                                </div> */}
                             </div>
                         </motion.div>
                     </div>
