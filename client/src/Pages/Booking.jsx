@@ -16,6 +16,7 @@ import declined from "../assets/regular.svg";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const Booking = () => {
+
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
   const [bookingData, setBookingData] = useState([]);
@@ -93,10 +94,37 @@ const Booking = () => {
     }
   };
 
+  const [selectedFilter, setSelectedFilter] = useState("Featured");
   useEffect(() => {
     handleSubmit(active);
-  }, [active]);
+  }, [active, selectedFilter]);
 
+  const [filter, setFilter] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const handleFilter = async (filter) => {
+    try {
+      setFilter(true);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const ITEMS_PER_PAGE = 5; // Adjust this as needed
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(bookingData.length / ITEMS_PER_PAGE);
+
+  // Slice booking data for the current page
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentBookings = bookingData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -186,58 +214,40 @@ const Booking = () => {
               </button>
             </div>
           </div>
+
+
           {active === "All" && (
             <motion.div>
               <table className="table table-hover mt-5">
                 <tbody>
-                  {bookingData.length === 0 ? (
+                  {currentBookings.length === 0 ? (
                     <tr>
                       <td colSpan="5" className="text-center">
                         No booking available
                       </td>
                     </tr>
                   ) : (
-                    bookingData.map((data) => (
+                    currentBookings.map((data) => (
                       <tr className="align-middle" key={data.BookingID}>
-                        {/* {data.BookingID} */}
-                        <td
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
+                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
                           {data.BookingStatus === "Started" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={started}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={started} />
                               <span>Started</span>
                             </>
                           ) : data.BookingStatus === "Absent" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={dotedCircle}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={dotedCircle} />
                               <span>Absent</span>
                             </>
                           ) : data.BookingStatus === "Accepted" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
                               <span>Accepted</span>
                             </>
                           ) : data.BookingStatus === "Declined" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={declined}
-                              />
-
+                              <img style={{ width: "30%", margin: "auto" }} src={declined} />
                               <span>Declined</span>
                             </>
                           ) : data.BookingStatus === "Finished" ? (
@@ -249,18 +259,12 @@ const Booking = () => {
                             </>
                           ) : data.BookingStatus === "Cancelled" ? (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={cross}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={cross} />
                               <span>Cancelled</span>
                             </>
                           ) : (
                             <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
+                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
                               <span>Attend</span>
                             </>
                           )}
@@ -268,13 +272,7 @@ const Booking = () => {
                         <td>{data.BookingStartDate}</td>
                         <td>{data.InventoryName}</td>
                         <td>{data.AssignedTo}</td>
-                        <td
-                          className={
-                            data.PaymentStatus === "Paid"
-                              ? "text-success"
-                              : "text-danger"
-                          }
-                        >
+                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
                           {data.PaymentStatus}
                         </td>
                         <td>
@@ -298,8 +296,32 @@ const Booking = () => {
                   )}
                 </tbody>
               </table>
+
+              {/* Pagination */}
+              <nav>
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
+                      Previous
+                    </a>
+                  </li>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li className={`page-item ${currentPage === index + 1 ? 'active' : ''}`} key={index}>
+                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </motion.div>
           )}
+
 
           {active === "Today" && (
             <motion.div>
@@ -753,35 +775,7 @@ const Booking = () => {
             </motion.div>
           )}
 
-          <nav>
-            <ul className="pagination justify-content-center">
-              <li className="page-item disabled">
-                <a className="page-link" href="#">
-                  Previous
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  1
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  2
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  3
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  Next
-                </a>
-              </li>
-            </ul>
-          </nav>
+         
         </div>
 
         <div className="offcanvas offcanvas-end" id="demo">
@@ -960,7 +954,7 @@ const Booking = () => {
 
         <div className="offcanvas offcanvas-end" id="filter-package">
           <div className="offcanvas-header mb-0">
-            <h3 className="offcanvas-title">Filter Packagee</h3>
+            <h3 className="offcanvas-title">Filter Package</h3>
             <button
               type="button"
               className="btn-close text-reset"
@@ -970,13 +964,34 @@ const Booking = () => {
           <div className="offcanvas-body">
             <button className="remove-btn">Remove all filters</button>
             <div className="nav">
-              <button className="booking-nav-active">Featured</button>
-              <button>Spa</button>
-              <button>Massage</button>
-              <button>Sonna</button>
+              <button
+                className={`booking-nav-active ${selectedFilter === "Featured" ? "active" : ""}`}
+                onClick={() => setSelectedFilter("Featured")}
+              >
+                Featured
+              </button>
+              <button
+                className={`${selectedFilter === "Spa" ? "active" : ""}`}
+                onClick={() => setSelectedFilter("Spa")}
+              >
+                Spa
+              </button>
+              <button
+                className={`${selectedFilter === "Massage" ? "active" : ""}`}
+                onClick={() => setSelectedFilter("Massage")}
+              >
+                Massage
+              </button>
+              <button
+                className={`${selectedFilter === "Sonna" ? "active" : ""}`}
+                onClick={() => setSelectedFilter("Sonna")}
+              >
+                Sonna
+              </button>
             </div>
           </div>
         </div>
+
       </motion.div>
     </div>
   );

@@ -269,8 +269,9 @@ const CreatePackage = () => {
                                         value={duration}
                                         onChange={handleInputChange}
                                     />
-                                    <select className="select" value="minutes" disabled>
+                                    <select className="select" value="minutes">
                                         <option>minutes</option>
+                                        <option>hours</option>
                                     </select>
                                 </div>
                             </div>
