@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SideBar from "../Components/SideBar";
 import 'react-quill/dist/quill.snow.css'; // Import Quill's styles
 import background from "../assets/background.svg";
@@ -16,15 +16,18 @@ import ai from "../assets/aiLogo.svg";
 import image1 from '../assets/image1.svg';
 import image2 from '../assets/image2.svg';
 import aaaa from "../assets/WhatsApp Image 2024-09-12 at 16.48.58_7c2d63d5.jpg";
+import Cookies from 'js-cookie';
 
 const StoreSetting = () => {
-
+    const jwtUserToken = Cookies.get("user_token");
+    const userData = JSON.parse(jwtUserToken);
     const [isChecked, setIsChecked] = useState(false);
     const [images, setImages] = useState([]);
     const [packageTitle, setPackageTitle] = useState('');
     const [url, setUrl] = useState('');
     const [duration, setDuration] = useState('');
     const fileInputRef = useRef(null);
+    const [storeData, setStoreData] = useState([]);
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
@@ -70,6 +73,34 @@ const StoreSetting = () => {
         console.log('Is Checked:', isChecked);
     };
 
+    const fetchStore = async (filter) => {
+        try {
+            const response = await fetch(
+                "https://wellness.neardeal.me/WAPI/fetchStoreDetailsMW.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        vendorId: userData.ID,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            console.log('data', data.message);
+            setStoreData(data.message[0]);
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchStore();
+    }, [])
+
 
     return (
         <div style={{ display: 'flex' }}>
@@ -84,17 +115,17 @@ const StoreSetting = () => {
                     <div className="left">
                         {/* <PackageSideBar/> */}
                         {/* <img src={store}></img> */}
-                        <div style={{ flexDirection:'column', position:'relative' }}>
-                            <img style={{ width:'100%' }} src={image1}></img>
-                            <img style={{ position:'absolute', bottom:'-15%', left:'5%', borderRadius:'10px', width:'20%' }} src={aaaa}></img>
+                        <div style={{ flexDirection: 'column', position: 'relative' }}>
+                            <img style={{ width: '100%' }} src={image1}></img>
+                            <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={aaaa}></img>
                         </div>
-                        <h1 style={{ fontWeight: 'bold', marginTop:'30px' }}>Senmu Farm</h1>
+                        <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>Senmu Farm</h1>
                         <div className="rating">
                             <span>4.3</span>
                             <span><img src={star}></img> <img src={star}></img> <img src={star}></img> <img src={star}></img> <img src={star}></img></span>
                         </div>
                         <p>
-                            Immerse yourself in the ultimate relaxation experience with our Head Spa Treatment. This service, deeply rooted in Indian Ayurveda practices
+                            {storeData.description}
                         </p>
                         <div className="location">
                             <img src={location}></img>
@@ -111,25 +142,25 @@ const StoreSetting = () => {
                     </div>
 
                     <div className="right">
-                    <div className="header">
-                                <div className="left" style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <div className="toggle-switch">
-                                        <input
-                                            type="checkbox"
-                                            id="toggle"
-                                            className="toggle-checkbox"
-                                            checked={isChecked}
-                                            onChange={handleToggle}
-                                        />
-                                        <label htmlFor="toggle" className="toggle-label"></label>
-                                    </div>
-                                    <span>Publish</span>
+                        <div className="header">
+                            <div className="left" style={{ display: 'flex', flexDirection: 'row' }}>
+                                <div className="toggle-switch">
+                                    <input
+                                        type="checkbox"
+                                        id="toggle"
+                                        className="toggle-checkbox"
+                                        checked={isChecked}
+                                        onChange={handleToggle}
+                                    />
+                                    <label htmlFor="toggle" className="toggle-label"></label>
                                 </div>
-
-                                <div className="right" style={{ width:'25%' }}>
-                                    <button className="button" onClick={handleSaveChanges}>Save Changes</button>
-                                </div>
+                                <span>Publish</span>
                             </div>
+
+                            <div className="right" style={{ width: '25%' }}>
+                                <button className="button" onClick={handleSaveChanges}>Save Changes</button>
+                            </div>
+                        </div>
                         <motion.div initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -205,26 +236,27 @@ const StoreSetting = () => {
                                     <button className="button">Upload</button>
                                 </div>
                                 <div className="grey" style={{ marginTop: '20px' }}>Description</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }}>
-                                    Immerse yourself in the ultimate relaxation experience with our Head Spa Treatment. This service, deeply rooted in Indian Ayurveda practice
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                    {storeData.description}
                                 </div>
+
                                 <div className="grey" style={{ marginTop: '20px' }}>Contact Email</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }}>
-                                    info@senmufarm.com
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                    {storeData.emailAddress}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Phone</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }}>
-                                    9876543210
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                    {storeData.contactNo}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Address</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }}>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
                                     10 Nathan Road, Mong Kok
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Availability</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }}>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
                                     <div>
                                         <div>
                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
