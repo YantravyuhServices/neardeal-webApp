@@ -92,7 +92,7 @@ const CreatePackage = () => {
                             <button onClick={() => setActive('nearreel')} type="button" className={`${isActive('nearreel')} btn-outline-secondary border-0 active me-2`}>Spa</button>
                             <button onClick={() => setActive('coupon')} type="button" className={`${isActive('coupon')} btn-outline-secondary border-0 active me-2`}>Massage</button>
                             <button onClick={() => setActive('discounts')} type="button" className={`${isActive('discounts')} btn-outline-secondary border-0 active me-2`}>Status</button>
-                            <img className="border-0 me-2" src={addFile} alt="add file" id="addFileBtn" onClick={openModal} style={{ cursor: 'pointer' }} />
+                            {/* <img className="border-0 me-2" src={addFile} alt="add file" id="addFileBtn" onClick={openModal} style={{ cursor: 'pointer' }} /> */}
                         </div>
                         <div className="col-lg-6 d-flex input-group justify-content-end ms-5" style={{ maxWidth: '45%' }}>
                             <input type="text" className="form-control" placeholder="Search..." />

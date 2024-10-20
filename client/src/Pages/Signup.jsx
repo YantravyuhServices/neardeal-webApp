@@ -34,6 +34,7 @@ const SignUp = () => {
         city: "",
         country: "",
         zip: "",
+        storelogo_name: "",
         profilePic: null,
     });
 
@@ -63,17 +64,20 @@ const SignUp = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        console.log(file);
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setStoreData(prev => ({
                     ...prev,
-                    profilePic: reader.result // Base64 encoded string
+                    profilePic: reader.result, // Base64 encoded string
+                    storelogo_name: file.name // Set the file name here
                 }));
             };
             reader.readAsDataURL(file);
         }
     };
+    
 
     const handleCategoryChange = (category) => {
         setMerchantData(prev => ({
@@ -85,7 +89,7 @@ const SignUp = () => {
     const callApi = async (step) => {
         setLoading(true);
         let payload = {};
-    
+
         try {
             if (step === 1) {
                 // Handle Step 1 API call
@@ -96,7 +100,7 @@ const SignUp = () => {
                     password: accountData.password,
                     confirmPassword: accountData.confirmPassword
                 };
-    
+
                 const response = await fetch('https://wellness.neardeal.me/WAPI/merchantSignup.php', {
                     method: 'POST',
                     headers: {
@@ -104,11 +108,11 @@ const SignUp = () => {
                     },
                     body: JSON.stringify(payload),
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
-    
+
                 const data = await response.json();
                 setUserId(data.userid);
                 toast.success('Account credentials saved successfully');
@@ -117,7 +121,7 @@ const SignUp = () => {
                 payload = {
                     userid: userId // Pass userId for verification
                 };
-    
+
                 const verificationResponse = await fetch('https://wellness.neardeal.me/WAPI/verificationStatus.php', {
                     method: 'POST',
                     headers: {
@@ -125,22 +129,22 @@ const SignUp = () => {
                     },
                     body: JSON.stringify(payload),
                 });
-    
+
                 if (!verificationResponse.ok) {
                     throw new Error('Network response was not ok.');
                 }
-    
+
                 const verificationData = await verificationResponse.json();
                 if (verificationData.status !== 'success') {
                     throw new Error('Verification failed.');
                 }
-    
+
                 toast.success('Verification successful');
                 return true; // Proceed to next step if verification is successful
             } else if (step === 5) {
                 // Handle final API call directly after successful verification
-               
-    console.log(storeData);
+
+                console.log(storeData);
                 const finalResponse = await fetch('https://wellness.neardeal.me/WAPI/merchantSignup.php', {
                     method: 'POST',
                     headers: {
@@ -150,17 +154,19 @@ const SignUp = () => {
                         userid: userId,
                         contactno: storeData.contact,
                         storeaddress: storeData.storeAddress,
-                        storedoo: merchantData.dob, 
+                        storedoo: merchantData.dob,
                         city: storeData.city,
                         country: storeData.country,
                         zip: storeData.zip,
                         coordinates: "kl",
-                        storeimage: "kjn",
-                        storelogo: "jk"
+                        storeimage_name: storeData.storelogo_name,
+                        storelogo_name: storeData.storelogo_name,
+                        storelogo: storeData.profilePic,
                     }),
                 });
-    
+
                 console.log('Final Response:', finalResponse);
+                // console.log();
                 navigate('/login');
                 toast.success('Merchant account launched successfully');
             }
@@ -171,10 +177,10 @@ const SignUp = () => {
         } finally {
             setLoading(false);
         }
-    
+
         return true; // Allow moving to the next step if successful
-    };       
-    
+    };
+
     const handleNextStep = async (nextStep) => {
         const success = await callApi(currentStep);
         if (success) {
@@ -197,7 +203,7 @@ const SignUp = () => {
             </nav>
 
             <div className="container-fluid" id="form">
-                <div className="row px-5" style={{ marginTop:'5%' }}>
+                <div className="row px-5" style={{ marginTop: '5%' }}>
                     <div className="col-lg-4"></div>
                     <div className="col-lg-4 col-sm-12 px-5">
                         {currentStep === 1 && (
@@ -330,7 +336,7 @@ const SignUp = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
                                     <div className="col-lg-6 col-sm-12" style={{ paddingRight: "1%" }}>
@@ -358,9 +364,9 @@ const SignUp = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
-                                   
+
                                     {/* Repeat for other categories */}
                                 </div>
                                 <div className="d-grid mt-3">
