@@ -324,7 +324,6 @@ const Booking = () => {
             </motion.div>
           )}
 
-
           {active === "Today" && (
             <motion.div>
               <table className="table table-hover mt-5">
