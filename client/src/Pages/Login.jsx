@@ -110,12 +110,14 @@ const Login = () => {
                             </svg>
                         </div>
                         <div className="d-grid">
-                            <button
+                            <Link
+                                to="/signup"
                                 type="button"
                                 className="btn btn-outline-dark btn-block my-4"
+                                style={{ textDecoration: 'none' }}
                             >
-                                <Link style={{ textDecoration: 'none' }} to="/signup">Sign Up</Link>
-                            </button>
+                                Sign Up
+                            </Link>
                         </div>
                     </div>
                     <div className="col-lg-4"></div>

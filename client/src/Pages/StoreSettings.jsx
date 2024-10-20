@@ -143,7 +143,7 @@ const StoreSetting = () => {
 
                     <div className="right">
                         <div className="header">
-                            <div className="left" style={{ display: 'flex', flexDirection: 'row' }}>
+                            {/* <div className="left" style={{ display: 'flex', flexDirection: 'row' }}>
                                 <div className="toggle-switch">
                                     <input
                                         type="checkbox"
@@ -155,7 +155,7 @@ const StoreSetting = () => {
                                     <label htmlFor="toggle" className="toggle-label"></label>
                                 </div>
                                 <span>Publish</span>
-                            </div>
+                            </div> */}
 
                             <div className="right" style={{ width: '25%' }}>
                                 <button className="button" onClick={handleSaveChanges}>Save Changes</button>
