@@ -1,7 +1,125 @@
+import React, { useState, useRef, useCallback } from 'react';
 import SideBar from '../Components/SideBar';
 import v1 from '../assets/video1.svg';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import Cookies from 'js-cookie';
+import imageUpload from "../assets/imageUpload.svg";
+import crossIcon from "../assets/cross.svg";
+import { toast } from 'react-toastify';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const NearAI = () => {
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    // Function to toggle modal visibility
+    const toggleModal = () => {
+        setModalOpen(!isModalOpen);
+    };
+
+    const jwtUserToken = Cookies.get("user_token");
+    const userData = JSON.parse(jwtUserToken);
+    const [active, setActive] = useState('setup');
+    const [isChecked, setIsChecked] = useState(false);
+    const [images, setImages] = useState([]);
+    const [editorStates, setEditorStates] = useState({
+        included: { content: '', operations: [] },
+        openingHours: { content: '', operations: [] },
+        tnc: { content: '', operations: [] }
+    });
+    const [packageTitle, setPackageTitle] = useState('');
+    const fileInputRef = useRef(null);
+    const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
+
+    const handleToggle = () => {
+        setIsChecked(!isChecked);
+    };
+
+    const handleImageUpload = (event) => {
+        const files = Array.from(event.target.files);
+        const newImages = files.map(file => URL.createObjectURL(file));
+        setImages(prevImages => [...prevImages, ...newImages]);
+    };
+
+    const handleRemoveImage = (index) => {
+        setImages(images.filter((_, i) => i !== index));
+    };
+
+    const handleUploadClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        switch (name) {
+            case 'packageTitle':
+                setPackageTitle(value);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const updateEditorState = useCallback((editorKey, delta, oldDelta, source) => {
+        setEditorStates(prevStates => {
+            const updatedOperations = [...prevStates[editorKey].operations, { delta, oldDelta, source }];
+            return {
+                ...prevStates,
+                [editorKey]: {
+                    ...prevStates[editorKey],
+                    operations: updatedOperations
+                }
+            };
+        });
+    }, []);
+
+    const handleSaveChanges = async () => {
+        // const packageData = {
+        //     vendorId: userData.ID,
+        //     title: packageTitle,
+        //     publishStatus: isChecked,
+        //     whatsIncluded: editorStates.included.content,
+        //     openingHours: editorStates.openingHours.content,
+        //     tnc: editorStates.tnc.content,
+        //     images,
+        // };
+
+        try {
+            const response = await fetch(
+                "https://wellness.neardeal.me/WAPI/updateCouponsMW.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "vendorId": userData.ID,
+                        "title": packageTitle,
+                        "startDate": "2024-10-01",
+                        "endDate": "2024-10-15",
+                        "discount": 37,
+                        "unit": "%",
+                        "whatsIncluded": editorStates.included.content,
+                        "tnc": editorStates.tnc.content,
+                        "status": 0,
+                        "inventoryIds": "V107_I01,V107_I02",
+                        "couponCode": "",
+                        "couponType": "Coupon",
+                        "currency": "HKD"
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            console.log(data);
+            toast.success("Successfully Created Coupon");
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
     return (
         <div style={{ display: 'flex' }}>
             <SideBar></SideBar>
@@ -21,66 +139,24 @@ const NearAI = () => {
                 {/* Media Selection Buttons */}
                 <div className="d-flex justify-content-center gap-4 my-4">
                     <div>
-                        <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="66" height="66" rx="33" fill="white" />
-                            <path d="M38 29.6677L45.5883 25.8743C45.8424 25.7474 46.1246 25.6875 46.4083 25.7003C46.692 25.713 46.9677 25.7981 47.2093 25.9474C47.4509 26.0966 47.6504 26.3051 47.7888 26.5531C47.9271 26.8011 47.9998 27.0804 48 27.3643V38.6377C47.9998 38.9217 47.9271 39.2009 47.7888 39.4489C47.6504 39.6969 47.4509 39.9054 47.2093 40.0547C46.9677 40.2039 46.692 40.289 46.4083 40.3018C46.1246 40.3145 45.8424 40.2546 45.5883 40.1277L38 36.3343V29.6677Z" stroke="url(#paint0_linear_26_9330)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M18 26.3333C18 25.4493 18.3512 24.6014 18.9763 23.9763C19.6014 23.3512 20.4493 23 21.3333 23H34.6667C35.5507 23 36.3986 23.3512 37.0237 23.9763C37.6488 24.6014 38 25.4493 38 26.3333V39.6667C38 40.5507 37.6488 41.3986 37.0237 42.0237C36.3986 42.6488 35.5507 43 34.6667 43H21.3333C20.4493 43 19.6014 42.6488 18.9763 42.0237C18.3512 41.3986 18 40.5507 18 39.6667V26.3333Z" stroke="url(#paint1_linear_26_9330)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <defs>
-                                <linearGradient id="paint0_linear_26_9330" x1="33" y1="23" x2="33" y2="43" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#DABDFF" />
-                                    <stop offset="1" stopColor="#A97EE1" />
-                                </linearGradient>
-                                <linearGradient id="paint1_linear_26_9330" x1="33" y1="23" x2="33" y2="43" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#DABDFF" />
-                                    <stop offset="1" stopColor="#A97EE1" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <p>Video</p>
+                        {/* SVG for Video */}
+                        {/* ... */}
                     </div>
 
                     <div>
-                        <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="66" height="66" rx="33" fill="url(#paint0_linear_26_9335)" fillOpacity="0.2" />
-                            <path d="M38 26.3333H38.0167M18 39.6664L26.3333 31.333C27.88 29.8447 29.7867 29.8447 31.3333 31.333L39.6667 39.6664M36.3333 36.333L38 34.6664C39.5467 33.178 41.4533 33.178 43 34.6664L48 39.6664M18 23C18 21.6739 18.5268 20.4021 19.4645 19.4645C20.4021 18.5268 21.6739 18 23 18H43C44.3261 18 45.5979 18.5268 46.5355 19.4645C47.4732 20.4021 48 21.6739 48 23V43C48 44.3261 47.4732 45.5979 46.5355 46.5355C45.5979 47.4732 44.3261 48 43 48H23C21.6739 48 20.4021 47.4732 19.4645 46.5355C18.5268 45.5979 18 44.3261 18 43V23Z" stroke="url(#paint1_linear_26_9335)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <defs>
-                                <linearGradient id="paint0_linear_26_9335" x1="33" y1="0" x2="33" y2="66" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="white" />
-                                    <stop offset="1" stopColor="white" stopOpacity="0.5" />
-                                </linearGradient>
-                                <linearGradient id="paint1_linear_26_9335" x1="33" y1="18" x2="33" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#5BE49B" />
-                                    <stop offset="1" stopColor="#22C55E" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-
+                        {/* SVG for another option */}
+                        {/* ... */}
                     </div>
 
                     <div>
-                        <svg width="66" height="66" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="66" height="66" rx="33" fill="url(#paint0_linear_26_9340)" fillOpacity="0.2" />
-                            <path d="M23 19.666H43M33 19.666V46.3327" stroke="url(#paint1_linear_26_9340)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            <defs>
-                                <linearGradient id="paint0_linear_26_9340" x1="33" y1="0" x2="33" y2="66" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="white" />
-                                    <stop offset="1" stopColor="white" stopOpacity="0.5" />
-                                </linearGradient>
-                                <linearGradient id="paint1_linear_26_9340" x1="33" y1="19.666" x2="33" y2="46.3327" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#00B8D9" />
-                                    <stop offset="1" stopColor="#77CBF1" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-
+                        {/* SVG for third option */}
+                        {/* ... */}
                     </div>
                 </div>
 
                 {/* Video Grid */}
                 <div className="row g-4 justify-content-center px-5">
-
-                    {/* Video Cards */}
-                    <div className="col-md-3">
+                    <div className="col-md-3" onClick={toggleModal}>
                         <svg width="267" height="148" viewBox="0 0 267 148" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="266.75" height="148" rx="8" fill="white" fillOpacity="0.2" />
                             <path d="M27 85V99M20 92H34" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -89,15 +165,143 @@ const NearAI = () => {
                     </div>
 
                     <div className="col-md-3">
-                        <img src={v1}></img>
+                        <img src={v1} alt="Video Thumbnail" />
                     </div>
-
-                   
-
                 </div>
+
+                {/* Bootstrap Modal */}
+                {isModalOpen && (
+                    <div className="modal show d-block" tabIndex="-1" role="dialog">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-body">
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="right">
+                                        <div className="header">
+                                           
+                                            <div className="right" style={{ display:'flex', justifyContent:'end' }}>
+                                                <button className="button" onClick={handleSaveChanges}>Generate</button>
+                                            </div>
+                                        </div>
+                                        <div className="body">
+                                            <input
+                                                name="packageTitle"
+                                                className="package-title"
+                                                type="text"
+                                                placeholder="Campaign Title"
+                                                style={{ width: '100%', color:'grey', border:'none', height:'10vh', fontSize:'30px' }}
+                                                value={packageTitle}
+                                                onChange={handleInputChange}
+                                            />
+
+                                            <div className="image-upload" style={{ display:'flex' }} onClick={handleUploadClick}>
+                                                <img style={{ width:'50%', margin:'auto' }} src={imageUpload} alt="upload" />
+                                                <span>Select files</span>
+                                                <input
+                                                    type="file"
+                                                    multiple
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    ref={fileInputRef}
+                                                    style={{ display: 'none' }}
+                                                />
+                                            </div>
+
+                                            <div className="image-select">
+                                                {images.map((image, index) => (
+                                                    <div key={index} style={{ position: 'relative' }}>
+                                                        <img src={image} alt={`uploaded ${index}`} />
+                                                        <button onClick={() => handleRemoveImage(index)} style={{ position: 'absolute', top: '5px', right: '5px' }}>
+                                                            <img src={crossIcon} alt="remove" />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="grey">What's included</div>
+                                            <ReactQuill
+                                                value={editorStates.included.content}
+                                                onChange={(content, delta, source) => {
+                                                    setEditorStates(prevStates => ({
+                                                        ...prevStates,
+                                                        included: { content, operations: prevStates.included.operations }
+                                                    }));
+                                                    updateEditorState('included', delta, null, source);
+                                                }}
+                                                className="text-area"
+                                                placeholder="Type here"
+                                                ref={(el) => {
+                                                    if (el) {
+                                                        quillRefs.current.included = el.getEditor();
+                                                        quillRefs.current.included.on('text-change', (delta, oldDelta, source) => updateEditorState('included', delta, oldDelta, source));
+                                                    }
+                                                }}
+                                            />
+
+                                            <div className="grey">Opening hours</div>
+                                            <ReactQuill
+                                                value={editorStates.openingHours.content}
+                                                onChange={(content, delta, source) => {
+                                                    setEditorStates(prevStates => ({
+                                                        ...prevStates,
+                                                        openingHours: { content, operations: prevStates.openingHours.operations }
+                                                    }));
+                                                    updateEditorState('openingHours', delta, null, source);
+                                                }}
+                                                className="text-area"
+                                                placeholder="Type here"
+                                                ref={(el) => {
+                                                    if (el) {
+                                                        quillRefs.current.openingHours = el.getEditor();
+                                                        quillRefs.current.openingHours.on('text-change', (delta, oldDelta, source) => updateEditorState('openingHours', delta, oldDelta, source));
+                                                    }
+                                                }}
+                                            />
+
+                                            <div className="grey">TNC</div>
+                                            <ReactQuill
+                                                value={editorStates.tnc.content}
+                                                onChange={(content, delta, source) => {
+                                                    setEditorStates(prevStates => ({
+                                                        ...prevStates,
+                                                        tnc: { content, operations: prevStates.tnc.operations }
+                                                    }));
+                                                    updateEditorState('tnc', delta, null, source);
+                                                }}
+                                                className="text-area"
+                                                placeholder="Type here"
+                                                ref={(el) => {
+                                                    if (el) {
+                                                        quillRefs.current.tnc = el.getEditor();
+                                                        quillRefs.current.tnc.on('text-change', (delta, oldDelta, source) => updateEditorState('tnc', delta, oldDelta, source));
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </motion.div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={toggleModal}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
+            {/* Styling to keep modal's backdrop */}
+            <style jsx>{`
+                .modal.show.d-block {
+                    display: block;
+                    background-color: rgba(0, 0, 0, 0.5);
+                }
+            `}</style>
         </div>
-    )
-}
+    );
+};
 
 export default NearAI;

@@ -263,3 +263,9 @@ body{
   background-color: gray; /* Optional: change disabled button color */
   color: white; /* Optional: change text color for disabled button */
 }
+
+/* Modal */
+.custom-modal-dialog {
+  max-width: 800px; /* Set your desired width */
+  width: 100%; /* Make it responsive */
+}
