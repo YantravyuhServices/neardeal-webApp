@@ -129,7 +129,7 @@ const CreatePackage = () => {
                                                     type="checkbox"
                                                     id={`toggle-${index}`} // Unique ID for each toggle
                                                     className="toggle-checkbox"
-                                                    checked={item.Status === 1}
+                                                    checked={item.Status === '1' ? true : false}
                                                     onChange={handleToggle}
                                                 />
                                                 <label htmlFor={`toggle-${index}`} className="toggle-label"></label>
