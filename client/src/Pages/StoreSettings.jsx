@@ -14,7 +14,6 @@ import { motion } from "framer-motion";
 import storeLogo from "../assets/storeSettingsLogo.svg";
 import ai from "../assets/aiLogo.svg";
 import image1 from '../assets/image1.svg';
-import image2 from '../assets/image2.svg';
 import aaaa from "../assets/WhatsApp Image 2024-09-12 at 16.48.58_7c2d63d5.jpg";
 import Cookies from 'js-cookie';
 import { toast } from "react-toastify";
@@ -27,7 +26,12 @@ const StoreSetting = () => {
     const [url, setUrl] = useState('');
     const [duration, setDuration] = useState('');
     const fileInputRef = useRef(null);
-    const [storeData, setStoreData] = useState([]);
+    const [storeData, setStoreData] = useState({
+        description: '',
+        emailAddress: '',
+        contactNo: '',
+        // Add any other fields as necessary
+    });
 
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -60,11 +64,44 @@ const StoreSetting = () => {
         }
     };
 
-    const handleSaveChanges = () => {
-        console.log('Package Title:', packageTitle);
-        console.log('URL:', url);
-        console.log('Duration:', duration);
-        console.log('Images:', images);
+    const handleSaveChanges = async() => {
+        console.log('storeData', storeData);
+        
+        try {
+            const response = await fetch(
+                "https://wellness.neardeal.me/WAPI/merchantProfileUpdatesMW.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                            "userid": userData.ID,
+                            "userName": userData.vendorName,
+                            "contactno": storeData.contactNo,
+                            "storeaddress": storeData.address,
+                            "category" : "[Spa, Sauna, Gym]",
+                            "description": storeData.description,
+                            "city": "Hong Kong",
+                            "country": "Hong Kong",
+                            "zip": "XYZ 456",
+                            "storeimage_name": "abc.jpg", // filePath
+                            "storelogo_name": "dragon.jpg", // filePath,
+                            "workingHours": "10:00 AM - 12:00 AM",
+                            "workingHoursDetails": "Mon-Fri (Sat: 10:00 AM - 7:00 PM)",
+                            "storelogo": ""
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            // console.log('data', data.message);
+            toast.success("Changes saved successfully");
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+
     };
 
     const fetchStore = async () => {
@@ -83,8 +120,8 @@ const StoreSetting = () => {
             );
 
             const data = await response.json();
-            console.log('data', data.message);
-            setStoreData(data.message[0]);
+            // console.log('data', data.message);
+            setStoreData(data.message[0] || {}); // Ensure it sets to an object to avoid errors
 
         } catch (error) {
             console.error("Error:", error);
@@ -93,13 +130,12 @@ const StoreSetting = () => {
 
     useEffect(() => {
         fetchStore();
-    }, [])
-
+    }, []);
 
     return (
         <div style={{ display: 'flex' }}>
-            <SideBar></SideBar>
-            <img style={{ position: 'absolute', top: 0, zIndex: '-1', width: '100%' }} src={background}></img>
+            <SideBar />
+            <img style={{ position: 'absolute', top: 0, zIndex: '-1', width: '100%' }} src={background} alt="background" />
             <motion.div initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -108,28 +144,26 @@ const StoreSetting = () => {
                 <div>
                     <div className="left">
                         <div style={{ flexDirection: 'column', position: 'relative' }}>
-                            <img style={{ width: '100%' }} src={image1}></img>
-                            <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={aaaa}></img>
+                            <img style={{ width: '100%' }} src={image1} alt="store" />
+                            <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={aaaa} alt="upload" />
                         </div>
-                        <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>Senmu Farm</h1>
+                        <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>{storeData.storeName || 'Store Name'}</h1>
                         <div className="rating">
-                            <span>4.3</span>
-                            <span><img src={star}></img> <img src={star}></img> <img src={star}></img> <img src={star}></img> <img src={star}></img></span>
+                            <span>{storeData.rating || 'N/A'}</span>
+                            <span><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /></span>
                         </div>
-                        <p>
-                            {storeData.description}
-                        </p>
+                        <p>{storeData.description || 'No description available'}</p>
                         <div className="location">
-                            <img src={location}></img>
-                            <span style={{ margin: '0px 10px' }}>10 Nathan Road, Mong Kok</span>
+                            <img src={location} alt="location" />
+                            <span style={{ margin: '0px 10px' }}>{storeData.address || 'No address available'}</span>
                         </div>
                         <div className="time">
-                            <img src={clock1}></img>
-                            <span style={{ margin: '10px 10px' }}>10:00 am - 8:00 pm</span>
+                            <img src={clock1} alt="clock" />
+                            <span style={{ margin: '10px 10px' }}>{storeData.workingHours || 'N/A'}</span>
                         </div>
                         <div className="social-media">
-                            <img style={{ width: '80px' }} src={email}></img>
-                            <img style={{ margin: '10px 10px', width: '80px' }} src={phone}></img>
+                            <img style={{ width: '80px' }} src={email} alt="email" />
+                            <img style={{ margin: '10px 10px', width: '80px' }} src={phone} alt="phone" />
                         </div>
                     </div>
 
@@ -142,7 +176,7 @@ const StoreSetting = () => {
                         <motion.div initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            transition={{ duration: 1 }} className=" body">
+                            transition={{ duration: 1 }} className="body">
                             <div className="body">
                                 <input
                                     name="packageTitle"
@@ -153,7 +187,7 @@ const StoreSetting = () => {
                                     onChange={handleInputChange}
                                 />
 
-                                <div className="grey" style={{ marginTop: '20px' }}>Stroe Icon</div>
+                                <div className="grey" style={{ marginTop: '20px' }}>Store Icon</div>
                                 <div
                                     style={{ cursor: 'pointer', textAlign: 'center' }}
                                     onClick={handleUploadClick}
@@ -168,9 +202,6 @@ const StoreSetting = () => {
                                         style={{ display: 'none' }}
                                     />
                                 </div>
-
-                                {/* <div className="grey" style={{ marginTop: '20px' }}>Banner image</div>
-                                <Link style={{ textDecoration:'none', border:'1px solid black', width:'fit-content', padding:'5px', borderRadius:'20px' }}><img src={ai} /> Generate Image with Near.AI</Link> */}
 
                                 <div
                                     className="image-upload"
@@ -214,22 +245,22 @@ const StoreSetting = () => {
                                 </div>
                                 <div className="grey" style={{ marginTop: '20px' }}>Description</div>
                                 <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
-                                    {storeData.description}
+                                    {storeData.description || 'No description available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Contact Email</div>
                                 <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
-                                    {storeData.emailAddress}
+                                    {storeData.emailAddress || 'No email available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Phone</div>
                                 <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
-                                    {storeData.contactNo}
+                                    {storeData.contactNo || 'No phone number available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Address</div>
                                 <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
-                                    10 Nathan Road, Mong Kok
+                                    {storeData.address || 'No address available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Availability</div>
@@ -238,26 +269,19 @@ const StoreSetting = () => {
                                         <div>
                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                 <span>Working hours</span>
-                                                <span className="grey">Mon - sat, 9:00 AM - 1:00 PM</span>
-                                                <span className="grey">Mon - sat, 3:00 AM - 8:45 PM</span>
-                                                <span className="grey">Sun,</span>
+                                                <span className="grey">{storeData.workingHours || 'N/A'}</span>
                                             </div>
                                         </div>
-                                        <img src={edit}></img>
+                                        <img src={edit} alt="edit" />
                                     </div>
                                 </div>
-
-                                {/* <div>
-                                    <button className="button" onClick={handleSaveChanges}>Save changes</button>
-                                </div> */}
                             </div>
                         </motion.div>
                     </div>
                 </div>
             </motion.div>
-
         </div>
-    )
+    );
 }
 
-export default StoreSetting
+export default StoreSetting;
