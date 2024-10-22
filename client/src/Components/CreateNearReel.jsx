@@ -1,62 +1,30 @@
-import React, { useState, useRef, useCallback } from "react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import Quill's styles
+import { useState, useRef } from "react";
+import 'react-quill/dist/quill.snow.css'; 
 import SideBar from "./SideBar";
 import background from "../assets/background.svg";
 import leftArrow from "../assets/leftArrow.svg";
-import preview from "../assets/preview.svg";
-import copy from "../assets/copy.svg";
 import imageUpload from "../assets/imageUpload.svg";
-import deleteIcon from "../assets/deleteIcon.svg";
 import crossIcon from "../assets/cross.svg";
-import PackageSideBar from "./PackageSideBar";
 import dot from "../assets/dot.svg"
 import edit from "../assets/edit.svg"
 import ai from "../assets/aiLogo.svg";
-import product from "../assets/product.svg";
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import Cookies from 'js-cookie';
+import { toast } from "react-toastify";
 
 const CreatePackage = () => {
-    const [checked, setChecked] = useState(false);
+    const jwtUserToken = Cookies.get("user_token");
+    const userData = JSON.parse(jwtUserToken);
     const [active, setActive] = useState('setup');
     const isActive = (path) => {
         return active === path ? 'btn' : ''
     };
     const [isChecked, setIsChecked] = useState(false);
     const [images, setImages] = useState([]);
-    const [editorStates, setEditorStates] = useState({
-        included: { content: '', operations: [] },
-        openingHours: { content: '', operations: [] },
-        tnc: { content: '', operations: [] }
-    });
+    const [date, setDate] = useState('');
     const [packageTitle, setPackageTitle] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('Spa');
-    const [url, setUrl] = useState('');
-    const [addons, setAddons] = useState(['', '']);
-    const [duration, setDuration] = useState('');
     const fileInputRef = useRef(null);
-    const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
-
-    const [isChecked1, setIsChecked1] = useState(false);
-    const [isChecked2, setIsChecked2] = useState(false);
-    const [isChecked3, setIsChecked3] = useState(false);
-
-    const handleToggle1 = () => {
-        setIsChecked1(!isChecked1);
-        console.log('Toggle state:', !isChecked1);
-    };
-
-    const handleToggle2 = () => {
-        setIsChecked2(!isChecked2);
-        console.log('Toggle state:', !isChecked2);
-    };
-
-    const handleToggle3 = () => {
-        setIsChecked3(!isChecked3);
-        console.log('Toggle state:', !isChecked3);
-    };
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
@@ -83,52 +51,39 @@ const CreatePackage = () => {
             case 'packageTitle':
                 setPackageTitle(value);
                 break;
-            case 'url':
-                setUrl(value);
-                break;
-            case 'duration':
-                setDuration(value);
-                break;
             default:
                 break;
         }
     };
 
-    const handleAddonsChange = (index, value) => {
-        const newAddons = [...addons];
-        newAddons[index] = value;
-        setAddons(newAddons);
-    };
-
-    const handleCategoryChange = (e) => {
-        setSelectedCategory(e.target.value);
-    };
-
-    const updateEditorState = useCallback((editorKey, delta, oldDelta, source) => {
-        setEditorStates(prevStates => {
-            const updatedOperations = [...prevStates[editorKey].operations, { delta, oldDelta, source }];
-            return {
-                ...prevStates,
-                [editorKey]: {
-                    ...prevStates[editorKey],
-                    operations: updatedOperations
+    const handleSaveChanges = async() => {
+        try {
+            const response = await fetch(
+                "https://wellness.neardeal.me/WAPI/updateNearReelMW.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "vendorId": userData.ID,
+                        "campaignTitle": packageTitle,
+                        "reelDate": date,
+                        "status": isChecked,
+                        "reelFileName": "ocean.mp4",
+                        "campaignId": "",
+                        "reelBase64": "asc"
+                    }),
                 }
-            };
-        });
-    }, []);
+            );
 
-    const handleSaveChanges = () => {
-        console.log('Package Title:', packageTitle);
-        console.log('Category:', selectedCategory);
-        console.log('Included Content:', editorStates.included.content);
-        console.log('Opening Hours Content:', editorStates.openingHours.content);
-        console.log('TNC Content:', editorStates.tnc.content);
-        console.log('URL:', url);
-        console.log('Add-ons:', addons);
-        console.log('Duration:', duration);
-        console.log('Images:', images);
-        console.log('Is Checked:', isChecked);
-        console.log('Editor States:', editorStates);
+            const data = await response.json();
+            console.log( data);
+            toast.success("Successfully Created NearReel");
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 
     return (
@@ -182,7 +137,7 @@ const CreatePackage = () => {
                                     value={packageTitle}
                                     onChange={handleInputChange}
                                 />
-                                <input style={{ width: '35%', padding: '10px 20px', border: '2px solid #E9ECEE', color: '#637381', borderRadius: '10px' }} type="date" placeholder="Valid Date & time"></input>
+                                <input style={{ width: '35%', padding: '10px 20px', border: '2px solid #E9ECEE', color: '#637381', borderRadius: '10px' }} type="date" value={date} onChange={(e)=>{setDate(e.target.value)}} placeholder="Valid Date & time"></input>
 
                                 <Link style={{ marginTop: '20px', textDecoration: 'none', border: '2px solid #E9ECEE', width: 'fit-content', padding: '5px', borderRadius: '20px' }}><img src={ai} /> Generate Video with Near.AI</Link>
 

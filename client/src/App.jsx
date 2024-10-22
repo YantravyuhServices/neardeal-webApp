@@ -18,6 +18,7 @@ import CampaignAdsEdit from './Components/CampaignAdsEdit.jsx'
 import CreateDiscounts from './Components/CreateDiscounts.jsx'
 import CreateNearreel from './Components/CreateNearReel.jsx'
 import EditPackage from './Components/EditPackage.jsx'
+import NearAI from './Pages/NearAI.jsx'
 
 function App() {
   const jwtUserToken = Cookies.get("user_token");
@@ -41,6 +42,7 @@ function App() {
         <Route path='/campaign/analytics' element={<CampainAnalytics/>}></Route>
         <Route path='/campaign/redeemcode' element={<CampaignRedeemRecord></CampaignRedeemRecord>}></Route>
         <Route path='/store-settings' element={<StoreSettings></StoreSettings>}></Route> */}
+        <Route path='/nearai' exact element={<ProtectedRoutes Component={NearAI} isUserLoggedIn={isUserLoggedIn}></ProtectedRoutes>}></Route>
         <Route path='/package/:id' exact element={<ProtectedRoutes Component={EditPackage} isUserLoggedIn={isUserLoggedIn}></ProtectedRoutes>}/> 
         <Route path="/campaign/create-nearreel" exact element={<ProtectedRoutes Component={CreateNearreel} isUserLoggedIn={isUserLoggedIn} />} />
         <Route path="/campaign/create-discounts" exact element={<ProtectedRoutes Component={CreateDiscounts} isUserLoggedIn={isUserLoggedIn} />} />

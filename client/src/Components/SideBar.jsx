@@ -101,9 +101,9 @@ const SideBar = () => {
                         <img src={storeSetting} alt="Store Setting" />
                         <Link style={{ textDecoration: 'none' }} to="/store-settings">Store Setting</Link>
                     </span>
-                    <span>
+                    <span className={isActive('/nearai')}>
                         <img src={aiLogo} alt="Near.AI" />
-                        Near.AI
+                        <Link style={{ textDecoration: 'none' }} to="/nearai">Near.AI</Link>
                     </span>
                 </div>
             </div>

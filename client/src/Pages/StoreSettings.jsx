@@ -17,22 +17,17 @@ import image1 from '../assets/image1.svg';
 import image2 from '../assets/image2.svg';
 import aaaa from "../assets/WhatsApp Image 2024-09-12 at 16.48.58_7c2d63d5.jpg";
 import Cookies from 'js-cookie';
+import { toast } from "react-toastify";
 
 const StoreSetting = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
-    const [isChecked, setIsChecked] = useState(false);
     const [images, setImages] = useState([]);
     const [packageTitle, setPackageTitle] = useState('');
     const [url, setUrl] = useState('');
     const [duration, setDuration] = useState('');
     const fileInputRef = useRef(null);
     const [storeData, setStoreData] = useState([]);
-
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
-        console.log('Toggle state:', !isChecked);
-    };
 
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -70,10 +65,9 @@ const StoreSetting = () => {
         console.log('URL:', url);
         console.log('Duration:', duration);
         console.log('Images:', images);
-        console.log('Is Checked:', isChecked);
     };
 
-    const fetchStore = async (filter) => {
+    const fetchStore = async () => {
         try {
             const response = await fetch(
                 "https://wellness.neardeal.me/WAPI/fetchStoreDetailsMW.php",
@@ -113,8 +107,6 @@ const StoreSetting = () => {
                 <span className="heading">Store Settings</span>
                 <div>
                     <div className="left">
-                        {/* <PackageSideBar/> */}
-                        {/* <img src={store}></img> */}
                         <div style={{ flexDirection: 'column', position: 'relative' }}>
                             <img style={{ width: '100%' }} src={image1}></img>
                             <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={aaaa}></img>
@@ -143,20 +135,6 @@ const StoreSetting = () => {
 
                     <div className="right">
                         <div className="header">
-                            {/* <div className="left" style={{ display: 'flex', flexDirection: 'row' }}>
-                                <div className="toggle-switch">
-                                    <input
-                                        type="checkbox"
-                                        id="toggle"
-                                        className="toggle-checkbox"
-                                        checked={isChecked}
-                                        onChange={handleToggle}
-                                    />
-                                    <label htmlFor="toggle" className="toggle-label"></label>
-                                </div>
-                                <span>Publish</span>
-                            </div> */}
-
                             <div className="right" style={{ width: '25%' }}>
                                 <button className="button" onClick={handleSaveChanges}>Save Changes</button>
                             </div>
@@ -226,7 +204,6 @@ const StoreSetting = () => {
                                                     cursor: 'pointer'
                                                 }}
                                             >
-                                                <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px' }} />
                                             </button>
                                         </div>
                                     ))}
