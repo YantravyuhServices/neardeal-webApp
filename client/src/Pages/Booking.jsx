@@ -127,6 +127,35 @@ const Booking = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  const [uniqueData, setUniqueData] = useState([]);
+
+  const fetchBooking = async (id) => {
+    console.log(id);
+    
+    try {
+      const response = await fetch(
+        "https://wellness.neardeal.me/WAPI/fetchBookingDetailsMW.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            "bookingId": id
+          }),
+        }
+      );
+
+      const data = await response.json();
+      setUniqueData(data.message[0]);
+      console.log('data', data.message);
+      // toast.success("Changes saved successfully");
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <div style={{ display: "flex" }}>
       <SideBar />
@@ -286,7 +315,8 @@ const Booking = () => {
                           >
                             <i
                               onClick={() => {
-                                setSelectedBookingId(data.BookingID);
+                                setSelectedBookingId(data.BookingID)
+                                fetchBooking(data.BookingID)
                               }}
                               className="fa fa-pencil p-0 me-3"
                               style={{ fontSize: "large" }}
@@ -714,7 +744,7 @@ const Booking = () => {
           </div>
           <div className="offcanvas-body">
             <p className="offCanInvid">
-              Invoice ID: <span id="invoiceNo">1234567890</span>
+              Invoice ID: <span id="invoiceNo">{uniqueData.BookingID}</span>
             </p>
             <p className="offCanCustName">
               Customer
@@ -755,9 +785,7 @@ const Booking = () => {
                   <div className="col-lg-8">
                     <p className="offCanOfferType">Regular</p>
                     <p className="offCanPackageDetail">
-                      Japanese Sakura & Sake Spa Ritual for Couple /Japanese
-                      sake bath + Aromatherapy Massage + Suite + Cake&Tea + Sake
-                      + Gym
+                      {uniqueData.InventoryName}
                     </p>
                   </div>
                 </div>
@@ -841,7 +869,7 @@ const Booking = () => {
                     />
                   </div>
                   <div className="col-lg-8 my-auto">
-                    <p id="custName">Qwerty</p>
+                    <p id="custName">{uniqueData.AssignedTo}</p>
                   </div>
                 </div>
                 <div className="input-group mt-3 w-50">
@@ -849,7 +877,8 @@ const Booking = () => {
                     type="text"
                     className="form-control"
                     id="cName"
-                    defaultValue="9012345678"
+                    value={uniqueData.userPhone}
+                    defaultValue={uniqueData.userPhone}
                   />
                   <button
                     className="btn btn-outline-secondary border-0"
@@ -863,7 +892,8 @@ const Booking = () => {
                     type="text"
                     className="form-control"
                     id="cEmail"
-                    defaultValue="someone@something.com"
+                    defaultValue={uniqueData.userMail}
+                    value={uniqueData.userMail}
                   />
                   <button
                     className="btn btn-outline-secondary border-0"
