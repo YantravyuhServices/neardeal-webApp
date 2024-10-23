@@ -1,4 +1,3 @@
-
 import "../App.css";
 import SideBar from "../Components/SideBar";
 import background from "../assets/background.svg";
@@ -14,9 +13,9 @@ import { toast } from "react-toastify";
 //klkl
 import declined from "../assets/regular.svg";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import Pagination from "../Components/Pagination";
 
 const Booking = () => {
-
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
   const [bookingData, setBookingData] = useState([]);
@@ -29,14 +28,14 @@ const Booking = () => {
   const [bookingStatus, setBookingStatus] = useState("Attend");
   const [paymentStatus, setPaymentStatus] = useState("Paid");
   const [selectedBookingId, setSelectedBookingId] = useState("");
-  // const []
+  const [currentPage, setCurrentPage] = useState(1);
 
   const isActive = (path) => {
     return active === path ? "btn" : "";
   };
 
   const handleSubmit = async (filter) => {
-    setBookingData([]);
+    setBookingData([]); // Reset booking data before fetching
     try {
       setLoading(true);
       const response = await fetch(
@@ -56,7 +55,7 @@ const Booking = () => {
       const data = await response.json();
       console.log(data.data[0].BookingID);
 
-      setBookingData(data.data);
+      setBookingData(data.data); // Replace old data with new data
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -98,23 +97,29 @@ const Booking = () => {
 
   const [selectedFilter, setSelectedFilter] = useState("Featured");
   useEffect(() => {
+    // Fetch bookings when the active filter or the page changes
     handleSubmit(active);
-  }, [active, selectedFilter, currentBookings]);
+    setCurrentPage(1); // Reset to first page on filter change
+  }, [active]);
+
+  useEffect(() => {
+    // Trigger fetching of data whenever the page changes
+    if (currentPage > 1) {
+      handleSubmit(active);
+    }
+  }, [currentPage]);
 
   const [filter, setFilter] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const handleFilter = async (filter) => {
     try {
       setFilter(true);
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const ITEMS_PER_PAGE = 5; // Adjust this as needed
-
-  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5  ; // Adjust this as needed
 
   // Calculate total pages
   const totalPages = Math.ceil(bookingData.length / ITEMS_PER_PAGE);
@@ -124,15 +129,20 @@ const Booking = () => {
   currentBookings = bookingData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   // Handle page change
+
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    if (newPage > 0 && newPage <= totalPages) {
+      setLoading(true); // Show loading spinner
+      setBookingData([]); // Clear bookings when changing page
+      setCurrentPage(newPage); // Set the new page number
+    }
   };
 
   const [uniqueData, setUniqueData] = useState([]);
 
   const fetchBooking = async (id) => {
     console.log(id);
-    
+
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/fetchBookingDetailsMW.php",
@@ -142,22 +152,21 @@ const Booking = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            "bookingId": id
+            bookingId: id,
           }),
         }
       );
 
       const data = await response.json();
       setUniqueData(data.message[0]);
-      console.log('data', data.message);
+      console.log("data", data.message);
       // toast.success("Changes saved successfully");
-
     } catch (err) {
       console.log(err);
     }
-  }
+  };
   return (
-    <div style={{ display: "flex" }}>
+    <div className="booking-container-section" style={{ display: "flex" }}>
       <SideBar />
       <motion.div
         initial={{ opacity: 0 }}
@@ -246,491 +255,533 @@ const Booking = () => {
             </div>
           </div>
 
-
           {active === "All" && (
             <motion.div>
-              <table className="table table-hover mt-5">
-                <tbody>
-                  {currentBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" className="text-center">
-                        No booking available
-                      </td>
-                    </tr>
-                  ) : (
-                    currentBookings.map((data) => (
-                      <tr className="align-middle" key={data.BookingID}>
-                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-                          {data.BookingStatus === "Started" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={started} />
-                              <span>Started</span>
-                            </>
-                          ) : data.BookingStatus === "Absent" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={dotedCircle} />
-                              <span>Absent</span>
-                            </>
-                          ) : data.BookingStatus === "Accepted" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
-                              <span>Accepted</span>
-                            </>
-                          ) : data.BookingStatus === "Declined" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={declined} />
-                              <span>Declined</span>
-                            </>
-                          ) : data.BookingStatus === "Finished" ? (
-                            <>
-                              <div style={{ width: "30%", margin: "auto" }}>
-                                <IoCheckmarkDoneCircle size={32} />
-                              </div>
-                              <span>Finished</span>
-                            </>
-                          ) : data.BookingStatus === "Cancelled" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={cross} />
-                              <span>Cancelled</span>
-                            </>
-                          ) : (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
-                              <span>Attend</span>
-                            </>
-                          )}
-                        </td>
-                        <td>{data.BookingStartDate}</td>
-                        <td>{data.InventoryName}</td>
-                        <td>{data.AssignedTo}</td>
-                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
-                          {data.PaymentStatus}
-                        </td>
-                        <td>
-                          <button
-                            className="btn"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#demo"
-                          >
-                            <i
-                              onClick={() => {
-                                setSelectedBookingId(data.BookingID)
-                                fetchBooking(data.BookingID)
-                              }}
-                              className="fa fa-pencil p-0 me-3"
-                              style={{ fontSize: "large" }}
-                            ></i>
-                          </button>
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border " role="status"></div>
+                </div>
+              ) : (
+                <table className="table table-hover mt-5">
+                  <tbody>
+                    {currentBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="text-center">
+                          No booking available
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      currentBookings.map((data) => (
+                        <tr className="align-middle" key={data.BookingID}>
+                          <td
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            {data.BookingStatus === "Started" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={started}
+                                />
+                                <span>Started</span>
+                              </>
+                            ) : data.BookingStatus === "Absent" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={dotedCircle}
+                                />
+                                <span>Absent</span>
+                              </>
+                            ) : data.BookingStatus === "Accepted" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Accepted</span>
+                              </>
+                            ) : data.BookingStatus === "Declined" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={declined}
+                                />
+                                <span>Declined</span>
+                              </>
+                            ) : data.BookingStatus === "Finished" ? (
+                              <>
+                                <div style={{ width: "25%", margin: "auto" }}>
+                                  <IoCheckmarkDoneCircle size={32} />
+                                </div>
+                                <span>Finished</span>
+                              </>
+                            ) : data.BookingStatus === "Cancelled" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={cross}
+                                />
+                                <span>Cancelled</span>
+                              </>
+                            ) : (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Attend</span>
+                              </>
+                            )}
+                          </td>
+                          <td>{data.BookingStartDate}</td>
+                          <td>{data.InventoryName}</td>
+                          <td>{data.AssignedTo}</td>
+                          <td
+                            className={
+                              data.PaymentStatus === "Paid"
+                                ? "text-success"
+                                : "text-danger"
+                            }
+                          >
+                            {data.PaymentStatus}
+                          </td>
+                          <td>
+                            <button
+                              className="btn"
+                              type="button"
+                              data-bs-toggle="offcanvas"
+                              data-bs-target="#demo"
+                            >
+                              <i
+                                onClick={() => {
+                                  setSelectedBookingId(data.BookingID);
+                                  fetchBooking(data.BookingID);
+                                }}
+                                className="fa fa-pencil p-0 me-3"
+                                style={{ fontSize: "large" }}
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
 
               {/* Pagination */}
-              <nav>
-                <ul className="pagination justify-content-center">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
-                      Previous
-                    </a>
-                  </li>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
-                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
             </motion.div>
           )}
 
           {active === "Today" && (
             <motion.div>
-              <table className="table table-hover mt-5">
-                <tbody>
-                  {bookingData.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" className="text-center">
-                        No booking available
-                      </td>
-                    </tr>
-                  ) : (
-                    bookingData.map((data) => (
-                      <tr className="align-middle" key={data.BookingID}>
-                        <td
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            textAlign: "center",
-                          }}
-                        >
-                          {data.BookingStatus === "Started" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={started}
-                              />
-                              <span>Started</span>
-                            </>
-                          ) : data.BookingStatus === "Absent" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={dotedCircle}
-                              />
-                              <span>Absent</span>
-                            </>
-                          ) : data.BookingStatus === "Accepted" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Accepted</span>
-                            </>
-                          ) : data.BookingStatus === "Declined" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Declined</span>
-                            </>
-                          ) : data.BookingStatus === "Finished" ? (
-                            <>
-                              <div style={{ width: "30%", margin: "auto" }}>
-                                <IoCheckmarkDoneCircle size={32} />
-                              </div>
-                              <span>Finished</span>
-                            </>
-                          ) : data.BookingStatus === "Cancelled" ? (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={cross}
-                              />
-                              <span>Cancelled</span>
-                            </>
-                          ) : (
-                            <>
-                              <img
-                                style={{ width: "30%", margin: "auto" }}
-                                src={tick}
-                              />
-                              <span>Attend</span>
-                            </>
-                          )}
-                        </td>
-                        <td>{data.BookingStartDate}</td>
-                        <td>{data.InventoryName}</td>
-                        <td>{data.AssignedTo}</td>
-                        <td
-                          className={
-                            data.PaymentStatus === "Paid"
-                              ? "text-success"
-                              : "text-danger"
-                          }
-                        >
-                          {data.PaymentStatus}
-                        </td>
-                        <td>
-                          <button
-                            className="btn"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#demo"
-                          >
-                            <i
-                              onClick={() => {
-                                setSelectedBookingId(data.BookingID);
-                              }}
-                              className="fa fa-pencil p-0 me-3"
-                              style={{ fontSize: "large" }}
-                            ></i>
-                          </button>
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border " role="status"></div>
+                </div>
+              ) : (
+                <table className="table table-hover mt-5">
+                  <tbody>
+                    {bookingData.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="text-center">
+                          No booking available
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      bookingData.map((data) => (
+                        <tr className="align-middle" key={data.BookingID}>
+                          <td
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            {data.BookingStatus === "Started" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={started}
+                                />
+                                <span>Started</span>
+                              </>
+                            ) : data.BookingStatus === "Absent" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={dotedCircle}
+                                />
+                                <span>Absent</span>
+                              </>
+                            ) : data.BookingStatus === "Accepted" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Accepted</span>
+                              </>
+                            ) : data.BookingStatus === "Declined" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Declined</span>
+                              </>
+                            ) : data.BookingStatus === "Finished" ? (
+                              <>
+                                <div style={{ width: "25%", margin: "auto" }}>
+                                  <IoCheckmarkDoneCircle size={32} />
+                                </div>
+                                <span>Finished</span>
+                              </>
+                            ) : data.BookingStatus === "Cancelled" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={cross}
+                                />
+                                <span>Cancelled</span>
+                              </>
+                            ) : (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Attend</span>
+                              </>
+                            )}
+                          </td>
+                          <td>{data.BookingStartDate}</td>
+                          <td>{data.InventoryName}</td>
+                          <td>{data.AssignedTo}</td>
+                          <td
+                            className={
+                              data.PaymentStatus === "Paid"
+                                ? "text-success"
+                                : "text-danger"
+                            }
+                          >
+                            {data.PaymentStatus}
+                          </td>
+                          <td>
+                            <button
+                              className="btn"
+                              type="button"
+                              data-bs-toggle="offcanvas"
+                              data-bs-target="#demo"
+                            >
+                              <i
+                                onClick={() => {
+                                  setSelectedBookingId(data.BookingID);
+                                }}
+                                className="fa fa-pencil p-0 me-3"
+                                style={{ fontSize: "large" }}
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
 
-              <nav>
-                <ul className="pagination justify-content-center">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
-                      Previous
-                    </a>
-                  </li>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
-                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
             </motion.div>
           )}
 
           {active === "Upcoming" && (
             <motion.div>
-              <table className="table table-hover mt-5">
-                <tbody>
-                  {currentBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No booking available
-                      </td>
-                    </tr>
-                  ) : (
-                    currentBookings.map((data) => (
-                      <tr className="align-middle" key={data.BookingID}>
-                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-                          {data.BookingStatus === "Started" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={started} />
-                              <span>Started</span>
-                            </>
-                          ) : data.BookingStatus === "Absent" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={dotedCircle} />
-                              <span>Absent</span>
-                            </>
-                          ) : data.BookingStatus === "Accepted" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
-                              <span>Accepted</span>
-                            </>
-                          ) : data.BookingStatus === "Declined" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
-                              <span>Declined</span>
-                            </>
-                          ) : data.BookingStatus === "Finished" ? (
-                            <>
-                              <div style={{ width: "30%", margin: "auto" }}>
-                                <IoCheckmarkDoneCircle size={32} />
-                              </div>
-                              <span>Finished</span>
-                            </>
-                          ) : data.BookingStatus === "Cancelled" ? (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={cross} />
-                              <span>Cancelled</span>
-                            </>
-                          ) : (
-                            <>
-                              <img style={{ width: "30%", margin: "auto" }} src={tick} />
-                              <span>Attend</span>
-                            </>
-                          )}
-                        </td>
-                        <td>{data.BookingStartDate}</td>
-                        <td>{data.InventoryName}</td>
-                        <td>{data.AssignedTo}</td>
-                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
-                          {data.PaymentStatus}
-                        </td>
-                        <td>
-                          <button
-                            className="btn"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#demo"
-                          >
-                            <i
-                              onClick={() => setSelectedBookingId(data.BookingID)}
-                              className="fa fa-pencil p-0 me-3"
-                              style={{ fontSize: "large" }}
-                            ></i>
-                          </button>
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border " role="status"></div>
+                </div>
+              ) : (
+                <table className="table table-hover mt-5">
+                  <tbody>
+                    {currentBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No booking available
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      currentBookings.map((data) => (
+                        <tr className="align-middle" key={data.BookingID}>
+                          <td
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            {data.BookingStatus === "Started" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={started}
+                                />
+                                <span>Started</span>
+                              </>
+                            ) : data.BookingStatus === "Absent" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={dotedCircle}
+                                />
+                                <span>Absent</span>
+                              </>
+                            ) : data.BookingStatus === "Accepted" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Accepted</span>
+                              </>
+                            ) : data.BookingStatus === "Declined" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Declined</span>
+                              </>
+                            ) : data.BookingStatus === "Finished" ? (
+                              <>
+                                <div style={{ width: "25%", margin: "auto" }}>
+                                  <IoCheckmarkDoneCircle size={32} />
+                                </div>
+                                <span>Finished</span>
+                              </>
+                            ) : data.BookingStatus === "Cancelled" ? (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={cross}
+                                />
+                                <span>Cancelled</span>
+                              </>
+                            ) : (
+                              <>
+                                <img
+                                  style={{ width: "25%", margin: "auto" }}
+                                  src={tick}
+                                />
+                                <span>Attend</span>
+                              </>
+                            )}
+                          </td>
+                          <td>{data.BookingStartDate}</td>
+                          <td>{data.InventoryName}</td>
+                          <td>{data.AssignedTo}</td>
+                          <td
+                            className={
+                              data.PaymentStatus === "Paid"
+                                ? "text-success"
+                                : "text-danger"
+                            }
+                          >
+                            {data.PaymentStatus}
+                          </td>
+                          <td>
+                            <button
+                              className="btn"
+                              type="button"
+                              data-bs-toggle="offcanvas"
+                              data-bs-target="#demo"
+                            >
+                              <i
+                                onClick={() =>
+                                  setSelectedBookingId(data.BookingID)
+                                }
+                                className="fa fa-pencil p-0 me-3"
+                                style={{ fontSize: "large" }}
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
 
-              {/* Pagination for Upcoming */}
-              <nav>
-                <ul className="pagination justify-content-center">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
-                      Previous
-                    </a>
-                  </li>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
-                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
             </motion.div>
           )}
 
           {active === "Finished" && (
             <motion.div>
-              <table className="table table-hover mt-5">
-                <tbody>
-                  {currentBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No booking available
-                      </td>
-                    </tr>
-                  ) : (
-                    currentBookings.map((data) => (
-                      <tr className="align-middle" key={data.BookingID}>
-                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-                          <div style={{ width: "30%", margin: "auto" }}>
-                            <IoCheckmarkDoneCircle size={32} />
-                          </div>
-                          <span>Finished</span>
-                        </td>
-                        <td>{data.BookingStartDate}</td>
-                        <td>{data.InventoryName}</td>
-                        <td>{data.AssignedTo}</td>
-                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
-                          {data.PaymentStatus}
-                        </td>
-                        <td>
-                          <button
-                            className="btn"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#demo"
-                          >
-                            <i
-                              onClick={() => setSelectedBookingId(data.BookingID)}
-                              className="fa fa-pencil p-0 me-3"
-                              style={{ fontSize: "large" }}
-                            ></i>
-                          </button>
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border " role="status"></div>
+                </div>
+              ) : (
+                <table className="table table-hover mt-5">
+                  <tbody>
+                    {currentBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No booking available
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      currentBookings.map((data) => (
+                        <tr className="align-middle" key={data.BookingID}>
+                          <td
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            <div style={{ width: "25%", margin: "auto" }}>
+                              <IoCheckmarkDoneCircle size={32} />
+                            </div>
+                            <span>Finished</span>
+                          </td>
+                          <td>{data.BookingStartDate}</td>
+                          <td>{data.InventoryName}</td>
+                          <td>{data.AssignedTo}</td>
+                          <td
+                            className={
+                              data.PaymentStatus === "Paid"
+                                ? "text-success"
+                                : "text-danger"
+                            }
+                          >
+                            {data.PaymentStatus}
+                          </td>
+                          <td>
+                            <button
+                              className="btn"
+                              type="button"
+                              data-bs-toggle="offcanvas"
+                              data-bs-target="#demo"
+                            >
+                              <i
+                                onClick={() =>
+                                  setSelectedBookingId(data.BookingID)
+                                }
+                                className="fa fa-pencil p-0 me-3"
+                                style={{ fontSize: "large" }}
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
 
-              {/* Pagination for Finished */}
-              <nav>
-                <ul className="pagination justify-content-center">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
-                      Previous
-                    </a>
-                  </li>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
-                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
             </motion.div>
           )}
 
           {active === "Cancelled" && (
             <motion.div>
-              <table className="table table-hover mt-5">
-                <tbody>
-                  {currentBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan="6" className="text-center">
-                        No booking available
-                      </td>
-                    </tr>
-                  ) : (
-                    currentBookings.map((data) => (
-                      <tr className="align-middle" key={data.BookingID}>
-                        <td style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
-                          <img style={{ width: "30%", margin: "auto" }} src={cross} />
-                          <span>Cancelled</span>
-                        </td>
-                        <td>{data.BookingStartDate}</td>
-                        <td>{data.InventoryName}</td>
-                        <td>{data.AssignedTo}</td>
-                        <td className={data.PaymentStatus === "Paid" ? "text-success" : "text-danger"}>
-                          {data.PaymentStatus}
-                        </td>
-                        <td>
-                          <button
-                            className="btn"
-                            type="button"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#demo"
-                          >
-                            <i
-                              onClick={() => setSelectedBookingId(data.BookingID)}
-                              className="fa fa-pencil p-0 me-3"
-                              style={{ fontSize: "large" }}
-                            ></i>
-                          </button>
+              {loading ? (
+                <div className="text-center">
+                  <div className="spinner-border " role="status"></div>
+                </div>
+              ) : (
+                <table className="table table-hover mt-5">
+                  <tbody>
+                    {currentBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          No booking available
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      currentBookings.map((data) => (
+                        <tr className="align-middle" key={data.BookingID}>
+                          <td
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            <img
+                              style={{ width: "25%", margin: "auto" }}
+                              src={cross}
+                            />
+                            <span>Cancelled</span>
+                          </td>
+                          <td>{data.BookingStartDate}</td>
+                          <td>{data.InventoryName}</td>
+                          <td>{data.AssignedTo}</td>
+                          <td
+                            className={
+                              data.PaymentStatus === "Paid"
+                                ? "text-success"
+                                : "text-danger"
+                            }
+                          >
+                            {data.PaymentStatus}
+                          </td>
+                          <td>
+                            <button
+                              className="btn"
+                              type="button"
+                              data-bs-toggle="offcanvas"
+                              data-bs-target="#demo"
+                            >
+                              <i
+                                onClick={() =>
+                                  setSelectedBookingId(data.BookingID)
+                                }
+                                className="fa fa-pencil p-0 me-3"
+                                style={{ fontSize: "large" }}
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              )}
 
-              {/* Pagination for Cancelled */}
-              <nav>
-                <ul className="pagination justify-content-center">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>
-                      Previous
-                    </a>
-                  </li>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <li className={`page-item ${currentPage === index + 1 ? 'pagination' : ''}`} key={index}>
-                      <a className="page-link" href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>
-                      Next
-                    </a>
-                  </li>
-                </ul>
-              </nav>
+              {/* Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
             </motion.div>
           )}
-
         </div>
 
         <div className="offcanvas offcanvas-end" id="demo">
@@ -920,7 +971,9 @@ const Booking = () => {
             <button className="remove-btn">Remove all filters</button>
             <div className="nav">
               <button
-                className={`booking-nav-active ${selectedFilter === "Featured" ? "active" : ""}`}
+                className={`booking-nav-active ${
+                  selectedFilter === "Featured" ? "active" : ""
+                }`}
                 onClick={() => setSelectedFilter("Featured")}
               >
                 Featured
@@ -946,11 +999,9 @@ const Booking = () => {
             </div>
           </div>
         </div>
-
       </motion.div>
     </div>
   );
 };
 
 export default Booking;
-

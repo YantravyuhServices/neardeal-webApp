@@ -285,6 +285,11 @@
 
 /* Booking */
 
+.booking-container-section{
+    height: 101vh;
+    overflow: hidden;
+}
+
 .bg-grad{
     background-image: linear-gradient(#ACABF44D, #F2F0F6, #F4A9A933);
     height: 100%;
