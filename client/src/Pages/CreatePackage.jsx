@@ -57,14 +57,25 @@ const CreatePackage = () => {
 
     useEffect(() => {
         fetchSpa();
+    //    fetchCategory();
+    }, []);    
+
+    const fetchCategory = async()=>{
         try {
-            const parsedCategories = JSON.parse(userData.Categories);
-            setCategories(parsedCategories);
+            const response = await fetch('https://wellness.neardeal.me/WAPI/fetchMerCategoryMW.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                })
+               
+            });
+            setCategories(response.message);
         } catch (error) {
             console.error('Error parsing categories:', error);
-            setCategories([]);
         }
-    }, []);    
+    }
 
     const openModal = () => {
         const modal = new window.bootstrap.Modal(document.getElementById('exampleModalToggle'));

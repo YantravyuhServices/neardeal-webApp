@@ -85,8 +85,8 @@ const StoreSetting = () => {
                             "city": "Hong Kong",
                             "country": "Hong Kong",
                             "zip": "XYZ 456",
-                            "storeimage_name": "abc.jpg", // filePath
-                            "storelogo_name": "dragon.jpg", // filePath,
+                            "storeimage_name": "abc.jpg", 
+                            "storelogo_name": "dragon.jpg", 
                             "workingHours": "10:00 AM - 12:00 AM",
                             "workingHoursDetails": "Mon-Fri (Sat: 10:00 AM - 7:00 PM)",
                             "storelogo": ""
