@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import eye1 from '../assets/eye1.svg';
-import likes from '../assets/likes.svg';
-import edit1 from '../assets/edit1.svg';
-import { motion } from 'framer-motion';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import eye1 from "../assets/eye1.svg";
+import likes from "../assets/likes.svg";
+import edit1 from "../assets/edit1.svg";
+import { motion } from "framer-motion";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const CampaignCoupon = () => {
   const navigate = useNavigate();
@@ -16,29 +16,31 @@ const CampaignCoupon = () => {
 
   const handleToggle = () => {
     setIsChecked(!isChecked);
-    console.log('Toggle state:', !isChecked);
+    console.log("Toggle state:", !isChecked);
   };
 
   const loadCoupon = async () => {
     setLoading(true); // Start loading
     try {
-      const response = await fetch('https://wellness.neardeal.me/WAPI/fetchCouponsMW.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "vendorId": userData.ID,
-          "couponType": 'Coupon'
-        })
-      });
+      const response = await fetch(
+        "https://wellness.neardeal.me/WAPI/fetchCouponsMW.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            vendorId: userData.ID,
+            couponType: "Coupon",
+          }),
+        }
+      );
 
       const data = await response.json();
       setCouponData(data.message);
-      console.log('Coupon data:', data.message);
-      
+      console.log("Coupon data:", data.message);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     } finally {
       setLoading(false); // Stop loading
     }
@@ -55,14 +57,16 @@ const CampaignCoupon = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      {loading ? (
-        'Loading...' // Loader
-      ) : (
-        couponData.map((coupon, index) => (
-          <div className='item' key={index}>
-            <div className='left' style={{ width: '84%' }}>
-              <img src='https://avatars.githubusercontent.com/u/97161064?v=4' alt="Coupon" />
-              {/* <div> */}
+      {loading
+        ? "Loading..." // Loader
+        : couponData.map((coupon, index) => (
+            <div className="item" key={index}>
+              <div className="left" style={{ width: "84%" }}>
+                <img
+                  src="https://avatars.githubusercontent.com/u/97161064?v=4"
+                  alt="Coupon"
+                />
+                {/* <div> */}
                 <span>{coupon.CouponTitle}</span>
                 {/* <div>
                   <div>
@@ -74,31 +78,41 @@ const CampaignCoupon = () => {
                     <span style={{ color: 'grey' }}>{coupon.likes || '1000 likes'}</span>
                   </div>
                 </div> */}
-              {/* </div> */}
-            </div>
-            <div className='right' style={{ width: '15%', justifyContent: 'space-between' }}>
-              <div>
-                <div className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    id={`toggle-${index}`} // Unique ID for each toggle
-                    className="toggle-checkbox"
-                    checked={coupon.Status === '1'}
-                    onChange={handleToggle}
-                  />
-                  <label htmlFor={`toggle-${index}`} className="toggle-label"></label>
+                {/* </div> */}
+              </div>
+              <div
+                className="right"
+                style={{ width: "15%", justifyContent: "space-between" }}
+              >
+                <div>
+                  <div className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      id={`toggle-${index}`} // Unique ID for each toggle
+                      className="toggle-checkbox"
+                      checked={coupon.Status === "1"}
+                      onChange={handleToggle}
+                    />
+                    <label
+                      htmlFor={`toggle-${index}`}
+                      className="toggle-label"
+                    ></label>
+                  </div>
+                  <span>Publish</span>
                 </div>
-                <span>Publish</span>
-              </div>
-              <div>
-                <img width={25} src={edit1} alt="Edit"  onClick={() => navigate(`/package/${coupon.InventoryID}`)} />
+                <div>
+                  <img
+                    width={25}
+                    src={edit1}
+                    alt="Edit"
+                    onClick={() => navigate(`/coupon/${coupon.CouponCode}`)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))
-      )}
+          ))}
     </motion.div>
   );
-}
+};
 
 export default CampaignCoupon;

@@ -4,8 +4,10 @@ import likes from '../assets/likes.svg';
 import edit1 from '../assets/edit1.svg';
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const CampaignDiscounts = () => {
+  const navigate = useNavigate();
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
   const [isChecked, setIsChecked] = useState(false);
@@ -31,6 +33,8 @@ const CampaignDiscounts = () => {
         })
       });
       const data = await response.json();
+      console.log("dsds",data.message)
+   
       setDiscountData(data.message);
     } catch (error) {
       console.error('Error:', error);
@@ -74,7 +78,11 @@ const CampaignDiscounts = () => {
                 <span>Publish</span>
               </div>
               <div>
-                <img width={25} src={edit1} alt="Edit" />
+                <img width={25} src={edit1} alt="Edit" 
+                
+                 onClick={() => navigate(`/discount/${discount.CouponCode}`)}  // Navigate to package page with Inventory ID
+
+                 />
               </div>
             </div>
           </div>

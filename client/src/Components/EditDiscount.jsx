@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import SideBar from "./SideBar";
 import background from "../assets/background.svg";
 import leftArrow from "../assets/leftArrow.svg";
 import product from "../assets/product.svg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-const CreatePackage = () => {
+const EditDiscount = () => {
+  const { id } = useParams();
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
   const [active, setActive] = useState("setup");
@@ -17,11 +18,84 @@ const CreatePackage = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [packageTitle, setPackageTitle] = useState("");
   const [inventory, setInventory] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(""); // State for selected product IDs
+  const [selectedIds, setSelectedIds] = useState("");
+  const [inventoryData, setInventoryData] = useState(null);
+  const [editorStates, setEditorStates] = useState({
+    discount: { content: "", operations: [] },
+    unit: { content: "", operations: [] },
+    typeOfCoupon: { content: "", operations: [] },
+  });
+  const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
 
   const handleToggle = () => {
     setIsChecked(!isChecked);
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const userDataa = JSON.parse(jwtUserToken);
+    try {
+      const payload = {
+        couponCode: id,
+        couponType: "DISCOUNT",
+      };
+      console.log(payload);
+      const response = await fetch(
+        "https://wellness.neardeal.me/WAPI/fetchCouponDetails.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const userData = await response.json();
+      console.log("dsidsidisdhisdhsid", userData);
+      setInventoryData(userData.message[0]); // Assuming the data is an array
+      console.log(userData);
+      return;
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (inventoryData) {
+      setPackageTitle(inventoryData.CouponTitle);
+      setIsChecked(inventoryData.Status === 1);
+      setSelectedIds(inventoryData.InventoryID);
+      setEditorStates((prev) => ({
+        ...prev,
+        discount: { content: inventoryData.Discount || "", operations: [] },
+        unit: { content: inventoryData.Unit || "", operations: [] },
+        typeOfCoupon: { content: inventoryData.Unit || "", operations: [] },
+      }));
+    }
+  }, [inventoryData]);
+
+  const updateEditorState = useCallback(
+    (editorKey, delta, oldDelta, source) => {
+      setEditorStates((prevStates) => {
+        const updatedOperations = [
+          ...prevStates[editorKey].operations,
+          { delta, oldDelta, source },
+        ];
+        return {
+          ...prevStates,
+          [editorKey]: {
+            ...prevStates[editorKey],
+            operations: updatedOperations,
+          },
+        };
+      });
+    },
+    []
+  );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,6 +146,8 @@ const CreatePackage = () => {
 
       const data = await response.json();
       setInventory(data.data);
+      console.log("IdsdsIJdisdishdishdishids", data.data);
+      console.log(data);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -95,18 +171,36 @@ const CreatePackage = () => {
             title: packageTitle,
             startDate: "",
             endDate: "",
-            discount: 37,
-            unit: "%",
+            discount: editorStates.discount.content,
+            unit: editorStates.unit.content,
+            typeOfCoupon: editorStates.typeOfCoupon.content,
             whatsIncluded: "",
             tnc: "",
             status: isChecked,
             inventoryIds: selectedIds,
-            couponCode: "",
+            couponCode: inventoryData.CouponCode,
             couponType: "Discount",
             currency: "",
           }),
         }
       );
+
+      console.log(JSON.stringify({
+        vendorId: userData.ID,
+        title: packageTitle,
+        startDate: "",
+        endDate: "",
+        discount: editorStates.discount.content,
+        unit: editorStates.unit.content,
+        typeOfCoupon: editorStates.typeOfCoupon.content,
+        whatsIncluded: "",
+        tnc: "",
+        status: isChecked,
+        inventoryIds: selectedIds,
+        couponCode: inventoryData.CouponCode,
+        couponType: "Discount",
+        currency: "",
+      }))
 
       const data = await response.json();
       console.log(data);
@@ -213,8 +307,19 @@ const CreatePackage = () => {
                       <input
                         className="form-check-input"
                         type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault1"
+                        name="couponType"
+                        id="percentOff"
+                        value="Percent Off"
+                        checked={editorStates.typeOfCoupon.content === "Percent Off"}
+                        onChange={(e) => 
+                          setEditorStates((prevStates) => ({
+                              ...prevStates,
+                              typeOfCoupon: {
+                                content: e.target.value,
+                                operations: prevStates.typeOfCoupon.operations,
+                              },
+                            }))
+                        } // Update state when selected
                       />
                       <label
                         style={{ margin: "0px 5px" }}
@@ -230,14 +335,108 @@ const CreatePackage = () => {
                       <input
                         className="form-check-input"
                         type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault2"
+                        name="couponType"
+                        id="moneyValue"
+                        value="Money Value"
+                        checked={editorStates.typeOfCoupon.content === "Money Value"}
+                        onChange={(e) => 
+                          setEditorStates((prevStates) => ({
+                              ...prevStates,
+                              typeOfCoupon: {
+                                content: e.target.value,
+                                operations: prevStates.typeOfCoupon.operations,
+                              },
+                            }))
+                        } // Update state when selected
                       />
                       <label
                         style={{ margin: "0px 5px" }}
                         className="form-check-label"
                       >
                         Money Value
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="grey mt-2">Discount Amount</div>
+                  <input
+                    type="number"
+                    value={editorStates.discount.content}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      // Only allow positive integers
+                      if (/^\d*$/.test(value)) {
+                        setEditorStates((prevStates) => ({
+                          ...prevStates,
+                          discount: {
+                            content: value,
+                            operations: prevStates.discount.operations,
+                          },
+                        }));
+                        updateEditorState("discount", value, null, "user");
+                      }
+                    }}
+                    style={{ width: "5rem" }}
+                    className="text-area px-2  text-center number-arrow-hidden"
+                    placeholder="type"
+                    ref={(el) => {
+                      if (el) {
+                        quillRefs.current.discount = el; // No need for getEditor, just referencing the input element
+                      }
+                    }}
+                  />
+
+                  <div className="grey mt-2">Discount Unit</div>
+                  <div className="discount-unit-options">
+                    <div className="flex flex-column mb-1">
+                      <label>
+                        <input
+                          type="radio"
+                          name="unit"
+                          value="$"
+                          checked={editorStates.unit.content === "$"}
+                          onChange={(e) => {
+                            setEditorStates((prevStates) => ({
+                              ...prevStates,
+                              unit: {
+                                content: e.target.value,
+                                operations: prevStates.unit.operations,
+                              },
+                            }));
+                            updateEditorState(
+                              "unit",
+                              e.target.value,
+                              null,
+                              "user"
+                            );
+                          }}
+                        />{" "}
+                        $
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="unit"
+                          value="%"
+                          checked={editorStates.unit.content === "%"}
+                          onChange={(e) => {
+                            setEditorStates((prevStates) => ({
+                              ...prevStates,
+                              unit: {
+                                content: e.target.value,
+                                operations: prevStates.unit.operations,
+                              },
+                            }));
+                            updateEditorState(
+                              "unit",
+                              e.target.value,
+                              null,
+                              "user"
+                            );
+                          }}
+                        />{" "}
+                        %
                       </label>
                     </div>
                   </div>
@@ -324,4 +523,4 @@ const CreatePackage = () => {
   );
 };
 
-export default CreatePackage;
+export default EditDiscount;

@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import declined from "../assets/regular.svg";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import Pagination from "../Components/Pagination";
+import { format } from "date-fns";
 
 const Booking = () => {
   const jwtUserToken = Cookies.get("user_token");
@@ -119,7 +120,7 @@ const Booking = () => {
     }
   };
 
-  const ITEMS_PER_PAGE = 5  ; // Adjust this as needed
+  const ITEMS_PER_PAGE = 5; // Adjust this as needed
 
   // Calculate total pages
   const totalPages = Math.ceil(bookingData.length / ITEMS_PER_PAGE);
@@ -158,13 +159,32 @@ const Booking = () => {
       );
 
       const data = await response.json();
-      setUniqueData(data.message[0]);
+      const booking = data.message[0];
+
+      // Set the state with formatted values
+      setUniqueData(booking);
+
+      // Set booking status and payment status
+      setBookingStatus(booking.BookingStatus);
+      setPaymentStatus(booking.PaymentStatus);
+
+      // Format the booking end date and time
+      const bookingEndDate = booking?.BookingEndDate
+        ? new Date(booking.BookingEndDate)
+        : new Date();
+      const formattedDate = format(bookingEndDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
+      const formattedTime = format(bookingEndDate, "HH:mm"); // HH:mm format for the time input
+
+      // Set date and time in state (you need to add these two lines)
+      setDate(formattedDate);
+      setTime(formattedTime);
+
       console.log("data", data.message);
-      // toast.success("Changes saved successfully");
     } catch (err) {
       console.log(err);
     }
   };
+
   return (
     <div className="booking-container-section" style={{ display: "flex" }}>
       <SideBar />
@@ -800,7 +820,7 @@ const Booking = () => {
             <p className="offCanCustName">
               Customer
               <br />
-              <span id="custName">Qwerty</span>
+              <span id="custName">{uniqueData.AssignedTo}</span>
             </p>
 
             <div className="card mt-4">
@@ -848,26 +868,26 @@ const Booking = () => {
                   }}
                 >
                   <input
-                    type="date"
+                  type="date"
+                  onChange={(e) => setDate(e.target.value)}
                     style={{
                       borderRadius: "7px",
                       width: "48%",
                       textAlign: "center",
                     }}
                     id="datepicker"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    value={date} // Use state for date
                   />
                   <input
-                    type="time"
+                  type="time"
+                  onChange={(e) => setTime(e.target.value)}
                     style={{
                       borderRadius: "7px",
                       width: "48%",
                       textAlign: "center",
                     }}
                     id="timepicker"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
+                    value={time} // Use state for time
                   />
                 </div>
                 <div className="card-body pb-0">

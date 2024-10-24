@@ -269,3 +269,16 @@ body{
   max-width: 800px; /* Set your desired width */
   width: 100%; /* Make it responsive */
 }
+
+
+ /* Chrome, Safari, Edge, Opera */
+ .number-arrow-hidden::-webkit-outer-spin-button,
+ .number-arrow-hidden::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+ }
+ 
+ /* Firefox */
+ .number-arrow-hidden[type=number] {
+   -moz-appearance: textfield;
+ }
