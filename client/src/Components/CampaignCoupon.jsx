@@ -90,7 +90,8 @@ const CampaignCoupon = () => {
                       type="checkbox"
                       id={`toggle-${index}`} // Unique ID for each toggle
                       className="toggle-checkbox"
-                      checked={coupon.Status === "1"}
+                      // checked={coupon.Status === "1"}
+                      checked={coupon.Status === "1" ? true : false}
                       onChange={handleToggle}
                     />
                     <label

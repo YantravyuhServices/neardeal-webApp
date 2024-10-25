@@ -23,7 +23,7 @@ const EditDiscount = () => {
   const [editorStates, setEditorStates] = useState({
     discount: { content: "", operations: [] },
     unit: { content: "", operations: [] },
-    typeOfCoupon: { content: "", operations: [] },
+    Status: { content: "", operations: [] },
   });
   const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
 
@@ -67,13 +67,13 @@ const EditDiscount = () => {
   useEffect(() => {
     if (inventoryData) {
       setPackageTitle(inventoryData.CouponTitle);
-      setIsChecked(inventoryData.Status === 1);
+      setIsChecked(inventoryData.Status);
       setSelectedIds(inventoryData.InventoryID);
       setEditorStates((prev) => ({
         ...prev,
         discount: { content: inventoryData.Discount || "", operations: [] },
         unit: { content: inventoryData.Unit || "", operations: [] },
-        typeOfCoupon: { content: inventoryData.Unit || "", operations: [] },
+        Status: { content: inventoryData.Status || "", operations: [] },
       }));
     }
   }, [inventoryData]);
@@ -103,6 +103,7 @@ const EditDiscount = () => {
       case "packageTitle":
         setPackageTitle(value);
         break;
+
       case "url":
         setUrl(value);
         break;
@@ -173,7 +174,7 @@ const EditDiscount = () => {
             endDate: "",
             discount: editorStates.discount.content,
             unit: editorStates.unit.content,
-            typeOfCoupon: editorStates.typeOfCoupon.content,
+
             whatsIncluded: "",
             tnc: "",
             status: isChecked,
@@ -185,22 +186,23 @@ const EditDiscount = () => {
         }
       );
 
-      console.log(JSON.stringify({
-        vendorId: userData.ID,
-        title: packageTitle,
-        startDate: "",
-        endDate: "",
-        discount: editorStates.discount.content,
-        unit: editorStates.unit.content,
-        typeOfCoupon: editorStates.typeOfCoupon.content,
-        whatsIncluded: "",
-        tnc: "",
-        status: isChecked,
-        inventoryIds: selectedIds,
-        couponCode: inventoryData.CouponCode,
-        couponType: "Discount",
-        currency: "",
-      }))
+      console.log(
+        JSON.stringify({
+          vendorId: userData.ID,
+          title: packageTitle,
+          startDate: "",
+          endDate: "",
+          discount: editorStates.discount.content,
+          unit: editorStates.unit.content,
+          whatsIncluded: "",
+          tnc: "",
+          status: isChecked,
+          inventoryIds: selectedIds,
+          couponCode: inventoryData.CouponCode,
+          couponType: "Discount",
+          currency: "",
+        })
+      );
 
       const data = await response.json();
       console.log(data);
@@ -296,68 +298,6 @@ const EditDiscount = () => {
                   transition={{ duration: 1 }}
                   style={{ flexDirection: "column", margin: "20px 0px" }}
                 >
-                  <div style={{ marginTop: "20px" }} className="grey">
-                    Type of coupon
-                  </div>
-                  <div style={{ flexDirection: "column" }}>
-                    <div
-                      style={{ justifyContent: "start" }}
-                      className="form-check"
-                    >
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="couponType"
-                        id="percentOff"
-                        value="Percent Off"
-                        checked={editorStates.typeOfCoupon.content === "Percent Off"}
-                        onChange={(e) => 
-                          setEditorStates((prevStates) => ({
-                              ...prevStates,
-                              typeOfCoupon: {
-                                content: e.target.value,
-                                operations: prevStates.typeOfCoupon.operations,
-                              },
-                            }))
-                        } // Update state when selected
-                      />
-                      <label
-                        style={{ margin: "0px 5px" }}
-                        className="form-check-label"
-                      >
-                        Percent Off
-                      </label>
-                    </div>
-                    <div
-                      style={{ justifyContent: "start" }}
-                      className="form-check"
-                    >
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="couponType"
-                        id="moneyValue"
-                        value="Money Value"
-                        checked={editorStates.typeOfCoupon.content === "Money Value"}
-                        onChange={(e) => 
-                          setEditorStates((prevStates) => ({
-                              ...prevStates,
-                              typeOfCoupon: {
-                                content: e.target.value,
-                                operations: prevStates.typeOfCoupon.operations,
-                              },
-                            }))
-                        } // Update state when selected
-                      />
-                      <label
-                        style={{ margin: "0px 5px" }}
-                        className="form-check-label"
-                      >
-                        Money Value
-                      </label>
-                    </div>
-                  </div>
-
                   <div className="grey mt-2">Discount Amount</div>
                   <input
                     type="number"
@@ -486,32 +426,6 @@ const EditDiscount = () => {
                         ))}
                       </tbody>
                     </table>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="denseCheck"
-                      />
-                      <label className="form-check-label" htmlFor="denseCheck">
-                        Dense
-                      </label>
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <label className="me-2">Rows per page:</label>
-                      <select
-                        className="form-select form-select-sm"
-                        style={{ width: "auto" }}
-                      >
-                        <option>10</option>
-                        <option>20</option>
-                        <option>30</option>
-                      </select>
-                      <span className="ms-2">3 of 7</span>
-                    </div>
                   </div>
                 </motion.div>
               </div>

@@ -17,37 +17,35 @@ const CreatePackage = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [packageTitle, setPackageTitle] = useState("");
   const [inventory, setInventory] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(""); // State for selected product IDs
-
-  const handleToggle = () => {
-    setIsChecked(!isChecked);
-  };
+  const [selectedIds, setSelectedIds] = useState("");
+  const [discountAmount, setDiscountAmount] = useState("");
+  const [discountUnit, setDiscountUnit] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     switch (name) {
       case "packageTitle":
         setPackageTitle(value);
         break;
-      case "url":
-        setUrl(value);
-        break;
-      case "duration":
-        setDuration(value);
+      case "discountAmount":
+        setDiscountAmount(value);
         break;
       default:
         break;
     }
   };
 
+  const handleToggleChange = () => {
+    setIsChecked((prev) => !prev); // Toggle the checkbox state
+  };
+
   const handleCheckboxChange = (id) => {
     setSelectedIds((prev) => {
-      const currentIds = prev.split(",").filter(Boolean); // Split and filter empty values
+      const currentIds = prev.split(",").filter(Boolean);
       if (currentIds.includes(id)) {
-        // If already selected, remove it
         return currentIds.filter((item) => item !== id).join(",");
       } else {
-        // If not selected, add it
         return [...currentIds, id].join(",");
       }
     });
@@ -95,11 +93,11 @@ const CreatePackage = () => {
             title: packageTitle,
             startDate: "",
             endDate: "",
-            discount: 37,
-            unit: "%",
+            discount: discountAmount,
+            unit: discountUnit,
             whatsIncluded: "",
             tnc: "",
-            status: isChecked,
+            status: isChecked, // Pass the isChecked state
             inventoryIds: selectedIds,
             couponCode: "",
             couponType: "Discount",
@@ -113,6 +111,7 @@ const CreatePackage = () => {
       toast.success("Successfully Created Discount");
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Failed to create discount.");
     }
   };
 
@@ -172,7 +171,7 @@ const CreatePackage = () => {
                       id="toggle"
                       className="toggle-checkbox"
                       checked={isChecked}
-                      onChange={handleToggle}
+                      onChange={handleToggleChange} // Call handleToggleChange directly
                     />
                     <label htmlFor="toggle" className="toggle-label"></label>
                   </div>
@@ -202,42 +201,39 @@ const CreatePackage = () => {
                   transition={{ duration: 1 }}
                   style={{ flexDirection: "column", margin: "20px 0px" }}
                 >
-                  <div style={{ marginTop: "20px" }} className="grey">
-                    Type of coupon
-                  </div>
-                  <div style={{ flexDirection: "column" }}>
-                    <div
-                      style={{ justifyContent: "start" }}
-                      className="form-check"
-                    >
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault1"
-                      />
-                      <label
-                        style={{ margin: "0px 5px" }}
-                        className="form-check-label"
-                      >
-                        Percent Off
+                  <div className="grey mt-2">Discount Amount</div>
+                  <input
+                    type="number"
+                    name="discountAmount"
+                    value={discountAmount}
+                    onChange={handleInputChange}
+                    style={{ width: "5rem" }}
+                    className="text-area px-2 text-center number-arrow-hidden"
+                    placeholder="type"
+                  />
+
+                  <div className="grey mt-2">Discount Unit</div>
+                  <div className="discount-unit-options">
+                    <div className="flex flex-column mb-1">
+                      <label>
+                        <input
+                          type="radio"
+                          name="unit"
+                          value="$"
+                          checked={discountUnit === "$"}
+                          onChange={() => setDiscountUnit("$")}
+                        />{" "}
+                        $
                       </label>
-                    </div>
-                    <div
-                      style={{ justifyContent: "start" }}
-                      className="form-check"
-                    >
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault2"
-                      />
-                      <label
-                        style={{ margin: "0px 5px" }}
-                        className="form-check-label"
-                      >
-                        Money Value
+                      <label>
+                        <input
+                          type="radio"
+                          name="unit"
+                          value="%"
+                          checked={discountUnit === "%"}
+                          onChange={() => setDiscountUnit("%")}
+                        />{" "}
+                        %
                       </label>
                     </div>
                   </div>
@@ -287,32 +283,6 @@ const CreatePackage = () => {
                         ))}
                       </tbody>
                     </table>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="denseCheck"
-                      />
-                      <label className="form-check-label" htmlFor="denseCheck">
-                        Dense
-                      </label>
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <label className="me-2">Rows per page:</label>
-                      <select
-                        className="form-select form-select-sm"
-                        style={{ width: "auto" }}
-                      >
-                        <option>10</option>
-                        <option>20</option>
-                        <option>30</option>
-                      </select>
-                      <span className="ms-2">3 of 7</span>
-                    </div>
                   </div>
                 </motion.div>
               </div>

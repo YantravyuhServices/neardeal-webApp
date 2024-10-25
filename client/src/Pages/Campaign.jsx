@@ -137,7 +137,7 @@ const Campaign = () => {
                     textDecoration: "none",
                   }}
                 >
-                  <img src={plus} />{" "}
+                  <img src={plus} />
                   <span style={{ color: "black" }}>Create Discounts</span>
                 </Link>
               )}

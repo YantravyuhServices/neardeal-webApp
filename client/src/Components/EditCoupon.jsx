@@ -22,7 +22,6 @@ const CreatePackage = () => {
     included: { content: "", operations: [] },
     discount: { content: "", operations: [] },
     unit: { content: "", operations: [] },
-    openingHours: { content: "", operations: [] },
     tnc: { content: "", operations: [] },
   });
   const [packageTitle, setPackageTitle] = useState("");
@@ -143,17 +142,18 @@ const CreatePackage = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            
           },
           body: JSON.stringify({
             vendorId: userData.ID,
             title: packageTitle,
             startDate: "2024-10-01",
             endDate: "2024-10-15",
-            discount: 37,
-            unit: "%",
+            discount: editorStates.discount.content,
+            unit: editorStates.unit.content || "%",
             whatsIncluded: editorStates.included.content,
             tnc: editorStates.tnc.content,
-            status: 0,
+            status: isChecked ? 1 : 0,
             inventoryIds: "V107_I01,V107_I02",
             couponCode: inventoryData.CouponCode,
             couponType: "Coupon",
