@@ -169,11 +169,11 @@ const Booking = () => {
       setPaymentStatus(booking.PaymentStatus);
 
       // Format the booking end date and time
-      const bookingEndDate = booking?.BookingEndDate
-        ? new Date(booking.BookingEndDate)
+      const bookingStartDate = booking?.BookingStartDate
+        ? new Date(booking.BookingStartDate)
         : new Date();
-      const formattedDate = format(bookingEndDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
-      const formattedTime = format(bookingEndDate, "HH:mm"); // HH:mm format for the time input
+      const formattedDate = format(bookingStartDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
+      const formattedTime = format(bookingStartDate, "HH:mm"); // HH:mm format for the time input
 
       // Set date and time in state (you need to add these two lines)
       setDate(formattedDate);
