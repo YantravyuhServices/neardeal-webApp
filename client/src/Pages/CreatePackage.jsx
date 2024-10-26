@@ -128,8 +128,8 @@ const CreatePackage = () => {
                             {spa.map((item, index) => (
                                 <div className='item' key={index}>
                                     <div className='left' style={{ width: '84%' }}>
-                                        <img src='https://avatars.githubusercontent.com/u/97161064?v=4' alt="spa" />
-                                        <div>
+                                        <img style={{ borderRadius:'50%', height:'50px', width:'50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
+                                        <div style={{ margin:'auto 0px' }}>
                                             <span>{item.InventoryName}</span>
                                         </div>
                                     </div>

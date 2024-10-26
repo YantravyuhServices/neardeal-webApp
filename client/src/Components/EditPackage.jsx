@@ -17,7 +17,7 @@ const CreatePackage = () => {
     const userData = JSON.parse(jwtUserToken);
     console.log("User Data:", userData);
     
-    
+    const [invImgFileName, setInvImgFileName] = useState('');
     const [inventoryData, setInventoryData] = useState(null);
     const [active, setActive] = useState('setup');
     const [isChecked, setIsChecked] = useState(false);
@@ -74,10 +74,21 @@ const CreatePackage = () => {
         setIsChecked(prev => !prev);
     };
 
-    const handleImageUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setImages(prevImages => [...prevImages, ...newImages]);
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setInvImgFileName(file.name);
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result; // Get the Base64 string from the reader
+                const parts = base64String.split(","); // Split the string at the comma
+                console.log("--------", parts); // Now you can log it
+                
+                // Update the state with the new data
+                setImages(parts[1]);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleRemoveImage = (index) => {
@@ -120,8 +131,8 @@ const CreatePackage = () => {
                     status: isChecked ? 1 : 0,
                     price: 999,
                     currency: "HKD",
-                    invImgFileName: "PizzaBOGO.jpg",
-                    invImage: ""
+                    invImgFileName: invImgFileName,
+                    invImage: images
                 })
             });
 
@@ -197,7 +208,6 @@ const CreatePackage = () => {
                                     <p className="grey">Drop files here or click <span style={{ color: '#00A76F' }}>browse</span> through your machine</p>
                                 </div> */}
 
-
                                 <div
                                     className="image-upload"
                                     style={{ cursor: 'pointer', textAlign: 'center' }}
@@ -216,16 +226,6 @@ const CreatePackage = () => {
                                     />
                                 </div>
 
-                                <div className="image-select" style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                    {images.map((image, index) => (
-                                        <div key={index} style={{ position: 'relative', margin: '10px' }}>
-                                            <img src={image} alt={`uploaded ${index}`} style={{ objectFit: 'cover' }} />
-                                            <button onClick={() => handleRemoveImage(index)} style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}>
-                                                <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px' }} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
                                 <div className="grey">What's included</div>
                                 <div className="text-section">
                                     <ReactQuill

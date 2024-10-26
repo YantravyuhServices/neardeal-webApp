@@ -252,17 +252,17 @@ const CreatePackage = () => {
   );
 
   const handleSaveChanges = async () => {
-    console.log("Package Title:", packageTitle);
-    console.log("Category:", selectedCategory);
-    console.log("Included Content:", editorStates.included.content);
-    console.log("Opening Hours Content:", editorStates.openingHours.content);
-    console.log("TNC Content:", editorStates.tnc.content);
-    console.log("URL:", url);
-    console.log("Add-ons:", addons);
-    console.log("Duration:", duration);
-    console.log("Images:", images);
-    console.log("Is Checked:", isChecked);
-    console.log("Editor States:", editorStates);
+    // console.log("Package Title:", packageTitle);
+    // console.log("Category:", selectedCategory);
+    // console.log("Included Content:", editorStates.included.content);
+    // console.log("Opening Hours Content:", editorStates.openingHours.content);
+    // console.log("TNC Content:", editorStates.tnc.content);
+    // console.log("URL:", url);
+    // console.log("Add-ons:", addons);
+    // console.log("Duration:", duration);
+    // console.log("Images:", images);
+    // console.log("Is Checked:", isChecked);
+    // console.log("Editor States:", editorStates);
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/createPackageMW.php",
