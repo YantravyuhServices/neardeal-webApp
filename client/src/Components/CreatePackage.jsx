@@ -88,7 +88,7 @@ const CreatePackage = () => {
   const [duration, setDuration] = useState("");
   const fileInputRef = useRef(null);
   const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
-
+  const [invImgFileName, setInvImgFileName] = useState("");
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
   const [isChecked3, setIsChecked3] = useState(false);
@@ -140,11 +140,62 @@ const CreatePackage = () => {
     console.log("Toggle state:", !isChecked);
   };
 
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const newImages = files.map((file) => URL.createObjectURL(file));
-    setImages((prevImages) => [...prevImages, ...newImages]);
-  };
+  // const handleImageUpload = (event) => {
+  //   const files = Array.from(event.target.files);
+  //   const newImages = files.map((file) => URL.createObjectURL(file));
+  //   setImages((prevImages) => [...prevImages, ...newImages]);
+  // };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setInvImgFileName(file.name);
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result; // Get the Base64 string from the reader
+            const parts = base64String.split(","); // Split the string at the comma
+            console.log("--------", parts); // Now you can log it
+            
+            // Update the state with the new data
+            setImages(parts[1]);
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+//   const handleImageUpload = (event) => {
+//     const files = Array.from(event.target.files);
+//     const newImages = [];
+
+//     const readFileAsBase64 = (file) => {
+//         return new Promise((resolve) => {
+//             const reader = new FileReader();
+//             reader.onloadend = () => {
+//                 const base64String = reader.result; // Get the Base64 string from the reader
+//                 const parts = base64String.split(","); // Split the string at the comma
+//                 console.log("Split parts:", parts); // Log the split parts
+                
+//                 // Send split parts to your API
+//                 sendDataToAPI(parts);
+
+//                 resolve(parts); // Resolve the promise with the parts
+//             };
+//             reader.readAsDataURL(file);
+//         });
+//     };
+
+//     // Process each file and read it as Base64
+//     const filePromises = files.map(file => readFileAsBase64(file));
+//     Promise.all(filePromises).then((allParts) => {
+//         // Create object URLs for the new images
+//         allParts.forEach(parts => {
+//             newImages.push(URL.createObjectURL(parts[1])); // Use the second part (the data)
+//         });
+
+//         // Update the state with the new image URLs
+//         setImages((prevImages) => [...prevImages, ...newImages]);
+//     });
+// };
 
   const handleRemoveImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
@@ -230,8 +281,8 @@ const CreatePackage = () => {
             status: isChecked,
             price: 999,
             currency: "HKD",
-            invImgFileName: "PizzaBOGO.jpg",
-            invImage: "",
+            invImgFileName: invImgFileName,
+            invImage: images,
           }),
         }
       );
@@ -365,40 +416,6 @@ const CreatePackage = () => {
                     ref={fileInputRef}
                     style={{ display: "none" }}
                   />
-                </div>
-                <div
-                  className="image-select"
-                  style={{ display: "flex", flexWrap: "wrap" }}
-                >
-                  {images.map((image, index) => (
-                    <div
-                      key={index}
-                      style={{ position: "relative", margin: "10px" }}
-                    >
-                      <img
-                        src={image}
-                        alt={`uploaded ${index}`}
-                        style={{ objectFit: "cover" }}
-                      />
-                      <button
-                        onClick={() => handleRemoveImage(index)}
-                        style={{
-                          position: "absolute",
-                          top: "5px",
-                          right: "5px",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <img
-                          src={crossIcon}
-                          alt="remove"
-                          style={{ width: "20px", height: "20px" }}
-                        />
-                      </button>
-                    </div>
-                  ))}
                 </div>
                 <div style={{ justifyContent: "end" }}>
                   <button

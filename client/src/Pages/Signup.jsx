@@ -74,7 +74,7 @@ const SignUp = () => {
                 // Update the state with the new data
                 setStoreData(prev => ({
                     ...prev,
-                    profilePic: parts[1], // Base64 encoded string
+                    profilePic: parts, // Base64 encoded string
                     storelogo_name: file.name // Set the file name here
                 }));
             };
