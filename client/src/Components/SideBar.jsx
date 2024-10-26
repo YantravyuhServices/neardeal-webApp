@@ -22,7 +22,7 @@ const SideBar = () => {
         const fetchData = async () => {
             try {
                 var payload = {
-                    ID: cookieValue.ID
+                    "userID": cookieValue.ID
                 }
 
                 // Fetch user data
@@ -36,7 +36,7 @@ const SideBar = () => {
 
                 const userData = await response.json();
                 setUserData(userData);
-                // console.log("User Data:", userData); // Log the user data
+                console.log("User Data:", userData); // Log the user data
 
             } catch (error) {
                 console.error('Failed to parse JSON from cookie or fetch user data:', error);
@@ -112,7 +112,7 @@ const SideBar = () => {
                 <div className="sidebar-profile">
                     <div className="profile-container" onClick={handleProfileClick}>
                         <img
-                            src="https://avatars.githubusercontent.com/u/97161064?v=4"
+                            src={`https://wellness.neardeal.me/WAPI/${userData.profilePic}`}
                             alt="Profile"
                             className="profile-pic"
                         />

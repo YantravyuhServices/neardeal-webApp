@@ -64,20 +64,23 @@ const SignUp = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        console.log(file);
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
+                const base64String = reader.result; // Get the Base64 string from the reader
+                const parts = base64String.split(","); // Split the string at the comma
+                console.log("--------", parts); // Now you can log it
+                
+                // Update the state with the new data
                 setStoreData(prev => ({
                     ...prev,
-                    profilePic: reader.result, // Base64 encoded string
+                    profilePic: parts[1], // Base64 encoded string
                     storelogo_name: file.name // Set the file name here
                 }));
             };
             reader.readAsDataURL(file);
         }
-    };
-    
+    };    
 
     const handleCategoryChange = (category) => {
         setMerchantData(prev => ({
@@ -154,14 +157,14 @@ const SignUp = () => {
                         userid: userId,
                         contactno: storeData.contact,
                         storeaddress: storeData.storeAddress,
+                        email: storeData.email,
                         storedoo: merchantData.dob,
                         city: storeData.city,
                         country: storeData.country,
                         zip: storeData.zip,
                         coordinates: "kl",
                         storeimage_name: storeData.storelogo_name,
-                        storelogo_name: storeData.storelogo_name,
-                        storelogo: storeData.profilePic,
+                        storeimage: storeData.profilePic,
                     }),
                 });
 
