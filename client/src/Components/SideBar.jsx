@@ -112,7 +112,7 @@ const SideBar = () => {
                 <div className="sidebar-profile">
                     <div className="profile-container" onClick={handleProfileClick}>
                         <img
-                            src={`https://wellness.neardeal.me/WAPI/${userData.profilePic}`}
+                            src={userData && `https://wellness.neardeal.me/WAPI/${userData.profilePic}`}
                             alt="Profile"
                             className="profile-pic"
                         />
