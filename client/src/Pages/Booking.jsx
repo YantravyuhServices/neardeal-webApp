@@ -15,6 +15,7 @@ import declined from "../assets/regular.svg";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import Pagination from "../Components/Pagination";
 import { format } from "date-fns";
+import BookingOffCanvasComponent from "../Components/BookingOffCanvasComponent";
 
 const Booking = () => {
   const jwtUserToken = Cookies.get("user_token");
@@ -22,6 +23,7 @@ const Booking = () => {
   const [bookingData, setBookingData] = useState([]);
   const [active, setActive] = useState("All");
   const [loading, setLoading] = useState(false);
+  const [fetchSelectedDataComplete, setFetchSelectedDataComplete] = useState(false);
 
   // State for offcanvas form
   const [date, setDate] = useState("");
@@ -55,6 +57,18 @@ const Booking = () => {
 
       const data = await response.json();
       console.log(data.data[0].BookingID);
+      console.log(data)
+      // const uniqueIds = new Set();  // Set to store unique IDs
+      // const uniqueObjects = [];     // Array to store unique objects
+
+      // for (const obj of data.data) {
+      //     if (!uniqueIds.has(obj.BookingID)) {  // Check if ID is already in the Set
+      //         uniqueIds.add(obj.BookingID);      // Add the ID to the Set
+      //         uniqueObjects.push(obj);    // Add the object to the result array
+      //     }
+      // }
+
+      // console.log(uniqueObjects)
 
       setBookingData(data.data); // Replace old data with new data
     } catch (error) {
@@ -139,9 +153,10 @@ const Booking = () => {
     }
   };
 
-  const [uniqueData, setUniqueData] = useState([]);
+  const [uniqueData, setUniqueData] = useState(null);
 
   const fetchBooking = async (id) => {
+    setFetchSelectedDataComplete(false)
     console.log(id);
 
     try {
@@ -162,22 +177,42 @@ const Booking = () => {
       const booking = data.message[0];
 
       // Set the state with formatted values
+      setTimeout(() => {
       setUniqueData(booking);
+      setFetchSelectedDataComplete(true)
+      }, 1000);
+
+      // console.log(booking)
+      
 
       // Set booking status and payment status
       setBookingStatus(booking.BookingStatus);
       setPaymentStatus(booking.PaymentStatus);
 
       // Format the booking end date and time
-      const bookingStartDate = booking?.BookingStartDate
+
+      // console.log("Date", bookingStartDate)
+      if(booking?.BookingStartDate == "0000-00-00 00:00:00"){
+        // if booking start date is empty
+        
+        setDate("0000-00-00");
+        setTime("00:00"); // Set default time to 00:00
+      }else{
+        const bookingStartDate = booking?.BookingStartDate
         ? new Date(booking.BookingStartDate)
         : new Date();
       const formattedDate = format(bookingStartDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
       const formattedTime = format(bookingStartDate, "HH:mm"); // HH:mm format for the time input
 
       // Set date and time in state (you need to add these two lines)
+      console.log(formattedDate)
       setDate(formattedDate);
       setTime(formattedTime);
+      }
+
+     
+
+      setFetchSelectedDataComplete(true)
 
       console.log("data", data.message);
     } catch (err) {
@@ -375,12 +410,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
-                            >
-                              <i
-                                onClick={() => {
+                              onClick={() => {
+                                  setUniqueData(null)
                                   setSelectedBookingId(data.BookingID);
                                   fetchBooking(data.BookingID);
                                 }}
+                            >
+                              <i
+                              
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -418,7 +455,7 @@ const Booking = () => {
                         </td>
                       </tr>
                     ) : (
-                      bookingData.map((data) => (
+                      bookingData.map((data) => console.log(data) || (
                         <tr className="align-middle" key={data.BookingID}>
                           <td
                             style={{
@@ -502,11 +539,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
+                              onClick={() => {
+                                  setUniqueData(null)
+                                  setSelectedBookingId(data.BookingID);
+                                  fetchBooking(data.BookingID);
+                                }}
                             >
                               <i
-                                onClick={() => {
-                                  setSelectedBookingId(data.BookingID);
-                                }}
+                                
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -628,11 +668,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
+                              onClick={() =>{
+                                  setUniqueData({})
+                                  setSelectedBookingId(data.BookingID);
+                                  fetchBooking(data.BookingID);
+                                }}
                             >
                               <i
-                                onClick={() =>
-                                  setSelectedBookingId(data.BookingID)
-                                }
+                                
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -702,11 +745,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
+                              onClick={() => {
+                                  setUniqueData(null)
+                                  setSelectedBookingId(data.BookingID);
+                                  fetchBooking(data.BookingID);
+                                }}
                             >
                               <i
-                                onClick={() =>
-                                  setSelectedBookingId(data.BookingID)
-                                }
+                                
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -777,11 +823,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
+                              onClick={() => {
+                                  setUniqueData(null)
+                                  setSelectedBookingId(data.BookingID);
+                                  fetchBooking(data.BookingID);
+                                }}
                             >
                               <i
-                                onClick={() =>
-                                  setSelectedBookingId(data.BookingID)
-                                }
+                                
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -804,7 +853,8 @@ const Booking = () => {
           )}
         </div>
 
-        <div className="offcanvas offcanvas-end" id="demo">
+
+          <div className="offcanvas offcanvas-end" id="demo">
           <div className="offcanvas-header mb-0">
             <h3 className="offcanvas-title">Edit Booking</h3>
             <button
@@ -813,170 +863,26 @@ const Booking = () => {
               data-bs-dismiss="offcanvas"
             ></button>
           </div>
-          <div className="offcanvas-body">
-            <p className="offCanInvid">
-              Invoice ID: <span id="invoiceNo">{uniqueData.BookingID}</span>
-            </p>
-            <p className="offCanCustName">
-              Customer
-              <br />
-              <span id="custName">{uniqueData.AssignedTo}</span>
-            </p>
+        
+        
+        <BookingOffCanvasComponent
+        uniqueData={uniqueData}
+        date={date}
+        time={time}
+        bookingStatus={bookingStatus}
+        paymentStatus={paymentStatus}
+        setDate={setDate}
+        setTime={setTime}
+        setBookingStatus={setBookingStatus}
+        setPaymentStatus={setPaymentStatus}
+        handleEdit={handleEdit}
+        fetchSelectedDataComplete={fetchSelectedDataComplete}
+        selectedBookingId = {selectedBookingId}
+      />
+     
+      </div>
 
-            <div className="card mt-4">
-              <div className="card-header offCanCardHead">
-                <div className="row">
-                  <div className="col-lg-6">
-                    <p>Order Information</p>
-                  </div>
-                  <div className="col-lg-6">
-                    <button
-                      type="button"
-                      className="btn btn-outline-dark offCanCardHeadBtn float-end mt-1"
-                      onClick={handleEdit}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body pb-0">
-                <div className="row">
-                  <div
-                    className="col-lg-2"
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
-                    <img
-                      style={{ borderRadius: "5px" }}
-                      src="https://avatars.githubusercontent.com/u/97161064?v=4"
-                      width="100%"
-                      alt="Package"
-                    />
-                  </div>
-                  <div className="col-lg-8">
-                    <p className="offCanOfferType">Regular</p>
-                    <p className="offCanPackageDetail">
-                      {uniqueData.InventoryName}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    margin: "10px 5px",
-                  }}
-                >
-                  <input
-                  type="date"
-                  onChange={(e) => setDate(e.target.value)}
-                    style={{
-                      borderRadius: "7px",
-                      width: "48%",
-                      textAlign: "center",
-                    }}
-                    id="datepicker"
-                    value={date} // Use state for date
-                  />
-                  <input
-                  type="time"
-                  onChange={(e) => setTime(e.target.value)}
-                    style={{
-                      borderRadius: "7px",
-                      width: "48%",
-                      textAlign: "center",
-                    }}
-                    id="timepicker"
-                    value={time} // Use state for time
-                  />
-                </div>
-                <div className="card-body pb-0">
-                  <div className="row">
-                    <select
-                      style={{ padding: "10px", borderRadius: "5px" }}
-                      value={bookingStatus}
-                      onChange={(e) => setBookingStatus(e.target.value)}
-                    >
-                      <option>Accepted</option>
-                      <option>Declined</option>
-                      <option>Started</option>
-                      <option>Finished</option>
-                      <option>Absent</option>
-                      <option>Cancelled</option>
-                    </select>
-                  </div>
-                  <div
-                    style={{ marginTop: "10px", marginBottom: "10px" }}
-                    className="row"
-                  >
-                    <select
-                      style={{ padding: "10px", borderRadius: "5px" }}
-                      value={paymentStatus}
-                      onChange={(e) => setPaymentStatus(e.target.value)}
-                    >
-                      <option>Paid</option>
-                      <option>Pending</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="card mt-4">
-              <div className="card-header offCanCardHead">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <p>Customer Information</p>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body ">
-                <div className="row">
-                  <div className="col-lg-4">
-                    <img
-                      style={{ borderRadius: "50%" }}
-                      src="https://avatars.githubusercontent.com/u/97161064?v=4"
-                      width="100%"
-                      alt="Customer"
-                    />
-                  </div>
-                  <div className="col-lg-8 my-auto">
-                    <p id="custName">{uniqueData.AssignedTo}</p>
-                  </div>
-                </div>
-                <div className="input-group mt-3 w-50">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cName"
-                    value={uniqueData.userPhone}
-                    defaultValue={uniqueData.userPhone}
-                  />
-                  <button
-                    className="btn btn-outline-secondary border-0"
-                    type="submit"
-                  >
-                    <i className="fa fa-clone"></i>
-                  </button>
-                </div>
-                <div className="input-group mb-3 mt-3 w-auto">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="cEmail"
-                    defaultValue={uniqueData.userMail}
-                    value={uniqueData.userMail}
-                  />
-                  <button
-                    className="btn btn-outline-secondary border-0"
-                    type="submit"
-                  >
-                    <i className="fa fa-clone"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
         <div className="offcanvas offcanvas-end" id="filter-package">
           <div className="offcanvas-header mb-0">
