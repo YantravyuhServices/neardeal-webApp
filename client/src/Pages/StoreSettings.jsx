@@ -22,6 +22,7 @@ const StoreSetting = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
     const [images, setImages] = useState([]);
+    const [invImgFileName, setInvImgFileName] = useState('');
     const [packageTitle, setPackageTitle] = useState('');
     const [url, setUrl] = useState('');
     const [duration, setDuration] = useState('');
@@ -33,12 +34,29 @@ const StoreSetting = () => {
         // Add any other fields as necessary
     });
 
-    const handleImageUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setImages(prevImages => [...prevImages, ...newImages]);
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files); // Get all selected files
+        const newImages = [];
+    
+        files.forEach(file => {
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64String = reader.result; // Get the Base64 string from the reader
+                    const parts = base64String.split(","); // Split the string at the comma
+                    newImages.push(parts[1]); // Push base64 string to newImages array
+    
+                    // Update state after all files have been processed
+                    if (newImages.length === files.length) {
+                        setImages(prevImages => [...prevImages, ...newImages]);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     };
-
+    
+    
     const handleRemoveImage = (index) => {
         setImages(images.filter((_, i) => i !== index));
     };
@@ -66,6 +84,7 @@ const StoreSetting = () => {
 
     const handleSaveChanges = async() => {
         console.log('storeData', storeData);
+        console.log('images', images);
         
         try {
             const response = await fetch(
@@ -85,11 +104,11 @@ const StoreSetting = () => {
                             "city": "Hong Kong",
                             "country": "Hong Kong",
                             "zip": "XYZ 456",
-                            "storeimage_name": "abc.jpg", 
-                            "storelogo_name": "dragon.jpg", 
+                            "storeimage_name": invImgFileName, 
+                            "storelogo_name": invImgFileName, 
                             "workingHours": "10:00 AM - 12:00 AM",
                             "workingHoursDetails": "Mon-Fri (Sat: 10:00 AM - 7:00 PM)",
-                            "storelogo": ""
+                            "storelogo": images[0]
                     }),
                 }
             );
@@ -120,7 +139,7 @@ const StoreSetting = () => {
             );
 
             const data = await response.json();
-            // console.log('data', data.message);
+            console.log('data', data.message);
             setStoreData(data.message[0] || {}); // Ensure it sets to an object to avoid errors
 
         } catch (error) {
@@ -145,7 +164,7 @@ const StoreSetting = () => {
                     <div className="left">
                         <div style={{ flexDirection: 'column', position: 'relative' }}>
                             <img style={{ width: '100%' }} src={image1} alt="store" />
-                            <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={aaaa} alt="upload" />
+                            <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={`https://wellness.neardeal.me/WAPI/${storeData.store_image}`} alt="upload" />
                         </div>
                         <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>{storeData.storeName || 'Store Name'}</h1>
                         <div className="rating">
@@ -219,25 +238,6 @@ const StoreSetting = () => {
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                     />
-                                </div>
-                                <div className="image-select" style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                    {images.map((image, index) => (
-                                        <div key={index} style={{ position: 'relative', margin: '10px' }}>
-                                            <img src={image} alt={`uploaded ${index}`} style={{ objectFit: 'cover' }} />
-                                            <button
-                                                onClick={() => handleRemoveImage(index)}
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: '5px',
-                                                    right: '5px',
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                            </button>
-                                        </div>
-                                    ))}
                                 </div>
                                 <div style={{ justifyContent: "end" }}>
                                     <button style={{ borderRadius: '5px', padding: '0px 10px', margin: '0px 10px' }}>Remove All</button>

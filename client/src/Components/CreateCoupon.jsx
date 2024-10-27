@@ -16,6 +16,7 @@ const CreatePackage = () => {
   const userData = JSON.parse(jwtUserToken);
   const [active, setActive] = useState("setup");
   const [isChecked, setIsChecked] = useState(false);
+  const [invImgFileName, setInvImgFileName] = useState("");
   const [images, setImages] = useState([]);
   const [editorStates, setEditorStates] = useState({
     included: { content: "", operations: [] },
@@ -44,11 +45,22 @@ const CreatePackage = () => {
     }));
   };
 
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const newImages = files.map((file) => URL.createObjectURL(file));
-    setImages((prevImages) => [...prevImages, ...newImages]);
-  };
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setInvImgFileName(file.name);
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result; // Get the Base64 string from the reader
+            const parts = base64String.split(","); // Split the string at the comma
+            console.log("--------", parts); // Now you can log it
+            
+            // Update the state with the new data
+            setImages(parts[1]);
+        };
+        reader.readAsDataURL(file);
+    }
+};
 
   const handleRemoveImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
@@ -89,15 +101,6 @@ const CreatePackage = () => {
   );
 
   const handleSaveChanges = async () => {
-    // const packageData = {
-    //     vendorId: userData.ID,
-    //     title: packageTitle,
-    //     publishStatus: isChecked,
-    //     whatsIncluded: editorStates.included.content,
-    //     openingHours: editorStates.openingHours.content,
-    //     tnc: editorStates.tnc.content,
-    //     images,
-    // };
 
     try {
       const response = await fetch(

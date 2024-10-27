@@ -175,15 +175,16 @@ const Booking = () => {
 
       const data = await response.json();
       const booking = data.message[0];
+console.log("Unique", uniqueData);
 
       // Set the state with formatted values
       setTimeout(() => {
-      setUniqueData(booking);
-      setFetchSelectedDataComplete(true)
+        setUniqueData(booking);
+        setFetchSelectedDataComplete(true)
       }, 1000);
 
       // console.log(booking)
-      
+
 
       // Set booking status and payment status
       setBookingStatus(booking.BookingStatus);
@@ -192,25 +193,25 @@ const Booking = () => {
       // Format the booking end date and time
 
       // console.log("Date", bookingStartDate)
-      if(booking?.BookingStartDate == "0000-00-00 00:00:00"){
+      if (booking?.BookingStartDate == "0000-00-00 00:00:00") {
         // if booking start date is empty
-        
+
         setDate("0000-00-00");
         setTime("00:00"); // Set default time to 00:00
-      }else{
+      } else {
         const bookingStartDate = booking?.BookingStartDate
-        ? new Date(booking.BookingStartDate)
-        : new Date();
-      const formattedDate = format(bookingStartDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
-      const formattedTime = format(bookingStartDate, "HH:mm"); // HH:mm format for the time input
+          ? new Date(booking.BookingStartDate)
+          : new Date();
+        const formattedDate = format(bookingStartDate, "yyyy-MM-dd"); // YYYY-MM-DD format for the date input
+        const formattedTime = format(bookingStartDate, "HH:mm"); // HH:mm format for the time input
 
-      // Set date and time in state (you need to add these two lines)
-      console.log(formattedDate)
-      setDate(formattedDate);
-      setTime(formattedTime);
+        // Set date and time in state (you need to add these two lines)
+        console.log(formattedDate)
+        setDate(formattedDate);
+        setTime(formattedTime);
       }
 
-     
+
 
       setFetchSelectedDataComplete(true)
 
@@ -411,13 +412,13 @@ const Booking = () => {
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
                               onClick={() => {
-                                  setUniqueData(null)
-                                  setSelectedBookingId(data.BookingID);
-                                  fetchBooking(data.BookingID);
-                                }}
+                                setUniqueData(null)
+                                setSelectedBookingId(data.BookingID);
+                                fetchBooking(data.BookingID);
+                              }}
                             >
                               <i
-                              
+
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -540,13 +541,13 @@ const Booking = () => {
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
                               onClick={() => {
-                                  setUniqueData(null)
-                                  setSelectedBookingId(data.BookingID);
-                                  fetchBooking(data.BookingID);
-                                }}
+                                setUniqueData(null)
+                                setSelectedBookingId(data.BookingID);
+                                fetchBooking(data.BookingID);
+                              }}
                             >
                               <i
-                                
+
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -668,14 +669,14 @@ const Booking = () => {
                               type="button"
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
-                              onClick={() =>{
-                                  setUniqueData({})
-                                  setSelectedBookingId(data.BookingID);
-                                  fetchBooking(data.BookingID);
-                                }}
+                              onClick={() => {
+                                setUniqueData({})
+                                setSelectedBookingId(data.BookingID);
+                                fetchBooking(data.BookingID);
+                              }}
                             >
                               <i
-                                
+
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -746,13 +747,13 @@ const Booking = () => {
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
                               onClick={() => {
-                                  setUniqueData(null)
-                                  setSelectedBookingId(data.BookingID);
-                                  fetchBooking(data.BookingID);
-                                }}
+                                setUniqueData(null)
+                                setSelectedBookingId(data.BookingID);
+                                fetchBooking(data.BookingID);
+                              }}
                             >
                               <i
-                                
+
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -824,13 +825,13 @@ const Booking = () => {
                               data-bs-toggle="offcanvas"
                               data-bs-target="#demo"
                               onClick={() => {
-                                  setUniqueData(null)
-                                  setSelectedBookingId(data.BookingID);
-                                  fetchBooking(data.BookingID);
-                                }}
+                                setUniqueData(null)
+                                setSelectedBookingId(data.BookingID);
+                                fetchBooking(data.BookingID);
+                              }}
                             >
                               <i
-                                
+
                                 className="fa fa-pencil p-0 me-3"
                                 style={{ fontSize: "large" }}
                               ></i>
@@ -853,8 +854,7 @@ const Booking = () => {
           )}
         </div>
 
-
-          <div className="offcanvas offcanvas-end" id="demo">
+        <div className="offcanvas offcanvas-end" id="demo">
           <div className="offcanvas-header mb-0">
             <h3 className="offcanvas-title">Edit Booking</h3>
             <button
@@ -863,26 +863,22 @@ const Booking = () => {
               data-bs-dismiss="offcanvas"
             ></button>
           </div>
-        
-        
-        <BookingOffCanvasComponent
-        uniqueData={uniqueData}
-        date={date}
-        time={time}
-        bookingStatus={bookingStatus}
-        paymentStatus={paymentStatus}
-        setDate={setDate}
-        setTime={setTime}
-        setBookingStatus={setBookingStatus}
-        setPaymentStatus={setPaymentStatus}
-        handleEdit={handleEdit}
-        fetchSelectedDataComplete={fetchSelectedDataComplete}
-        selectedBookingId = {selectedBookingId}
-      />
-     
-      </div>
 
-        
+          <BookingOffCanvasComponent
+            uniqueData={uniqueData}
+            date={date}
+            time={time}
+            bookingStatus={bookingStatus}
+            paymentStatus={paymentStatus}
+            setDate={setDate}
+            setTime={setTime}
+            setBookingStatus={setBookingStatus}
+            setPaymentStatus={setPaymentStatus}
+            handleEdit={handleEdit}
+            fetchSelectedDataComplete={fetchSelectedDataComplete}
+            selectedBookingId={selectedBookingId}
+          />
+        </div>
 
         <div className="offcanvas offcanvas-end" id="filter-package">
           <div className="offcanvas-header mb-0">
@@ -897,9 +893,8 @@ const Booking = () => {
             <button className="remove-btn">Remove all filters</button>
             <div className="nav">
               <button
-                className={`booking-nav-active ${
-                  selectedFilter === "Featured" ? "active" : ""
-                }`}
+                className={`booking-nav-active ${selectedFilter === "Featured" ? "active" : ""
+                  }`}
                 onClick={() => setSelectedFilter("Featured")}
               >
                 Featured
