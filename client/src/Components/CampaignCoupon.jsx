@@ -56,16 +56,17 @@ const CampaignCoupon = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
+      style={{ overflowY:'auto', height:'60vh' }}
     >
       {loading
         ? "Loading..." // Loader
         : couponData.map((coupon, index) => (
             <div className="item" key={index}>
               <div className="left" style={{ width: "84%" }}>
-                <img
+                {/* <img
                   src="https://avatars.githubusercontent.com/u/97161064?v=4"
                   alt="Coupon"
-                />
+                /> */}
                 {/* <div> */}
                 <span>{coupon.CouponTitle}</span>
                 {/* <div>
@@ -90,8 +91,7 @@ const CampaignCoupon = () => {
                       type="checkbox"
                       id={`toggle-${index}`} // Unique ID for each toggle
                       className="toggle-checkbox"
-                      // checked={coupon.Status === "1"}
-                      checked={coupon.Status === "1" ? true : false}
+                      checked={coupon.Status === '1' ? true : false}
                       onChange={handleToggle}
                     />
                     <label

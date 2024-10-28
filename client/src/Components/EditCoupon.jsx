@@ -125,16 +125,8 @@ const CreatePackage = () => {
   );
 
   const handleSaveChanges = async () => {
-    // const packageData = {
-    //     vendorId: userData.ID,
-    //     title: packageTitle,
-    //     publishStatus: isChecked,
-    //     whatsIncluded: editorStates.included.content,
-    //     openingHours: editorStates.openingHours.content,
-    //     tnc: editorStates.tnc.content,
-    //     images,
-    // };
-
+    console.log('isChecked: ', isChecked);
+    
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/updateCouponsMW.php",

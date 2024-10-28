@@ -60,7 +60,7 @@ const CreatePackage = () => {
         };
         reader.readAsDataURL(file);
     }
-};
+  };
 
   const handleRemoveImage = (index) => {
     setImages(images.filter((_, i) => i !== index));

@@ -60,28 +60,6 @@ const CreatePackage = () => {
     //    fetchCategory();
     }, []);    
 
-    const fetchCategory = async()=>{
-        try {
-            const response = await fetch('https://wellness.neardeal.me/WAPI/fetchMerCategoryMW.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                })
-               
-            });
-            setCategories(response.message);
-        } catch (error) {
-            console.error('Error parsing categories:', error);
-        }
-    }
-
-    const openModal = () => {
-        const modal = new window.bootstrap.Modal(document.getElementById('exampleModalToggle'));
-        modal.show();
-    };
-
     return (
         <div style={{ display: 'flex' }}>
             <SideBar />
@@ -101,6 +79,9 @@ const CreatePackage = () => {
                                     </button>
                                 ))
                             }
+
+                            
+
                         </div>
                         <div className="col-lg-6 d-flex input-group justify-content-end ms-5" style={{ maxWidth: '45%' }}>
                             <input type="text" className="form-control" placeholder="Search..." />

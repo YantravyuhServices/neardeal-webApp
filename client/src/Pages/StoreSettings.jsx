@@ -12,11 +12,8 @@ import email from "../assets/email.svg";
 import phone from "../assets/phone.svg";
 import { motion } from "framer-motion";
 import storeLogo from "../assets/storeSettingsLogo.svg";
-import ai from "../assets/aiLogo.svg";
-import image1 from '../assets/image1.svg';
-import aaaa from "../assets/WhatsApp Image 2024-09-12 at 16.48.58_7c2d63d5.jpg";
-import Cookies from 'js-cookie';
 import { toast } from "react-toastify";
+import Cookies from 'js-cookie';
 
 const StoreSetting = () => {
     const jwtUserToken = Cookies.get("user_token");
@@ -24,29 +21,31 @@ const StoreSetting = () => {
     const [images, setImages] = useState([]);
     const [invImgFileName, setInvImgFileName] = useState('');
     const [packageTitle, setPackageTitle] = useState('');
-    const [url, setUrl] = useState('');
-    const [duration, setDuration] = useState('');
     const fileInputRef = useRef(null);
+    const [logoName, setLogoName] = useState('');
+    const [logo, setLogo] = useState('');
     const [storeData, setStoreData] = useState({
         description: '',
         emailAddress: '',
         contactNo: '',
-        // Add any other fields as necessary
+        address: '',
+        storeName: '',
+        workingHours: '',
+        store_logo: '',
+        store_image: '',
+        rating: ''
     });
 
     const handleImageUpload = (e) => {
-        const files = Array.from(e.target.files); // Get all selected files
+        const files = Array.from(e.target.files);
         const newImages = [];
-    
         files.forEach(file => {
             if (file) {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    const base64String = reader.result; // Get the Base64 string from the reader
-                    const parts = base64String.split(","); // Split the string at the comma
-                    newImages.push(parts[1]); // Push base64 string to newImages array
-    
-                    // Update state after all files have been processed
+
+                    const base64String = reader.result.split(",")[1];
+                    newImages.push(base64String);
                     if (newImages.length === files.length) {
                         setImages(prevImages => [...prevImages, ...newImages]);
                     }
@@ -55,10 +54,18 @@ const StoreSetting = () => {
             }
         });
     };
-    
-    
-    const handleRemoveImage = (index) => {
-        setImages(images.filter((_, i) => i !== index));
+
+    const handleLogoUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setLogoName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result.split(",")[1];
+                setLogo(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleUploadClick = () => {
@@ -67,25 +74,10 @@ const StoreSetting = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        switch (name) {
-            case 'packageTitle':
-                setPackageTitle(value);
-                break;
-            case 'url':
-                setUrl(value);
-                break;
-            case 'duration':
-                setDuration(value);
-                break;
-            default:
-                break;
-        }
+        setStoreData(prevData => ({ ...prevData, [name]: value }));
     };
 
-    const handleSaveChanges = async() => {
-        console.log('storeData', storeData);
-        console.log('images', images);
-        
+    const handleSaveChanges = async () => {
         try {
             const response = await fetch(
                 "https://wellness.neardeal.me/WAPI/merchantProfileUpdatesMW.php",
@@ -95,32 +87,30 @@ const StoreSetting = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                            "userid": userData.ID,
-                            "userName": userData.vendorName,
-                            "contactno": storeData.contactNo,
-                            "storeaddress": storeData.address,
-                            "category" : "[Spa, Sauna, Gym]",
-                            "description": storeData.description,
-                            "city": "Hong Kong",
-                            "country": "Hong Kong",
-                            "zip": "XYZ 456",
-                            "storeimage_name": invImgFileName, 
-                            "storelogo_name": invImgFileName, 
-                            "workingHours": "10:00 AM - 12:00 AM",
-                            "workingHoursDetails": "Mon-Fri (Sat: 10:00 AM - 7:00 PM)",
-                            "storelogo": images[0]
+                        "userid": userData.ID,
+                        "userName": userData.vendorName,
+                        "contactno": storeData.contactNo,
+                        "storeaddress": storeData.address,
+                        "category": "[Spa, Sauna, Gym]",
+                        "description": storeData.description,
+                        "city": "Hong Kong",
+                        "country": "Hong Kong",
+                        "zip": "XYZ 456",
+                        "storeimage_name": invImgFileName,
+                        "storelogo_name": logoName,
+                        "workingHours": storeData.workingHours,
+                        "storelogo": logo[0],
+                        "storeimage": images[0]
                     }),
                 }
             );
 
             const data = await response.json();
-            // console.log('data', data.message);
             toast.success("Changes saved successfully");
-
         } catch (error) {
             console.error("Error:", error);
+            toast.error("Failed to save changes");
         }
-
     };
 
     const fetchStore = async () => {
@@ -139,9 +129,7 @@ const StoreSetting = () => {
             );
 
             const data = await response.json();
-            console.log('data', data.message);
             setStoreData(data.message[0] || {}); // Ensure it sets to an object to avoid errors
-
         } catch (error) {
             console.error("Error:", error);
         }
@@ -163,13 +151,17 @@ const StoreSetting = () => {
                 <div>
                     <div className="left">
                         <div style={{ flexDirection: 'column', position: 'relative' }}>
-                            <img style={{ width: '100%' }} src={image1} alt="store" />
+                            <img style={{ width: '100%' }} src={`https://wellness.neardeal.me/WAPI/${storeData.store_logo}`} alt="store logo" />
                             <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={`https://wellness.neardeal.me/WAPI/${storeData.store_image}`} alt="upload" />
                         </div>
                         <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>{storeData.storeName || 'Store Name'}</h1>
                         <div className="rating">
                             <span>{storeData.rating || 'N/A'}</span>
-                            <span><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /><img src={star} alt="star" /></span>
+                            <span>
+                                {[...Array(5)].map((_, index) => (
+                                    <img key={index} src={star} alt="star" />
+                                ))}
+                            </span>
                         </div>
                         <p>{storeData.description || 'No description available'}</p>
                         <div className="location">
@@ -201,32 +193,24 @@ const StoreSetting = () => {
                                     name="packageTitle"
                                     className="package-title"
                                     type="text"
-                                    placeholder="Senmu Farm"
+                                    placeholder="Package Title"
                                     value={packageTitle}
                                     onChange={handleInputChange}
                                 />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Store Icon</div>
-                                <div
-                                    style={{ cursor: 'pointer', textAlign: 'center' }}
-                                    onClick={handleUploadClick}
-                                >
+                                <div style={{ cursor: 'pointer', textAlign: 'center' }} onClick={handleUploadClick}>
                                     <img src={storeLogo} alt="upload" />
                                     <input
                                         type="file"
-                                        multiple
                                         accept="image/*"
-                                        onChange={handleImageUpload}
+                                        onChange={handleLogoUpload}
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                     />
                                 </div>
 
-                                <div
-                                    className="image-upload"
-                                    style={{ cursor: 'pointer', textAlign: 'center', marginTop: '20px' }}
-                                    onClick={handleUploadClick}
-                                >
+                                <div className="image-upload" style={{ cursor: 'pointer', textAlign: 'center', marginTop: '20px' }} onClick={handleUploadClick}>
                                     <img src={imageUpload} alt="upload" />
                                     <span style={{ marginTop: '20px', fontWeight: 'bold', fontSize: '20px' }}>Select files</span>
                                     <p className="grey">Drop files here or click <span style={{ color: '#00A76F' }}>browse</span> through your machine</p>
@@ -239,41 +223,41 @@ const StoreSetting = () => {
                                         style={{ display: 'none' }}
                                     />
                                 </div>
+
                                 <div style={{ justifyContent: "end" }}>
                                     <button style={{ borderRadius: '5px', padding: '0px 10px', margin: '0px 10px' }}>Remove All</button>
                                     <button className="button">Upload</button>
                                 </div>
+
                                 <div className="grey" style={{ marginTop: '20px' }}>Description</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'description', value: e.currentTarget.textContent } })}>
                                     {storeData.description || 'No description available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Contact Email</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'emailAddress', value: e.currentTarget.textContent } })}>
                                     {storeData.emailAddress || 'No email available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Phone</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'contactNo', value: e.currentTarget.textContent } })}>
                                     {storeData.contactNo || 'No phone number available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Address</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'address', value: e.currentTarget.textContent } })}>
                                     {storeData.address || 'No address available'}
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Availability</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable>
+                                <div className="text-section" style={{ padding: '10px 10px', flexDirection:'row' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'workingHours', value: e.currentTarget.textContent } })}>
                                     <div>
-                                        <div>
-                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                <span>Working hours</span>
-                                                <span className="grey">{storeData.workingHours || 'N/A'}</span>
-                                            </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span>Working hours</span>
+                                            <span className="grey">{storeData.workingHours || 'N/A'}</span>
                                         </div>
-                                        <img src={edit} alt="edit" />
                                     </div>
+                                    <img src={edit} alt="edit" />
                                 </div>
                             </div>
                         </motion.div>
@@ -282,6 +266,6 @@ const StoreSetting = () => {
             </motion.div>
         </div>
     );
-}
+};
 
 export default StoreSetting;
