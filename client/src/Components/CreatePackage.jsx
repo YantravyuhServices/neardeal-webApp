@@ -372,11 +372,15 @@ const CreatePackage = () => {
                   <span className="grey">
                     Add this package to
                     <select
+                      style={{ marginLeft:'10px' }}
                       className="select"
                       value={selectedCategory}
                       onChange={handleCategoryChange}
                     >
                       <option>Spa</option>
+                      <option>Massage</option>
+                      <option>Sauna</option>
+                      <option>Gym</option>
                     </select>
                   </span>
                 </div>
@@ -556,9 +560,9 @@ const CreatePackage = () => {
                   </select>
                 </div>
                 <div>
-                  <button className="button" onClick={handleSaveChanges}>
+                  {/* <button className="button" onClick={handleSaveChanges}>
                     Save changes
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </motion.div>

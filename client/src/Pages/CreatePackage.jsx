@@ -14,12 +14,13 @@ const CreatePackage = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
     const navigate = useNavigate();
-    const [active, setActive] = useState('spa');
+    const [active, setActive] = useState('all');
     const [isChecked, setIsChecked] = useState(false);
     const [expandedSection, setExpandedSection] = useState(null);
     const [spa, setSpa] = useState([]);
     const [massage, setMassage] = useState([]);
     const [sauna, setSauna] = useState([]);
+    const [all, setAll] = useState([]);
 
     const isActive = (path) => {
         return active === path ? 'btn' : '';
@@ -100,10 +101,33 @@ const CreatePackage = () => {
         }
     };
 
+    const fetchAll = async () => {
+        try {
+            const response = await fetch('https://wellness.neardeal.me/WAPI/invListingMW.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "vendorId": userData.ID,
+                    "invCat": 'all',
+                    "fetchType": 'List'
+                })
+            });
+
+            const data = await response.json();
+            console.log('Data', data);
+            setAll(data.data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     useEffect(() => {
         fetchSpa();
         fetchMassage();
         fetchSauna();
+        fetchAll();
     }, []);
 
     return (
@@ -116,7 +140,7 @@ const CreatePackage = () => {
                     <h1 className="secHead">Package</h1>
                     <div className="row mb-4 p-0">
                         <div className="col-lg-6 d-flex">
-                            {/* <button onClick={() => setActive('ads')} type="button" className={`${isActive('ads')} btn-outline-secondary border-0 active me-2`}>All</button> */}
+                            <button onClick={() => setActive('all')} type="button" className={`${isActive('all')} btn-outline-secondary border-0 active me-2`}>All</button>
                             <button onClick={() => setActive('spa')} type="button" className={`${isActive('spa')} btn-outline-secondary border-0 active me-2`}>Spa</button>
                             <button onClick={() => setActive('massage')} type="button" className={`${isActive('massage')} btn-outline-secondary border-0 active me-2`}>Massage</button>
                             <button onClick={() => setActive('sauna')} type="button" className={`${isActive('sauna')} btn-outline-secondary border-0 active me-2`}>Sauna</button>
@@ -146,6 +170,35 @@ const CreatePackage = () => {
                             </Link>
                         </div>
 
+                        {active === 'all' &&
+                            all.map((item, index) => (
+                                <div className='item' key={index}>
+                                    <div className='left' style={{ width: '84%' }}>
+                                        <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
+                                        <div style={{ margin: 'auto 0px' }}>
+                                            <span>{item.InventoryName}</span>
+                                        </div>
+                                    </div>
+                                    <div className='right' style={{ width: '14%', justifyContent: 'space-between' }}>
+                                        <div>
+                                            <div className="toggle-switch">
+                                                <input
+                                                    type="checkbox"
+                                                    id={`toggle-${index}`} // Unique ID for each toggle
+                                                    className="toggle-checkbox"
+                                                    checked={item.Status === '1' ? true : false}
+                                                    onChange={handleToggle}
+                                                />
+                                                <label htmlFor={`toggle-${index}`} className="toggle-label"></label>
+                                                <span>{item.Status === 1 ? 'Published' : 'Draft Saved'}</span>
+                                            </div>
+                                        </div>
+                                        <div onClick={() => navigate(`/package/${item.InventoryID}`)}>
+                                            <img width={25} src={edit1} alt="edit" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
 
                         {active === 'spa' &&
                             spa.map((item, index) => (
