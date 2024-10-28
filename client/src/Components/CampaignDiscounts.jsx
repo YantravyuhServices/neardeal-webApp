@@ -51,7 +51,9 @@ const CampaignDiscounts = () => {
     <motion.div initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}>
+      transition={{ duration: 1 }}
+      style={{ overflowY: 'auto', height: '60vh' }}
+      >
       {loading ? (
         'Loading..' // Loader
       ) : (
