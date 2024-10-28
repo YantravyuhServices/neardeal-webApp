@@ -62,7 +62,7 @@ const CampaignCoupon = () => {
         ? "Loading..." // Loader
         : couponData.map((coupon, index) => (
             <div className="item" key={index}>
-              <div className="left" style={{ width: "84%" }}>
+              <div className="left" style={{ width: "84%", padding:'10px' }}>
                 {/* <img
                   src="https://avatars.githubusercontent.com/u/97161064?v=4"
                   alt="Coupon"
