@@ -14,7 +14,7 @@ const CreatePackage = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
     const navigate = useNavigate();
-    const [active, setActive] = useState('ads');
+    const [active, setActive] = useState('spa');
     const [isChecked, setIsChecked] = useState(false);
     const [expandedSection, setExpandedSection] = useState(null);
     const [spa, setSpa] = useState([]);
@@ -120,6 +120,8 @@ const CreatePackage = () => {
                             <button onClick={() => setActive('spa')} type="button" className={`${isActive('spa')} btn-outline-secondary border-0 active me-2`}>Spa</button>
                             <button onClick={() => setActive('massage')} type="button" className={`${isActive('massage')} btn-outline-secondary border-0 active me-2`}>Massage</button>
                             <button onClick={() => setActive('sauna')} type="button" className={`${isActive('sauna')} btn-outline-secondary border-0 active me-2`}>Sauna</button>
+                            <button onClick={() => setActive('gym')} type="button" className={`${isActive('gym')} btn-outline-secondary border-0 active me-2`}>Gym</button>
+                            
                         </div>
                         <div className="col-lg-6 d-flex input-group justify-content-end ms-5" style={{ maxWidth: '45%' }}>
                             <input type="text" className="form-control" placeholder="Search..." />
