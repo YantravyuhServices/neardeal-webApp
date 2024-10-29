@@ -86,17 +86,17 @@ const CampaignNearReel = () => {
                                             </div>
                                         </div>
                                         <div className='right' style={{ width: '14%', justifyContent: 'space-between' }}>
-                                            <div>
+                                            {/* <div>
                                                 <div className="toggle-switch">
                                                     <input
                                                         type="checkbox"
                                                         id="toggle"
                                                         className="toggle-checkbox"
-                                                        checked={isChecked}
+                                                        checked={data.Status === '1' ? true : false}
                                                         onChange={handleToggle}
                                                     />
                                                     <label htmlFor="toggle" className="toggle-label"></label>
-                                                    {/* <span>Publish</span> */}
+                                                    <span>Publish</span>
                                                 </div>
 
                                                 <span>Publish</span>
@@ -104,7 +104,7 @@ const CampaignNearReel = () => {
 
                                             <div>
                                                 <img width={25} src={edit1} />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </>
