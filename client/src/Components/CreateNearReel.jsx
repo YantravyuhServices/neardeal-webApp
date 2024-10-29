@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import 'react-quill/dist/quill.snow.css'; 
+import 'react-quill/dist/quill.snow.css';
 import SideBar from "./SideBar";
 import background from "../assets/background.svg";
 import leftArrow from "../assets/leftArrow.svg";
@@ -17,14 +17,46 @@ const CreatePackage = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
     const [active, setActive] = useState('setup');
+    const [reel, setReel] = useState(''); 
     const isActive = (path) => {
         return active === path ? 'btn' : ''
     };
     const [isChecked, setIsChecked] = useState(false);
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState(null);
     const [date, setDate] = useState('');
     const [packageTitle, setPackageTitle] = useState('');
     const fileInputRef = useRef(null);
+
+    const handleUpload = async () => {
+        if (!images) {
+            toast.error("Please select a file to upload.");
+            return;
+        }
+    
+        const formdata = new FormData();
+        formdata.append("userid", userData.ID);
+        formdata.append("camtype", "Reel");
+        formdata.append("fileToUpload", images); // Use the file directly from the state
+    
+        try {
+            const requestOptions = {
+                method: "POST",
+                body: formdata,
+                redirect: "follow",
+            };
+            
+            const response = await fetch("https://wellness.neardeal.me/WAPI/uploadMediaFile.php", requestOptions);
+        
+            const data = await response.json();
+            // console.log(data);
+            setReel(data.message);
+            toast.success("Successfully Uploaded");
+    
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error("Upload failed: " + error.message);
+        }
+    };
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
@@ -33,16 +65,14 @@ const CreatePackage = () => {
 
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setImages(prevImages => [...prevImages, ...newImages]);
-    };
-
-    const handleRemoveImage = (index) => {
-        setImages(images.filter((_, i) => i !== index));
+        console.log(files[0]);
+        setImages(files[0]);
     };
 
     const handleUploadClick = () => {
         fileInputRef.current.click();
+        console.log(fileInputRef);
+
     };
 
     const handleInputChange = (e) => {
@@ -56,7 +86,7 @@ const CreatePackage = () => {
         }
     };
 
-    const handleSaveChanges = async() => {
+    const handleSaveChanges = async () => {
         try {
             const response = await fetch(
                 "https://wellness.neardeal.me/WAPI/updateNearReelMW.php",
@@ -70,15 +100,14 @@ const CreatePackage = () => {
                         "campaignTitle": packageTitle,
                         "reelDate": date,
                         "status": isChecked,
-                        "reelFileName": "ocean.mp4",
-                        "campaignId": "",
-                        "reelBase64": "asc"
+                        "reelFilePath": reel,
+                        "reelBase64": reel
                     }),
                 }
             );
 
             const data = await response.json();
-            console.log( data);
+            console.log(data);
             toast.success("Successfully Created NearReel");
 
         } catch (error) {
@@ -137,7 +166,7 @@ const CreatePackage = () => {
                                     value={packageTitle}
                                     onChange={handleInputChange}
                                 />
-                                <input style={{ width: '35%', padding: '10px 20px', border: '2px solid #E9ECEE', color: '#637381', borderRadius: '10px' }} type="date" value={date} onChange={(e)=>{setDate(e.target.value)}} placeholder="Valid Date & time"></input>
+                                <input style={{ width: '35%', padding: '10px 20px', border: '2px solid #E9ECEE', color: '#637381', borderRadius: '10px' }} type="date" value={date} onChange={(e) => { setDate(e.target.value) }} placeholder="Valid Date & time"></input>
 
                                 <Link style={{ marginTop: '20px', textDecoration: 'none', border: '2px solid #E9ECEE', width: 'fit-content', padding: '5px', borderRadius: '20px' }}><img src={ai} /> Generate Video with Near.AI</Link>
 
@@ -152,35 +181,15 @@ const CreatePackage = () => {
                                     <input
                                         type="file"
                                         multiple
-                                        accept="image/*"
+                                        accept=""
                                         onChange={handleImageUpload}
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                     />
                                 </div>
-                                <div className="image-select" style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                    {images.map((image, index) => (
-                                        <div key={index} style={{ position: 'relative', margin: '10px' }}>
-                                            <img src={image} alt={`uploaded ${index}`} style={{ objectFit: 'cover' }} />
-                                            <button
-                                                onClick={() => handleRemoveImage(index)}
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: '5px',
-                                                    right: '5px',
-                                                    background: 'none',
-                                                    border: 'none',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px' }} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
                                 <div style={{ justifyContent: "end" }}>
                                     <button style={{ borderRadius: '5px', padding: '0px 10px', margin: '0px 10px' }}>Remove All</button>
-                                    <button className="button">Upload</button>
+                                    <button onClick={handleUpload} className="button">Upload</button>
                                 </div>
 
                                 {/* <div className="url">

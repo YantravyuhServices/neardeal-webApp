@@ -63,7 +63,20 @@ const CampaignNearReel = () => {
                                 <>
                                     <div className='item'>
                                         <div className='left' style={{ width: '84%' }}>
-                                            <img src='https://avatars.githubusercontent.com/u/97161064?v=4' />
+                                            {/* <img src={`https://wellness.neardeal.me/WAPI/${data.ContentLocation}`} /> */}
+                                            <video
+                                                src={`https://wellness.neardeal.me/WAPI/${data.ContentLocation}`} // Assuming `data.ContentLocation` contains the video source
+                                                controls
+                                                style={{
+                                                    width: '50px',         // Set a fixed width
+                                                    height: '50px',        // Set a fixed height
+                                                    borderRadius: '50%',   // Make it circular
+                                                    objectFit: 'cover',    // Cover the area while maintaining aspect ratio
+                                                    overflow: 'hidden',     // Hide any overflow
+                                                    marginRight: '20px'
+                                                }}
+                                            />
+
                                             <div>
                                                 <span>{data.CampaignName}</span>
                                                 <div>
@@ -72,7 +85,7 @@ const CampaignNearReel = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='right' style={{ width: '20%', justifyContent: 'space-between' }}>
+                                        <div className='right' style={{ width: '14%', justifyContent: 'space-between' }}>
                                             <div>
                                                 <div className="toggle-switch">
                                                     <input
@@ -90,8 +103,6 @@ const CampaignNearReel = () => {
                                             </div>
 
                                             <div>
-                                                <img width={25} src={share} />
-                                                <img width={25} src={eye} />
                                                 <img width={25} src={edit1} />
                                             </div>
                                         </div>

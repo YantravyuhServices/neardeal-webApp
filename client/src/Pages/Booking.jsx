@@ -211,8 +211,6 @@ console.log("Unique", uniqueData);
         setTime(formattedTime);
       }
 
-
-
       setFetchSelectedDataComplete(true)
 
       console.log("data", data.message);

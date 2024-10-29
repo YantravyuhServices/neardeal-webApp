@@ -158,9 +158,6 @@ const CreatePackage = () => {
                     <div className="package-body">
                         <div className="spa" onClick={() => handleAccordionToggle('spa')}>
                             <div style={{ width: '8%' }}>
-                                {/* <img src={play} className={`play-icon ${expandedSection === 'spa' ? 'rotate' : ''}`} alt="play" />
-                                <span style={{ fontWeight: 'bold' }}>Spa</span>
-                                <img src={more} alt="more" /> */}
                             </div>
                             <Link to='/create-package'>
                                 <button>
