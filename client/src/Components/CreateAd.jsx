@@ -1,28 +1,27 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import "react-quill/dist/quill.snow.css"; // Import Quill's styles
 import SideBar from "./SideBar";
 import background from "../assets/background.svg";
 import leftArrow from "../assets/leftArrow.svg";
 import imageUpload from "../assets/imageUpload.svg";
+import crossIcon from "../assets/cross.svg";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import image1 from "../assets/bannerImage.svg";
 import aaaa from "../assets/bannerLogo.svg";
-import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 const EditAdd = () => {
-  const { id } = useParams();
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
+
   const [invImgFileName, setInvImgFileName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [images, setImages] = useState(null); // Use a single image instead of an array
   const [isChecked, setIsChecked] = useState(false);
   const fileInputRef = useRef(null);
-  const [data, setData] = useState(null);
 
   const handleSubmit = async () => {
     console.log(startDate, endDate, isChecked, invImgFileName);
@@ -56,37 +55,6 @@ const EditAdd = () => {
     }
   };
 
-
-  const fetchAd = async () => {
-
-    try {
-      const response = await fetch(
-        "https://wellness.neardeal.me/WAPI/AdsDetailsMW.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            campaignid: id
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log(data.message[0]);
-      setData(data.message[0]);
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Error:", error);
-    }
-  };
-  useEffect(() => {
-    // console.log(data);
-    
-    fetchAd();
-  }, [])
-
   const handleToggle = () => {
     setIsChecked(!isChecked);
     console.log("Toggle state:", !isChecked);
@@ -96,17 +64,22 @@ const EditAdd = () => {
     const file = e.target.files[0];
     setInvImgFileName(file.name);
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result; // Get the Base64 string from the reader
-        const parts = base64String.split(","); // Split the string at the comma
-        // console.log("--------", parts); // Now you can log it
-
-        // Update the state with the new data
-        setImages(parts[1]);
-      };
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result; // Get the Base64 string from the reader
+            const parts = base64String.split(","); // Split the string at the comma
+            // console.log("--------", parts); // Now you can log it
+            
+            // Update the state with the new data
+            setImages(parts[1]);
+        };
+        reader.readAsDataURL(file);
     }
+};
+
+
+  const handleRemoveImage = () => {
+    setImage(null); // Clear the selected image
   };
 
   const handleUploadClick = () => {
@@ -133,7 +106,7 @@ const EditAdd = () => {
           <div className="left">
             <button
               className="btn-outline-secondary border-0 active me-2"
-              //   onClick={() => setActive("content")}
+            //   onClick={() => setActive("content")}
               style={{ textDecoration: "none" }}
             >
               Content
@@ -189,10 +162,10 @@ const EditAdd = () => {
                     flexDirection: "column",
                   }}
                 >
-                <h3>{data?.CampaignName || ''}</h3>
+                  <h3>Sanmu Farm</h3>
                   <span>NearDeal Certified</span>
                 </div>
-                <img style={{ width: "100%", height:'30vh', borderRadius:'10px' }} src={`https://wellness.neardeal.me/WAPI/${data?.ContentLocation || ""}`} alt="banner" />
+                <img style={{ width: "100%" }} src={image1} alt="banner" />
                 <span
                   style={{
                     position: "absolute",

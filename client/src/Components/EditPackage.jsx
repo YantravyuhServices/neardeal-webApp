@@ -91,10 +91,6 @@ const CreatePackage = () => {
         }
     };
 
-    const handleRemoveImage = (index) => {
-        setImages(images.filter((_, i) => i !== index));
-    };
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         switch (name) {
@@ -137,7 +133,7 @@ const CreatePackage = () => {
             });
 
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             toast.success("Package updated successfully");
         } catch (error) {
             console.error('Error:', error);

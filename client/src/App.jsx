@@ -20,6 +20,7 @@ import EditPackage from "./Components/EditPackage.jsx";
 import EditCoupon from "./Components/EditCoupon.jsx";
 import NearAI from "./Pages/NearAI.jsx";
 import EditDiscount from "./Components/EditDiscount.jsx";
+import CreateAd from "./Components/CreateAd.jsx";
 
 function App() {
   const jwtUserToken = Cookies.get("user_token");
@@ -83,7 +84,16 @@ function App() {
             ></ProtectedRoutes>
           }
         />
-        
+        <Route
+          path="/campaign/ads/:id"
+          exact
+          element={
+            <ProtectedRoutes
+              Component={CampaignAdsEdit}
+              isUserLoggedIn={isUserLoggedIn}
+            />
+          }
+        />
         <Route
           path="/campaign/create-nearreel"
           exact
@@ -109,7 +119,7 @@ function App() {
           exact
           element={
             <ProtectedRoutes
-              Component={CampaignAdsEdit}
+              Component={CreateAd}
               isUserLoggedIn={isUserLoggedIn}
             />
           }

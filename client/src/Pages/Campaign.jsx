@@ -141,6 +141,26 @@ const Campaign = () => {
                   <span style={{ color: "black" }}>Create Discounts</span>
                 </Link>
               )}
+              {active === "ads" && (
+                <>
+                  {/* <Link style={{display:'flex', alignItems:'center', textDecoration:'none', border:'2px solid black', padding:'0px 20px'}} to='/campaign/redeemcode' className=" btn-outline-secondary ms-3 me-0 rounded-3" type="button"><img src={clock} /> <span style={{ color: 'black' }}>Redeem record</span></Link> */}
+                  <Link
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      textDecoration: "none",
+                      border: "2px solid black",
+                      padding: "0px 20px",
+                    }}
+                    to="/campaign/ads"
+                    className=" btn-outline-secondary ms-3 me-0 rounded-3"
+                    type="button"
+                  >
+                    <img src={plus} />{" "}
+                    <span style={{ color: "black" }}>Create Ad</span>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
           <table className="table table-hover mt-5">
