@@ -68,7 +68,7 @@ const CampaignCoupon = () => {
                   alt="Coupon"
                 /> */}
                 {/* <div> */}
-                <span>{coupon.CouponTitle}</span>
+                <span style={{ color: '#00A76F' }}>{coupon.CouponTitle}</span>
                 {/* <div>
                   <div>
                     <img style={{ width: 'max-content' }} src={eye1} alt="Views" />
