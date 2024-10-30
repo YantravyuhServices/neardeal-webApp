@@ -79,15 +79,15 @@ const CampaignNearReel = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1 }}>
-            <div className='campaign-nearreel'>
+            <div className='campaign-nearreel' style={{ background:'none' }}>
                 {
                     nearreel.length === 0 ?
-                        <div style={{ textAlign: 'center' }}>No Campaigns</div>
+                        'No NearReel Campaigns Available'
                         :
                         nearreel.map((data) => {
                             return (
                                 <>
-                                    <div className='item' style={{ justifyContent:'space-between' }}>
+                                    <div className='item' style={{ justifyContent:'space-between', marginBottom: '10px' }}>
                                         <div className='left' style={{ width: '84%' }}>
                                             {/* <img src={`https://wellness.neardeal.me/WAPI/${data.ContentLocation}`} /> */}
                                             <video
@@ -129,8 +129,7 @@ const CampaignNearReel = () => {
                                             </div> */}
 
                                             <div>
-                                                {/* <img width={25} src={edit1} /> */}
-                                                <button onClick={(e)=> deleteNR(data.CampaignID)}>Delete</button>
+                                                <i style={{ fontSize:'20px', color:'red', cursor:'pointer' }} onClick={()=> deleteNR(data.CampaignID)} className="bi bi-trash3-fill"></i>
                                             </div>
                                         </div>
                                     </div>
