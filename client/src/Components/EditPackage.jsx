@@ -16,8 +16,9 @@ const CreatePackage = () => {
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
     console.log("User Data:", userData);
-    
+
     const [invImgFileName, setInvImgFileName] = useState('');
+    const [unit, setUnit] = useState("minutes"); // Default to "minutes"
     const [inventoryData, setInventoryData] = useState(null);
     const [active, setActive] = useState('setup');
     const [isChecked, setIsChecked] = useState(false);
@@ -57,6 +58,10 @@ const CreatePackage = () => {
         fetchData();
     }, []);
 
+    const handleUnitChange = (e) => {
+        setUnit(e.target.value);
+      };    
+
     useEffect(() => {
         if (inventoryData) {
             setPackageTitle(inventoryData.InventoryName);
@@ -83,7 +88,7 @@ const CreatePackage = () => {
                 const base64String = reader.result; // Get the Base64 string from the reader
                 const parts = base64String.split(","); // Split the string at the comma
                 console.log("--------", parts); // Now you can log it
-                
+
                 // Update the state with the new data
                 setImages(parts[1]);
             };
@@ -257,17 +262,18 @@ const CreatePackage = () => {
                                     />
                                 </div>
                                 <div className="grey">Duration</div>
-                                <div className="add-on" style={{ justifyContent: 'start' }}>
+                                <div className="add-on" style={{ display: "flex", justifyContent: "start" }}>
                                     <input
-                                        style={{ margin: '0px 4px' }}
+                                        style={{ margin: "0px 4px" }}
                                         type="text"
                                         name="duration"
                                         value={duration}
                                         onChange={handleInputChange}
+                                        placeholder="Enter duration"
                                     />
-                                    <select className="select" value="minutes">
-                                        <option>minutes</option>
-                                        <option>hours</option>
+                                    <select className="select" value={unit} onChange={handleUnitChange}>
+                                        <option value="minutes">minutes</option>
+                                        <option value="hours">hours</option>
                                     </select>
                                 </div>
                             </div>

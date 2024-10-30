@@ -20,6 +20,7 @@ const CreatePackage = () => {
     const [spa, setSpa] = useState([]);
     const [massage, setMassage] = useState([]);
     const [sauna, setSauna] = useState([]);
+    const [gym, setGym] = useState([]);
     const [all, setAll] = useState([]);
 
     const isActive = (path) => {
@@ -101,6 +102,28 @@ const CreatePackage = () => {
         }
     };
 
+    const fetchgym = async () => {
+        try {
+            const response = await fetch('https://wellness.neardeal.me/WAPI/invListingMW.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "vendorId": userData.ID,
+                    "invCat": 'gym',
+                    "fetchType": 'List'
+                })
+            });
+
+            const data = await response.json();
+            console.log('Data', data);
+            setGym(data.data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     const fetchAll = async () => {
         try {
             const response = await fetch('https://wellness.neardeal.me/WAPI/invListingMW.php', {
@@ -128,6 +151,7 @@ const CreatePackage = () => {
         fetchMassage();
         fetchSauna();
         fetchAll();
+        fetchgym();
     }, []);
 
     return (
@@ -285,7 +309,34 @@ const CreatePackage = () => {
                             </motion.div>
                         ))}
 
-                        {/* Additional categories can be handled similarly to the spa section */}
+                        {active === 'gym' && gym.map((item, index) => (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className='item' key={index}>
+                                <div className='left' style={{ width: '84%' }}>
+                                    <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
+                                    <div style={{ margin: 'auto 0px' }}>
+                                        <span>{item.InventoryName}</span>
+                                    </div>
+                                </div>
+                                <div className='right' style={{ width: '14%', justifyContent: 'space-between' }}>
+                                    <div>
+                                        <div className="toggle-switch">
+                                            <input
+                                                type="checkbox"
+                                                id={`toggle-${index}`} // Unique ID for each toggle
+                                                className="toggle-checkbox"
+                                                checked={item.Status === '1' ? true : false}
+                                                onChange={handleToggle}
+                                            />
+                                            <label htmlFor={`toggle-${index}`} className="toggle-label"></label>
+                                            <span>{item.Status === 1 ? 'Published' : 'Draft Saved'}</span>
+                                        </div>
+                                    </div>
+                                    <div onClick={() => navigate(`/package/${item.InventoryID}`)}>
+                                        <img width={25} src={edit1} alt="edit" />
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
 
                     </div>
                 </div>

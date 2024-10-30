@@ -87,6 +87,7 @@ const CreatePackage = () => {
   const [addons, setAddons] = useState(["", ""]);
   const [duration, setDuration] = useState("");
   const fileInputRef = useRef(null);
+  const [unit, setUnit] = useState("minutes"); // Default to "minutes"
   const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
   const [invImgFileName, setInvImgFileName] = useState("");
   const [isChecked1, setIsChecked1] = useState(false);
@@ -150,52 +151,52 @@ const CreatePackage = () => {
     const file = e.target.files[0];
     setInvImgFileName(file.name);
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result; // Get the Base64 string from the reader
-            const parts = base64String.split(","); // Split the string at the comma
-            console.log("--------", parts); // Now you can log it
-            
-            // Update the state with the new data
-            setImages(parts[1]);
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result; // Get the Base64 string from the reader
+        const parts = base64String.split(","); // Split the string at the comma
+        console.log("--------", parts); // Now you can log it
+
+        // Update the state with the new data
+        setImages(parts[1]);
+      };
+      reader.readAsDataURL(file);
     }
-};
+  };
 
-//   const handleImageUpload = (event) => {
-//     const files = Array.from(event.target.files);
-//     const newImages = [];
+  //   const handleImageUpload = (event) => {
+  //     const files = Array.from(event.target.files);
+  //     const newImages = [];
 
-//     const readFileAsBase64 = (file) => {
-//         return new Promise((resolve) => {
-//             const reader = new FileReader();
-//             reader.onloadend = () => {
-//                 const base64String = reader.result; // Get the Base64 string from the reader
-//                 const parts = base64String.split(","); // Split the string at the comma
-//                 console.log("Split parts:", parts); // Log the split parts
-                
-//                 // Send split parts to your API
-//                 sendDataToAPI(parts);
+  //     const readFileAsBase64 = (file) => {
+  //         return new Promise((resolve) => {
+  //             const reader = new FileReader();
+  //             reader.onloadend = () => {
+  //                 const base64String = reader.result; // Get the Base64 string from the reader
+  //                 const parts = base64String.split(","); // Split the string at the comma
+  //                 console.log("Split parts:", parts); // Log the split parts
 
-//                 resolve(parts); // Resolve the promise with the parts
-//             };
-//             reader.readAsDataURL(file);
-//         });
-//     };
+  //                 // Send split parts to your API
+  //                 sendDataToAPI(parts);
 
-//     // Process each file and read it as Base64
-//     const filePromises = files.map(file => readFileAsBase64(file));
-//     Promise.all(filePromises).then((allParts) => {
-//         // Create object URLs for the new images
-//         allParts.forEach(parts => {
-//             newImages.push(URL.createObjectURL(parts[1])); // Use the second part (the data)
-//         });
+  //                 resolve(parts); // Resolve the promise with the parts
+  //             };
+  //             reader.readAsDataURL(file);
+  //         });
+  //     };
 
-//         // Update the state with the new image URLs
-//         setImages((prevImages) => [...prevImages, ...newImages]);
-//     });
-// };
+  //     // Process each file and read it as Base64
+  //     const filePromises = files.map(file => readFileAsBase64(file));
+  //     Promise.all(filePromises).then((allParts) => {
+  //         // Create object URLs for the new images
+  //         allParts.forEach(parts => {
+  //             newImages.push(URL.createObjectURL(parts[1])); // Use the second part (the data)
+  //         });
+
+  //         // Update the state with the new image URLs
+  //         setImages((prevImages) => [...prevImages, ...newImages]);
+  //     });
+  // };
 
   const handleRemoveImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
@@ -251,6 +252,11 @@ const CreatePackage = () => {
     []
   );
 
+  const handleUnitChange = (e) => {
+    setUnit(e.target.value);
+  };
+
+
   const handleSaveChanges = async () => {
     // console.log("Package Title:", packageTitle);
     // console.log("Category:", selectedCategory);
@@ -277,7 +283,7 @@ const CreatePackage = () => {
             invCat: selectedCategory,
             whatIncluded: editorStates.included.content,
             TnC: editorStates.tnc.content,
-            duration: duration,
+            duration: duration + unit,
             status: isChecked,
             price: 999,
             currency: "HKD",
@@ -372,7 +378,7 @@ const CreatePackage = () => {
                   <span className="grey">
                     Add this package to
                     <select
-                      style={{ marginLeft:'10px' }}
+                      style={{ marginLeft: '10px' }}
                       className="select"
                       value={selectedCategory}
                       onChange={handleCategoryChange}
@@ -546,7 +552,7 @@ const CreatePackage = () => {
                                 </div> */}
 
                 <div className="grey">Duration</div>
-                <div className="add-on" style={{ justifyContent: "start" }}>
+                {/* <div className="add-on" style={{ justifyContent: "start" }}>
                   <input
                     style={{ margin: "0px 4px" }}
                     type="text"
@@ -557,6 +563,20 @@ const CreatePackage = () => {
                   <select className="select" value="minutes">
                     <option>minutes</option>
                     <option>hours</option>
+                  </select>
+                </div> */}
+                <div className="add-on" style={{ display: "flex", justifyContent: "start" }}>
+                  <input
+                    style={{ margin: "0px 4px" }}
+                    type="text"
+                    name="duration"
+                    value={duration}
+                    onChange={handleInputChange}
+                    placeholder="Enter duration"
+                  />
+                  <select className="select" value={unit} onChange={handleUnitChange}>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
                   </select>
                 </div>
                 <div>
@@ -847,11 +867,10 @@ const CreatePackage = () => {
                         <button
                           type="button"
                           key={day}
-                          className={`btn ${
-                            set.days.includes(day)
-                              ? "btn-primary"
-                              : "btn-outline-dark"
-                          }`}
+                          className={`btn ${set.days.includes(day)
+                            ? "btn-primary"
+                            : "btn-outline-dark"
+                            }`}
                           onClick={() => handleDayToggle(index, day)}
                         >
                           {day}
@@ -958,11 +977,10 @@ const CreatePackage = () => {
                         <button
                           type="button"
                           key={day}
-                          className={`btn ${
-                            group.selectedDays.includes(day)
-                              ? "btn-success"
-                              : "btn-outline-dark"
-                          }`}
+                          className={`btn ${group.selectedDays.includes(day)
+                            ? "btn-success"
+                            : "btn-outline-dark"
+                            }`}
                           onClick={() => handleDayToggle(groupIndex, day)}
                         >
                           {day}
