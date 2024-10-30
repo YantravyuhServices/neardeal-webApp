@@ -36,7 +36,7 @@ const CampaignNearReel = () => {
             );
 
             const data = await response.json();
-            console.log(data.message);
+            // console.log(data.message);
             setNearreel(data.message);
 
         } catch (error) {
@@ -46,7 +46,33 @@ const CampaignNearReel = () => {
 
     useEffect(() => {
         fetchNearReel();
-    }, []);
+    }, [nearreel]);
+
+    const deleteNR = async (id) => {
+        console.log('ID:', id);
+        
+        try {
+            const response = await fetch(
+                "https://wellness.neardeal.me/WAPI/deleteNearReelMW.php",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "campaignID": id,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            console.log(data.message);
+            toast.success("NearReel Deleted Successfully");
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
     return (
         <motion.div initial={{ opacity: 0 }}
@@ -61,18 +87,18 @@ const CampaignNearReel = () => {
                         nearreel.map((data) => {
                             return (
                                 <>
-                                    <div className='item'>
+                                    <div className='item' style={{ justifyContent:'space-between' }}>
                                         <div className='left' style={{ width: '84%' }}>
                                             {/* <img src={`https://wellness.neardeal.me/WAPI/${data.ContentLocation}`} /> */}
                                             <video
                                                 src={`https://wellness.neardeal.me/WAPI/${data.ContentLocation}`} // Assuming `data.ContentLocation` contains the video source
                                                 controls
                                                 style={{
-                                                    width: '50px',         // Set a fixed width
-                                                    height: '50px',        // Set a fixed height
-                                                    borderRadius: '50%',   // Make it circular
-                                                    objectFit: 'cover',    // Cover the area while maintaining aspect ratio
-                                                    overflow: 'hidden',     // Hide any overflow
+                                                    width: '50px',         
+                                                    height: '50px',       
+                                                    borderRadius: '50%',  
+                                                    objectFit: 'cover',   
+                                                    overflow: 'hidden',     
                                                     marginRight: '20px'
                                                 }}
                                             />
@@ -85,7 +111,7 @@ const CampaignNearReel = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='right' style={{ width: '14%', justifyContent: 'space-between' }}>
+                                        <div className='right' style={{ width: '5%', justifyContent: 'space-between' }}>
                                             {/* <div>
                                                 <div className="toggle-switch">
                                                     <input
@@ -100,11 +126,12 @@ const CampaignNearReel = () => {
                                                 </div>
 
                                                 <span>Publish</span>
-                                            </div>
+                                            </div> */}
 
                                             <div>
-                                                <img width={25} src={edit1} />
-                                            </div> */}
+                                                {/* <img width={25} src={edit1} /> */}
+                                                <button onClick={(e)=> deleteNR(data.CampaignID)}>Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </>

@@ -169,7 +169,7 @@ const CreatePackage = () => {
 
                         {active === 'all' &&
                             all.map((item, index) => (
-                                <div className='item' key={index}>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className='item' key={index}>
                                     <div className='left' style={{ width: '84%' }}>
                                         <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
                                         <div style={{ margin: 'auto 0px' }}>
@@ -194,12 +194,12 @@ const CreatePackage = () => {
                                             <img width={25} src={edit1} alt="edit" />
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
 
                         {active === 'spa' &&
                             spa.map((item, index) => (
-                                <div className='item' key={index}>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className='item' key={index}>
                                     <div className='left' style={{ width: '84%' }}>
                                         <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
                                         <div style={{ margin: 'auto 0px' }}>
@@ -224,11 +224,11 @@ const CreatePackage = () => {
                                             <img width={25} src={edit1} alt="edit" />
                                         </div>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
 
                         {active === 'massage' && massage.map((item, index) => (
-                            <div className='item' key={index}>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className='item' key={index}>
                                 <div className='left' style={{ width: '84%' }}>
                                     <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="massage" />
                                     <div style={{ margin: 'auto 0px' }}>
@@ -253,11 +253,11 @@ const CreatePackage = () => {
                                         <img width={25} src={edit1} alt="edit" />
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
 
                         {active === 'sauna' && sauna.map((item, index) => (
-                            <div className='item' key={index}>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className='item' key={index}>
                                 <div className='left' style={{ width: '84%' }}>
                                     <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`https://wellness.neardeal.me/WAPI/${item.ImageLocation}`} alt="spa" />
                                     <div style={{ margin: 'auto 0px' }}>
@@ -282,7 +282,7 @@ const CreatePackage = () => {
                                         <img width={25} src={edit1} alt="edit" />
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
 
                         {/* Additional categories can be handled similarly to the spa section */}

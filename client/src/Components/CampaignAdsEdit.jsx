@@ -16,14 +16,18 @@ const EditAdd = () => {
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
 
+  const [invImgFileName, setInvImgFileName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [image, setImage] = useState(null); // Use a single image instead of an array
+  const [images, setImages] = useState(null); // Use a single image instead of an array
   const [isChecked, setIsChecked] = useState(false);
   const fileInputRef = useRef(null);
 
+
+
   const handleSubmit = async () => {
-    console.log(image);
+    console.log(startDate, endDate, isChecked, invImgFileName);
+    
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/createAdsMW.php",
@@ -38,8 +42,8 @@ const EditAdd = () => {
             startDate: startDate,
             endDate: endDate,
             status: isChecked ? 1 : 0,
-            imgAdFileName: "weg",
-            imgAdBase64: image,
+            imgAdFileName: invImgFileName,
+            imgAdBase64: images,
           }),
         }
       );
@@ -58,13 +62,23 @@ const EditAdd = () => {
     console.log("Toggle state:", !isChecked);
   };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the first selected file
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setInvImgFileName(file.name);
     if (file) {
-      const newImage = URL.createObjectURL(file);
-      setImage(newImage); // Set the image state to this new image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64String = reader.result; // Get the Base64 string from the reader
+            const parts = base64String.split(","); // Split the string at the comma
+            // console.log("--------", parts); // Now you can log it
+            
+            // Update the state with the new data
+            setImages(parts[1]);
+        };
+        reader.readAsDataURL(file);
     }
-  };
+};
+
 
   const handleRemoveImage = () => {
     setImage(null); // Clear the selected image
