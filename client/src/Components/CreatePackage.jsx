@@ -283,7 +283,7 @@ const CreatePackage = () => {
             invCat: selectedCategory,
             whatIncluded: editorStates.included.content,
             TnC: editorStates.tnc.content,
-            duration: duration + unit,
+            duration: duration,
             status: isChecked,
             price: 999,
             currency: "HKD",
