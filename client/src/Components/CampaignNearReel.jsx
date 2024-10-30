@@ -19,35 +19,34 @@ const CampaignNearReel = () => {
         console.log('Toggle state:', !isChecked);
     };
 
+    useEffect(() => {
+        fetchNearReel();
+    }, []); // Empty dependency array to run only on mount
+    
     const fetchNearReel = async () => {
         try {
             const response = await fetch(
-                "https://wellness.neardeal.me/WAPI/merchantAdsListingMW.php",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        vendorId: userData.ID,
-                        camFilter: 'nearreel',
-                    }),
-                }
+              "https://wellness.neardeal.me/WAPI/merchantAdsListingMW.php",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  vendorID: userData.ID,
+                  camFilter: "nearreel",
+                }),
+              }
             );
-
+      
             const data = await response.json();
-            // console.log(data.message);
             setNearreel(data.message);
-
-        } catch (error) {
-            console.error("Error:", error);
+            console.log("Coupon data:", data);
+          } catch (error) {
+            console.error("Fetch error:", error);
         }
     };
-
-    useEffect(() => {
-        fetchNearReel();
-    }, [nearreel]);
-
+    
     const deleteNR = async (id) => {
         console.log('ID:', id);
         
@@ -60,7 +59,8 @@ const CampaignNearReel = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        "campaignID": id,
+                        "vendorID": userData.ID,
+                        "camFilter": "nearreel",
                     }),
                 }
             );
