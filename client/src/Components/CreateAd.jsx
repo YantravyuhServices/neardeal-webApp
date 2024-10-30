@@ -176,7 +176,7 @@ const EditAdd = () => {
                 >
                   Ad
                 </span>
-                <img
+                {/* <img
                   style={{
                     position: "absolute",
                     textAlign: "center",
@@ -187,7 +187,7 @@ const EditAdd = () => {
                   }}
                   src={aaaa}
                   alt="logo"
-                />
+                /> */}
                 <button
                   style={{
                     position: "absolute",

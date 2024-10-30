@@ -55,7 +55,7 @@ const CampaignAds = () => {
                 ads.map((item, index) => {
                     return (
                         <>
-                            <div key={index} style={{ padding: '10px 20px' }} className="campaign-ads">
+                            <div key={index} style={{ padding: '10px 20px', marginBottom:'10px' }} className="campaign-ads">
                                 <div>
                                     <span>{item.CampaignName}</span>
                                     <span style={{ fontSize: '14px' }} className="grey">Total Cost: $100</span>

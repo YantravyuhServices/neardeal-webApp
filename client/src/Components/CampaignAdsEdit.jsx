@@ -37,6 +37,7 @@ const EditAdd = () => {
           },
           body: JSON.stringify({
             vendorId: userData.ID,
+            campaignId: id,
             campaignTitle: "Store ka nam",
             startDate: startDate,
             endDate: endDate,
@@ -55,7 +56,6 @@ const EditAdd = () => {
       toast.error("Error:", error);
     }
   };
-
 
   const fetchAd = async () => {
 
@@ -81,6 +81,7 @@ const EditAdd = () => {
       toast.error("Error:", error);
     }
   };
+
   useEffect(() => {
     // console.log(data);
     
@@ -203,7 +204,7 @@ const EditAdd = () => {
                 >
                   Ad
                 </span>
-                <img
+                {/* <img
                   style={{
                     position: "absolute",
                     textAlign: "center",
@@ -214,7 +215,7 @@ const EditAdd = () => {
                   }}
                   src={aaaa}
                   alt="logo"
-                />
+                /> */}
                 <button
                   style={{
                     position: "absolute",
