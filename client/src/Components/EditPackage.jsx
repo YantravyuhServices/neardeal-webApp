@@ -129,6 +129,7 @@ const CreatePackage = () => {
                     whatIncluded: editorStates.included.content,
                     TnC: editorStates.tnc.content,
                     duration: duration,
+                    unit: unit,
                     status: isChecked ? 1 : 0,
                     price: 999,
                     currency: "HKD",
