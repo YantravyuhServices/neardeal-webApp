@@ -56,6 +56,8 @@ const CreatePackage = () => {
 
     useEffect(() => {
         fetchData();
+        console.log("Inventory Data:", inventoryData);
+        
     }, []);
 
     const handleUnitChange = (e) => {
@@ -69,7 +71,7 @@ const CreatePackage = () => {
     useEffect(() => {
         if (inventoryData) {
             setPackageTitle(inventoryData.InventoryName);
-            setIsChecked(inventoryData.Status === 1);
+            setIsChecked(inventoryData.Status === '1' ? true : false);
             setDuration(inventoryData.Duration || '');
             setEditorStates(prev => ({
                 ...prev,
@@ -150,11 +152,15 @@ const CreatePackage = () => {
             toast.error('An error occurred');
         }
     };
+
     const fileInputRef = useRef(null);
+    
     const handleUploadClick = () => {
         fileInputRef.current.click();
     };
+
     if (!inventoryData) return <div>Loading...</div>;
+
     return (
         <div style={{ display: 'flex' }}>
             <SideBar />
@@ -191,7 +197,7 @@ const CreatePackage = () => {
                                 <div>
                                     <span className="grey">Add this package to
                                         <select disabled className="select" value={selectedCategory} onChange={handleCategoryChange}>
-                                            <option>Spa</option>
+                                            <option>{inventoryData && inventoryData.InventoryCat}</option>
                                         </select>
                                     </span>
                                 </div>
@@ -201,18 +207,7 @@ const CreatePackage = () => {
                                     type="text"
                                     value={packageTitle}
                                     onChange={handleInputChange}
-                                />
-                                {/* <div className="image-upload" style={{ cursor: 'pointer', textAlign: 'center' }}>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        style={{ display: 'none' }}
-                                    />
-                                    <span style={{ marginTop: '20px', fontWeight: 'bold', fontSize: '20px' }}>Select files</span>
-                                    <p className="grey">Drop files here or click <span style={{ color: '#00A76F' }}>browse</span> through your machine</p>
-                                </div> */}
+                                />      
 
                                 <div
                                     className="image-upload"
