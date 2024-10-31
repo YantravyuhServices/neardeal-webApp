@@ -49,21 +49,21 @@ const CreatePackage = () => {
     const file = e.target.files[0];
     setInvImgFileName(file.name);
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result; // Get the Base64 string from the reader
-            const parts = base64String.split(","); // Split the string at the comma
-            console.log("--------", parts); // Now you can log it
-            
-            // Update the state with the new data
-            setImages(parts[1]);
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result; // Get the Base64 string from the reader
+        const parts = base64String.split(","); // Split the string at the comma
+        console.log("--------", parts); // Now you can log it
+
+        // Update the state with the new data
+        setImages(parts[1]);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+    setImages(null);
   };
 
   const handleUploadClick = () => {
@@ -221,23 +221,29 @@ const CreatePackage = () => {
                   />
                 </div>
 
-                <div className="image-select">
-                  {images.map((image, index) => (
-                    <div key={index} style={{ position: "relative" }}>
-                      <img src={image} alt={`uploaded ${index}`} />
-                      <button
-                        onClick={() => handleRemoveImage(index)}
-                        style={{
-                          position: "absolute",
-                          top: "5px",
-                          right: "5px",
-                        }}
-                      >
-                        <img src={crossIcon} alt="remove" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                {images && (
+                  <div style={{ position: 'relative', margin: '10px' }}>
+                    <img
+                      src={`data:image/jpeg;base64,${images}`}
+                      alt="uploaded"
+                      style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                    />
+                    <button
+                      onClick={handleRemoveImage}
+                      style={{
+                        position: 'absolute',
+                        top: '5px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        left: '55px',
+                      }}
+                    >
+                      <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position: 'absolute', left: '0px' }} />
+                    </button>
+                  </div>
+                )}
+
 
                 <div className="grey mt-2">Discount Amount</div>
                 <input

@@ -21,17 +21,6 @@ const CreatePackage = () => {
   const jwtUserToken = Cookies.get("user_token");
   const userData = JSON.parse(jwtUserToken);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const handleProfileClick = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleLogout = () => {
-    onLogout();
-    setIsDropdownOpen(false); // Close dropdown after logout
-  };
-
   const [availabilityGroups, setAvailabilityGroups] = useState([
     {
       timeSlots: [
@@ -141,12 +130,6 @@ const CreatePackage = () => {
     console.log("Toggle state:", !isChecked);
   };
 
-  // const handleImageUpload = (event) => {
-  //   const files = Array.from(event.target.files);
-  //   const newImages = files.map((file) => URL.createObjectURL(file));
-  //   setImages((prevImages) => [...prevImages, ...newImages]);
-  // };
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setInvImgFileName(file.name);
@@ -164,42 +147,8 @@ const CreatePackage = () => {
     }
   };
 
-  //   const handleImageUpload = (event) => {
-  //     const files = Array.from(event.target.files);
-  //     const newImages = [];
-
-  //     const readFileAsBase64 = (file) => {
-  //         return new Promise((resolve) => {
-  //             const reader = new FileReader();
-  //             reader.onloadend = () => {
-  //                 const base64String = reader.result; // Get the Base64 string from the reader
-  //                 const parts = base64String.split(","); // Split the string at the comma
-  //                 console.log("Split parts:", parts); // Log the split parts
-
-  //                 // Send split parts to your API
-  //                 sendDataToAPI(parts);
-
-  //                 resolve(parts); // Resolve the promise with the parts
-  //             };
-  //             reader.readAsDataURL(file);
-  //         });
-  //     };
-
-  //     // Process each file and read it as Base64
-  //     const filePromises = files.map(file => readFileAsBase64(file));
-  //     Promise.all(filePromises).then((allParts) => {
-  //         // Create object URLs for the new images
-  //         allParts.forEach(parts => {
-  //             newImages.push(URL.createObjectURL(parts[1])); // Use the second part (the data)
-  //         });
-
-  //         // Update the state with the new image URLs
-  //         setImages((prevImages) => [...prevImages, ...newImages]);
-  //     });
-  // };
-
   const handleRemoveImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+    setImages(null); // Clear the selected image
   };
 
   const handleUploadClick = () => {
@@ -221,12 +170,6 @@ const CreatePackage = () => {
       default:
         break;
     }
-  };
-
-  const handleAddonsChange = (index, value) => {
-    const newAddons = [...addons];
-    newAddons[index] = value;
-    setAddons(newAddons);
   };
 
   const handleCategoryChange = (e) => {
@@ -258,17 +201,6 @@ const CreatePackage = () => {
 
 
   const handleSaveChanges = async () => {
-    // console.log("Package Title:", packageTitle);
-    // console.log("Category:", selectedCategory);
-    // console.log("Included Content:", editorStates.included.content);
-    // console.log("Opening Hours Content:", editorStates.openingHours.content);
-    // console.log("TNC Content:", editorStates.tnc.content);
-    // console.log("URL:", url);
-    // console.log("Add-ons:", addons);
-    // console.log("Duration:", duration);
-    // console.log("Images:", images);
-    // console.log("Is Checked:", isChecked);
-    // console.log("Editor States:", editorStates);
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/createPackageMW.php",
@@ -296,8 +228,6 @@ const CreatePackage = () => {
 
       const data = await response.json();
       console.log(data);
-      // You may want to refresh the booking data after editing
-      // handleSubmit(active);
       toast.success("Package created successfully");
     } catch (error) {
       console.error("Error:", error);
@@ -332,8 +262,6 @@ const CreatePackage = () => {
             >
               Package Setup
             </button>
-            {/* <button className={`${isActive('availability')} btn-outline-secondary border-0 active me-2`} onClick={() => setActive('availability')} style={{ textDecoration: 'none' }}>Availability</button>
-                        <button className={`${isActive('limits')} btn-outline-secondary border-0 active me-2`} onClick={() => setActive('limits')} style={{ textDecoration: 'none' }}>Limits</button> */}
           </div>
 
           {/* package setUp */}
@@ -364,8 +292,7 @@ const CreatePackage = () => {
                 </div>
 
                 <div className="mid">
-                  {/* <span><img src={copy} alt="copy link" /> Copy Link</span>
-                                    <span><img src={preview} alt="preview" /> Preview</span> */}
+
                 </div>
 
                 <div className="right">
@@ -428,18 +355,30 @@ const CreatePackage = () => {
                     style={{ display: "none" }}
                   />
                 </div>
-                <div style={{ justifyContent: "end" }}>
+
+                {images && (
+                <div style={{ position: 'relative', margin: '10px' }}>
+                  <img
+                    src={`data:image/jpeg;base64,${images}`}
+                    alt="uploaded"
+                    style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                  />
                   <button
+                    onClick={handleRemoveImage}
                     style={{
-                      borderRadius: "5px",
-                      padding: "0px 10px",
-                      margin: "0px 10px",
+                      position: 'absolute',
+                      top: '5px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      left: '55px',
                     }}
                   >
-                    Remove All
+                    <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position:'absolute', left:'0px' }} />
                   </button>
-                  <button className="button">Upload</button>
                 </div>
+              )}
+               
                 <div className="grey">What's included</div>
                 <div className="text-section">
                   <ReactQuill

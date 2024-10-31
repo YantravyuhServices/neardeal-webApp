@@ -60,7 +60,11 @@ const CreatePackage = () => {
 
     const handleUnitChange = (e) => {
         setUnit(e.target.value);
-      };    
+    };
+
+    const handleRemoveImage = () => {
+        setImages(null);
+    };
 
     useEffect(() => {
         if (inventoryData) {
@@ -227,6 +231,29 @@ const CreatePackage = () => {
                                         style={{ display: 'none' }}
                                     />
                                 </div>
+
+                                {images && (
+                                    <div style={{ position: 'relative', margin: '10px' }}>
+                                        <img
+                                            src={`data:image/jpeg;base64,${images}`}
+                                            alt="uploaded"
+                                            style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                                        />
+                                        <button
+                                            onClick={handleRemoveImage}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '5px',
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                left: '55px',
+                                            }}
+                                        >
+                                            <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position: 'absolute', left: '0px' }} />
+                                        </button>
+                                    </div>
+                                )}
 
                                 <div className="grey">What's included</div>
                                 <div className="text-section">

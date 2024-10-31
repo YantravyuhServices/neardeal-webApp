@@ -25,7 +25,7 @@ const EditAdd = () => {
 
   const handleSubmit = async () => {
     console.log(startDate, endDate, isChecked, invImgFileName);
-    
+
     try {
       const response = await fetch(
         "https://wellness.neardeal.me/WAPI/createAdsMW.php",
@@ -64,22 +64,20 @@ const EditAdd = () => {
     const file = e.target.files[0];
     setInvImgFileName(file.name);
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result; // Get the Base64 string from the reader
-            const parts = base64String.split(","); // Split the string at the comma
-            // console.log("--------", parts); // Now you can log it
-            
-            // Update the state with the new data
-            setImages(parts[1]);
-        };
-        reader.readAsDataURL(file);
-    }
-};
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result; // Get the Base64 string from the reader
+        const parts = base64String.split(","); // Split the string at the comma
 
+        // Update the state with the new data
+        setImages(parts[1]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleRemoveImage = () => {
-    setImage(null); // Clear the selected image
+    setImages(null); // Clear the selected image
   };
 
   const handleUploadClick = () => {
@@ -106,7 +104,6 @@ const EditAdd = () => {
           <div className="left">
             <button
               className="btn-outline-secondary border-0 active me-2"
-            //   onClick={() => setActive("content")}
               style={{ textDecoration: "none" }}
             >
               Content
@@ -176,18 +173,6 @@ const EditAdd = () => {
                 >
                   Ad
                 </span>
-                {/* <img
-                  style={{
-                    position: "absolute",
-                    textAlign: "center",
-                    left: "35%",
-                    top: "10%",
-                    borderRadius: "10px",
-                    width: "25%",
-                  }}
-                  src={aaaa}
-                  alt="logo"
-                /> */}
                 <button
                   style={{
                     position: "absolute",
@@ -280,24 +265,29 @@ const EditAdd = () => {
                 />
               </div>
 
-              {/* {image && (
-                                <div style={{ position: 'relative', margin: '10px' }}>
-                                    <img src={image} alt="uploaded" style={{ objectFit: 'cover', width: '100%', height: 'auto' }} />
-                                    <button
-                                        onClick={handleRemoveImage}
-                                        style={{
-                                            position: 'absolute',
-                                            top: '5px',
-                                            right: '5px',
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px' }} />
-                                    </button>
-                                </div>
-                            )} */}
+              {/* Image Preview */}
+              {images && (
+                <div style={{ position: 'relative', margin: '10px' }}>
+                  <img
+                    src={`data:image/jpeg;base64,${images}`}
+                    alt="uploaded"
+                    style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                  />
+                  <button
+                    onClick={handleRemoveImage}
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      left: '55px',
+                    }}
+                  >
+                    <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position:'absolute', left:'0px' }} />
+                  </button>
+                </div>
+              )}
 
               <div style={{ justifyContent: "end", margin: "10px 0px" }}>
                 <button className="button">Upload</button>

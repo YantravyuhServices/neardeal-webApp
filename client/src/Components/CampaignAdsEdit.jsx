@@ -6,6 +6,7 @@ import leftArrow from "../assets/leftArrow.svg";
 import imageUpload from "../assets/imageUpload.svg";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import crossIcon from "../assets/cross.svg";
 import image1 from "../assets/bannerImage.svg";
 import aaaa from "../assets/bannerLogo.svg";
 import { useParams } from "react-router-dom";
@@ -23,6 +24,10 @@ const EditAdd = () => {
   const [isChecked, setIsChecked] = useState(false);
   const fileInputRef = useRef(null);
   const [data, setData] = useState(null);
+
+  const handleRemoveImage = () => {
+    setImages(null);
+  };
 
   const handleSubmit = async () => {
     console.log(startDate, endDate, isChecked, invImgFileName);
@@ -307,6 +312,30 @@ const EditAdd = () => {
                   style={{ display: "none" }}
                 />
               </div>
+
+              {images && (
+                                    <div style={{ position: 'relative', margin: '10px' }}>
+                                        <img
+                                            src={`data:image/jpeg;base64,${images}`}
+                                            alt="uploaded"
+                                            style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                                        />
+                                        <button
+                                            onClick={handleRemoveImage}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '5px',
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                left: '55px',
+                                            }}
+                                        >
+                                            <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position: 'absolute', left: '0px' }} />
+                                        </button>
+                                    </div>
+                                )}
+
 
               {/* {image && (
                                 <div style={{ position: 'relative', margin: '10px' }}>

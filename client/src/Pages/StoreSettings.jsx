@@ -7,12 +7,14 @@ import edit from "../assets/edit.svg";
 import star from "../assets/star.svg";
 import { Link } from "react-router-dom";
 import clock1 from "../assets/clock1.svg";
+import banner from "../assets/bannerImage.svg"
 import location from "../assets/location.svg";
 import email from "../assets/email.svg";
 import phone from "../assets/phone.svg";
 import { motion } from "framer-motion";
 import storeLogo from "../assets/storeSettingsLogo.svg";
 import { toast } from "react-toastify";
+import crossIcon from "../assets/cross.svg";
 import Cookies from 'js-cookie';
 
 const StoreSetting = () => {
@@ -35,6 +37,10 @@ const StoreSetting = () => {
         store_image: '',
         rating: ''
     });
+
+    const handleRemoveImage = () => {
+        setImages(null);
+    };
 
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -151,7 +157,7 @@ const StoreSetting = () => {
                 <div>
                     <div className="left">
                         <div style={{ flexDirection: 'column', position: 'relative' }}>
-                            <img style={{ width: '100%' }} src={`https://wellness.neardeal.me/WAPI/${storeData.store_logo}`} alt="store logo" />
+                            <img style={{ width: '100%' }} src={banner} alt="store logo" />
                             <img style={{ position: 'absolute', bottom: '-15%', left: '5%', borderRadius: '10px', width: '20%' }} src={`https://wellness.neardeal.me/WAPI/${storeData.store_image}`} alt="upload" />
                         </div>
                         <h1 style={{ fontWeight: 'bold', marginTop: '30px' }}>{storeData.storeName || 'Store Name'}</h1>
@@ -224,10 +230,29 @@ const StoreSetting = () => {
                                     />
                                 </div>
 
-                                <div style={{ justifyContent: "end" }}>
-                                    <button style={{ borderRadius: '5px', padding: '0px 10px', margin: '0px 10px' }}>Remove All</button>
-                                    <button className="button">Upload</button>
-                                </div>
+
+                                {images && (
+                                    <div style={{ position: 'relative', margin: '10px' }}>
+                                        <img
+                                            src={`data:image/jpeg;base64,${images}`}
+                                            alt="uploaded"
+                                            style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                                        />
+                                        <button
+                                            onClick={handleRemoveImage}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '5px',
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                left: '55px',
+                                            }}
+                                        >
+                                            <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position: 'absolute', left: '0px' }} />
+                                        </button>
+                                    </div>
+                                )}
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Description</div>
                                 <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'description', value: e.currentTarget.textContent } })}>
@@ -250,7 +275,7 @@ const StoreSetting = () => {
                                 </div>
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Availability</div>
-                                <div className="text-section" style={{ padding: '10px 10px', flexDirection:'row' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'workingHours', value: e.currentTarget.textContent } })}>
+                                <div className="text-section" style={{ padding: '10px 10px', flexDirection: 'row' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'workingHours', value: e.currentTarget.textContent } })}>
                                     <div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span>Working hours</span>
