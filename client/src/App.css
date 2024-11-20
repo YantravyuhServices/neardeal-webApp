@@ -996,13 +996,13 @@
   /* Store */
   
 .store{
-    padding: 40px 80px;
+    /* padding: 40px 80px; */
 }
 
 .store .heading{
-    font-size: 1.5rem;
-    font-weight: bolder;
-    margin-bottom: 20px;
+    /* font-size: 1.5rem; */
+    /* font-weight: bolder; */
+    /* margin-bottom: 20px; */
 }
 
 .store div{

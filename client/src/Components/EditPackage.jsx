@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import SideBar from "./SideBar";
@@ -17,8 +17,8 @@ const CreatePackage = () => {
     const userData = JSON.parse(jwtUserToken);
     console.log("User Data:", userData);
 
-    const [invImgFileName, setInvImgFileName] = useState('');
-    const [unit, setUnit] = useState("minutes"); // Default to "minutes"
+    const [invImgFileName, setInvImgFileName] = useState("");
+    const [unit, setUnit] = useState("minutes");
     const [inventoryData, setInventoryData] = useState(null);
     const [active, setActive] = useState('setup');
     const [isChecked, setIsChecked] = useState(false);
@@ -57,7 +57,6 @@ const CreatePackage = () => {
     useEffect(() => {
         fetchData();
         console.log("Inventory Data:", inventoryData);
-        
     }, []);
 
     const handleUnitChange = (e) => {
@@ -69,7 +68,10 @@ const CreatePackage = () => {
     };
 
     useEffect(() => {
+        
         if (inventoryData) {
+            setInvImgFileName(inventoryData.ImageLocation);
+            console.log("kjweb", inventoryData.ImageLocation);
             setPackageTitle(inventoryData.InventoryName);
             setIsChecked(inventoryData.Status === '1' ? true : false);
             setDuration(inventoryData.Duration || '');

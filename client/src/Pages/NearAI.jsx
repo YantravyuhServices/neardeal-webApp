@@ -123,10 +123,12 @@ const NearAI = () => {
     return (
         <div style={{ display: 'flex' }}>
             <SideBar></SideBar>
-            <div className="nearai-main" style={{ width: '100%' }}>
+            <div className="nearai-main" style={{ width: '100%', padding:'1% 0% 0% 1%' }}>
                 {/* Header */}
                 <header className="d-flex justify-content-between align-items-center py-3">
-                    <h1 className="ms-4" style={{ fontWeight: 'bold', color: 'white' }}>Near.AI</h1>
+                {/* font-weight: 900;
+    font-size: 3rem; */}
+                    <h1 className="ms-4 secHead" style={{ color: 'white' }}>Near.AI</h1>
                     <div className="me-4" style={{ background: 'white' }}>
                         <input
                             type="text"

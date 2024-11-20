@@ -41,49 +41,52 @@ const AnalyticsDashboard = () => {
   };
 
   return (
-  <div style={{display:'flex'}}>
-    <SideBar></SideBar>
-    <motion.div initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1 }} className="analytics-dashboard">
-      <h1 className="secHead" style={{padding:'0px 20px'}}>Analytics</h1>
-      <div className="container mainSec chart-container">
-        <div className="chart-box">
-          <h3>Visits</h3>
-          <Line data={lineChartData} />
+    <div style={{ display: 'flex' }}>
+      <SideBar></SideBar>
+      <motion.div initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }} 
+        className="analytics-dashboard mainSec"
+        style={{ padding:'1% 0% 0% 3%' }}
+        >
+        <h1 className="secHead" style={{ padding: '0px 20px', fontSize:'3rem' }}>Analytics</h1>
+        <div className="container mainSec chart-container">
+          <div className="chart-box">
+            <h3>Visits</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Total Sales</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Conversion Rates</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Top Selling Package</h3>
+            <Bar data={barChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Total Orders</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Returning Customers</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Average Order Value</h3>
+            <Line data={lineChartData} />
+          </div>
+          <div className="chart-box">
+            <h3>Saled by Marketing</h3>
+            <Line data={lineChartData} />
+          </div>
         </div>
-        <div className="chart-box">
-          <h3>Total Sales</h3>
-          <Line data={lineChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Conversion Rates</h3>
-          <Line data={lineChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Top Selling Package</h3>
-          <Bar data={barChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Total Orders</h3>
-          <Line data={lineChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Returning Customers</h3>
-          <Line data={lineChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Average Order Value</h3>
-          <Line data={lineChartData} />
-        </div>
-        <div className="chart-box">
-          <h3>Saled by Marketing</h3>
-          <Line data={lineChartData} />
-        </div>
-      </div>
-    </motion.div>
-  </div>
+      </motion.div>
+    </div>
   );
 };
 

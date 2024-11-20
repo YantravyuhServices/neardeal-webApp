@@ -5,7 +5,6 @@ import background from "../assets/background.svg";
 import imageUpload from "../assets/imageUpload.svg";
 import edit from "../assets/edit.svg";
 import star from "../assets/star.svg";
-import { Link } from "react-router-dom";
 import clock1 from "../assets/clock1.svg";
 import banner from "../assets/bannerImage.svg"
 import location from "../assets/location.svg";
@@ -152,8 +151,8 @@ const StoreSetting = () => {
             <motion.div initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1 }} className="store" style={{ width: '80%' }}>
-                <span className="heading">Store Settings</span>
+                transition={{ duration: 1 }} className="store mainSec" style={{ width: '80%' }}>
+                <span className="secHead">Store Setting</span>
                 <div>
                     <div className="left">
                         <div style={{ flexDirection: 'column', position: 'relative' }}>

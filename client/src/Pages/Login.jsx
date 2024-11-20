@@ -69,7 +69,7 @@ const Login = () => {
                 <div className="login-form">
                     <div className="col-lg-4"></div>
                     <div className="col-lg-4 col-sm-12 px-5">
-                        <h2 className="form-header">Merchant Login</h2>
+                        <h2 className="form-header" style={{ textAlign:'center' }}>Merchant Login</h2>
                         <input
                             type="email"
                             className="form-control-plaintext formFields mt-3"
