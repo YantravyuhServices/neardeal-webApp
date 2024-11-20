@@ -156,6 +156,7 @@ const SignUp = () => {
                     body: JSON.stringify({
                         userid: userId,
                         contactno: storeData.contact,
+                        category: "Spa",
                         storeaddress: storeData.storeAddress,
                         email: storeData.email,
                         storedoo: merchantData.dob,
