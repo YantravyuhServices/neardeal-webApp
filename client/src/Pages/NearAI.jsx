@@ -20,113 +20,48 @@ const NearAI = () => {
 
     const jwtUserToken = Cookies.get("user_token");
     const userData = JSON.parse(jwtUserToken);
-    const [active, setActive] = useState('setup');
-    const [isChecked, setIsChecked] = useState(false);
-    const [images, setImages] = useState([]);
-    const [editorStates, setEditorStates] = useState({
-        included: { content: '', operations: [] },
-        openingHours: { content: '', operations: [] },
-        tnc: { content: '', operations: [] }
-    });
     const [packageTitle, setPackageTitle] = useState('');
+    const [images, setImages] = useState([]);
+    const [scriptContent, setScriptContent] = useState('');
+    const [selectedSections, setSelectedSections] = useState([]);
+    const [language, setLanguage] = useState('English');
+    const [font, setFont] = useState('Arial');
+    const [voice, setVoice] = useState('Default');
     const fileInputRef = useRef(null);
-    const quillRefs = useRef({ included: null, openingHours: null, tnc: null });
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
-    };
-
-    const handleImageUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setImages(prevImages => [...prevImages, ...newImages]);
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files);
+        const newImages = [];
+        files.forEach(file => {
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64String = reader.result.split(",")[1];
+                    newImages.push(base64String);
+                    if (newImages.length === files.length) {
+                        setImages(prevImages => [...prevImages, ...newImages]);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     };
 
     const handleRemoveImage = (index) => {
         setImages(images.filter((_, i) => i !== index));
     };
 
-    const handleUploadClick = () => {
-        fileInputRef.current.click();
+    const handleSaveChanges = () => {
+        // Logic to save changes
+        console.log({ packageTitle, scriptContent, selectedSections, language, font, voice });
     };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        switch (name) {
-            case 'packageTitle':
-                setPackageTitle(value);
-                break;
-            default:
-                break;
-        }
-    };
-
-    const updateEditorState = useCallback((editorKey, delta, oldDelta, source) => {
-        setEditorStates(prevStates => {
-            const updatedOperations = [...prevStates[editorKey].operations, { delta, oldDelta, source }];
-            return {
-                ...prevStates,
-                [editorKey]: {
-                    ...prevStates[editorKey],
-                    operations: updatedOperations
-                }
-            };
-        });
-    }, []);
-
-    const handleSaveChanges = async () => {
-        // const packageData = {
-        //     vendorId: userData.ID,
-        //     title: packageTitle,
-        //     publishStatus: isChecked,
-        //     whatsIncluded: editorStates.included.content,
-        //     openingHours: editorStates.openingHours.content,
-        //     tnc: editorStates.tnc.content,
-        //     images,
-        // };
-
-        try {
-            const response = await fetch(
-                "https://wellness.neardeal.me/WAPI/updateCouponsMW.php",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        "vendorId": userData.ID,
-                        "title": packageTitle,
-                        "startDate": "2024-10-01",
-                        "endDate": "2024-10-15",
-                        "discount": 37,
-                        "unit": "%",
-                        "whatsIncluded": editorStates.included.content,
-                        "tnc": editorStates.tnc.content,
-                        "status": 0,
-                        "inventoryIds": "V107_I01,V107_I02",
-                        "couponCode": "",
-                        "couponType": "Coupon",
-                        "currency": "HKD"
-                    }),
-                }
-            );
-
-            const data = await response.json();
-            console.log(data);
-            toast.success("Successfully Created Coupon");
-
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
     return (
         <div style={{ display: 'flex' }}>
             <SideBar></SideBar>
-            <div className="nearai-main" style={{ width: '100%', padding:'1% 0% 0% 1%' }}>
+            <div className="nearai-main" style={{ width: '100%', padding: '1% 0% 0% 1%' }}>
                 {/* Header */}
                 <header className="d-flex justify-content-between align-items-center py-3">
-                {/* font-weight: 900;
+                    {/* font-weight: 900;
     font-size: 3rem; */}
                     <h1 className="ms-4 secHead" style={{ color: 'white' }}>Near.AI</h1>
                     <div className="me-4" style={{ background: 'white' }}>
@@ -177,107 +112,82 @@ const NearAI = () => {
                         <div className="modal-dialog" role="document">
                             <div className="modal-content">
                                 <div className="modal-body">
-                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="right">
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 1 }}
+                                        className="right"
+                                    >
                                         <div className="header">
-                                           
-                                            <div className="right" style={{ display:'flex', justifyContent:'end' }}>
+                                            <div className="right" style={{ display: 'flex', justifyContent: 'end' }}>
                                                 <button className="button" onClick={handleSaveChanges}>Generate</button>
                                             </div>
                                         </div>
+
                                         <div className="body">
-                                            <input
-                                                name="packageTitle"
-                                                className="package-title"
-                                                type="text"
-                                                placeholder="Campaign Title"
-                                                style={{ width: '100%', color:'grey', border:'none', height:'10vh', fontSize:'30px' }}
-                                                value={packageTitle}
-                                                onChange={handleInputChange}
-                                            />
-
-                                            <div className="image-upload" style={{ display:'flex' }} onClick={handleUploadClick}>
-                                                <img style={{ width:'50%', margin:'auto' }} src={imageUpload} alt="upload" />
-                                                <span>Select files</span>
-                                                <input
-                                                    type="file"
-                                                    multiple
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                    ref={fileInputRef}
-                                                    style={{ display: 'none' }}
-                                                />
-                                            </div>
-
                                             <div className="image-select">
                                                 {images.map((image, index) => (
                                                     <div key={index} style={{ position: 'relative' }}>
-                                                        <img src={image} alt={`uploaded ${index}`} />
-                                                        <button onClick={() => handleRemoveImage(index)} style={{ position: 'absolute', top: '5px', right: '5px' }}>
+                                                        <img src={`data:image/jpeg;base64,${image}`} alt={`uploaded ${index}`} />
+                                                        <button
+                                                            onClick={() => handleRemoveImage(index)}
+                                                            style={{ position: 'absolute', top: '5px', right: '5px' }}
+                                                        >
                                                             <img src={crossIcon} alt="remove" />
                                                         </button>
                                                     </div>
                                                 ))}
                                             </div>
-
-                                            <div className="grey">What's included</div>
+                                            <div className="grey">Script</div>
                                             <ReactQuill
-                                                value={editorStates.included.content}
-                                                onChange={(content, delta, source) => {
-                                                    setEditorStates(prevStates => ({
-                                                        ...prevStates,
-                                                        included: { content, operations: prevStates.included.operations }
-                                                    }));
-                                                    updateEditorState('included', delta, null, source);
-                                                }}
+                                                value={scriptContent}
+                                                onChange={setScriptContent}
                                                 className="text-area"
-                                                placeholder="Type here"
-                                                ref={(el) => {
-                                                    if (el) {
-                                                        quillRefs.current.included = el.getEditor();
-                                                        quillRefs.current.included.on('text-change', (delta, oldDelta, source) => updateEditorState('included', delta, oldDelta, source));
-                                                    }
-                                                }}
+                                                placeholder="Write your script here"
                                             />
-
-                                            <div className="grey">Opening hours</div>
-                                            <ReactQuill
-                                                value={editorStates.openingHours.content}
-                                                onChange={(content, delta, source) => {
-                                                    setEditorStates(prevStates => ({
-                                                        ...prevStates,
-                                                        openingHours: { content, operations: prevStates.openingHours.operations }
-                                                    }));
-                                                    updateEditorState('openingHours', delta, null, source);
-                                                }}
-                                                className="text-area"
-                                                placeholder="Type here"
-                                                ref={(el) => {
-                                                    if (el) {
-                                                        quillRefs.current.openingHours = el.getEditor();
-                                                        quillRefs.current.openingHours.on('text-change', (delta, oldDelta, source) => updateEditorState('openingHours', delta, oldDelta, source));
-                                                    }
-                                                }}
-                                            />
-
-                                            <div className="grey">TNC</div>
-                                            <ReactQuill
-                                                value={editorStates.tnc.content}
-                                                onChange={(content, delta, source) => {
-                                                    setEditorStates(prevStates => ({
-                                                        ...prevStates,
-                                                        tnc: { content, operations: prevStates.tnc.operations }
-                                                    }));
-                                                    updateEditorState('tnc', delta, null, source);
-                                                }}
-                                                className="text-area"
-                                                placeholder="Type here"
-                                                ref={(el) => {
-                                                    if (el) {
-                                                        quillRefs.current.tnc = el.getEditor();
-                                                        quillRefs.current.tnc.on('text-change', (delta, oldDelta, source) => updateEditorState('tnc', delta, oldDelta, source));
-                                                    }
-                                                }}
-                                            />
+                                            <div style={{ display: 'flex', justifyContent:'space-around', margin:'10px 0px' }}>
+                                                <div>
+                                                    <div className="grey">Language</div>
+                                                    <select
+                                                        value={language}
+                                                        onChange={(e) => setLanguage(e.target.value)}
+                                                        style={{ width: '100%', height: '40px' }}
+                                                    >
+                                                        <option value="English">English</option>
+                                                        <option value="Spanish">Spanish</option>
+                                                        <option value="French">French</option>
+                                                        <option value="German">German</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <div className="grey">Font</div>
+                                                    <select
+                                                        value={font}
+                                                        onChange={(e) => setFont(e.target.value)}
+                                                        style={{ width: '100%', height: '40px' }}
+                                                    >
+                                                        <option value="Arial">Arial</option>
+                                                        <option value="Helvetica">Helvetica</option>
+                                                        <option value="Times New Roman">Times New Roman</option>
+                                                        <option value="Courier New">Courier New</option>
+                                                        <option value="Georgia">Georgia</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <div className="grey">Voice</div>
+                                                    <select
+                                                        value={voice}
+                                                        onChange={(e) => setVoice(e.target.value)}
+                                                        style={{ width: '100%', height: '40px' }}
+                                                    >
+                                                        <option value="Default">Default</option>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                        <option value="Neutral">Neutral</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 </div>

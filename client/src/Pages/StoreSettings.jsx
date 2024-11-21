@@ -218,8 +218,8 @@ const StoreSetting = () => {
                                     className="package-title"
                                     type="text"
                                     placeholder="Store Name"
-                                    value={packageTitle}   // Ensure that value is tied to the state
-                                    onChange={(e) => setPackageTitle(e.target.value)}  // Update packageTitle directly
+                                    value={packageTitle}  
+                                    onChange={(e) => setPackageTitle(e.target.value)}  
                                 />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Store Icon</div>
