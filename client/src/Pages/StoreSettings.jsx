@@ -6,7 +6,7 @@ import imageUpload from "../assets/imageUpload.svg";
 import edit from "../assets/edit.svg";
 import star from "../assets/star.svg";
 import clock1 from "../assets/clock1.svg";
-import banner from "../assets/bannerImage.svg"
+import banner from "../assets/bannerImage.svg";
 import location from "../assets/location.svg";
 import email from "../assets/email.svg";
 import phone from "../assets/phone.svg";
@@ -18,13 +18,17 @@ import Cookies from 'js-cookie';
 
 const StoreSetting = () => {
     const jwtUserToken = Cookies.get("user_token");
+    const [description, setDescription] = useState('');
+    const [storeName, setStoreName] = useState('');
+    const [address, setAddress] = useState('');
+    const [workingHours, setWorkingHours] = useState('');
     const userData = JSON.parse(jwtUserToken);
     const [images, setImages] = useState([]);
     const [invImgFileName, setInvImgFileName] = useState('');
     const [packageTitle, setPackageTitle] = useState('');
     const fileInputRef = useRef(null);
     const [logoName, setLogoName] = useState('');
-    const [logo, setLogo] = useState('');
+    const [logo, setLogo] = useState('');  // Change from an array to a string
     const [storeData, setStoreData] = useState({
         description: '',
         emailAddress: '',
@@ -34,7 +38,8 @@ const StoreSetting = () => {
         workingHours: '',
         store_logo: '',
         store_image: '',
-        rating: ''
+        rating: '',
+        packageTitle: ''
     });
 
     const handleRemoveImage = () => {
@@ -61,15 +66,15 @@ const StoreSetting = () => {
     };
 
     const handleLogoUpload = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0];  // Only expect one file for the logo
         if (file) {
-            setLogoName(file.name);
+            setLogoName(file.name); // Set the logo file name
             const reader = new FileReader();
             reader.onloadend = () => {
-                const base64String = reader.result.split(",")[1];
-                setLogo(base64String);
+                const base64String = reader.result.split(",")[1];  // Get base64 string (without the header)
+                setLogo(base64String);  // Set the base64 string directly to logo state
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file);  // Read the image file as a data URL (base64)
         }
     };
 
@@ -83,6 +88,15 @@ const StoreSetting = () => {
     };
 
     const handleSaveChanges = async () => {
+        console.log(userData.ID);
+        console.log(storeData.contactNo);
+        console.log(storeData.address);
+        console.log(storeData.description);
+        console.log(storeData.workingHours);
+        console.log(logo);
+        // console.log(images[0]);
+
+
         try {
             const response = await fetch(
                 "https://wellness.neardeal.me/WAPI/merchantProfileUpdatesMW.php",
@@ -104,7 +118,7 @@ const StoreSetting = () => {
                         "storeimage_name": invImgFileName,
                         "storelogo_name": logoName,
                         "workingHours": storeData.workingHours,
-                        "storelogo": logo[0],
+                        "storelogo": images[0],
                         "storeimage": images[0]
                     }),
                 }
@@ -134,7 +148,12 @@ const StoreSetting = () => {
             );
 
             const data = await response.json();
-            setStoreData(data.message[0] || {}); // Ensure it sets to an object to avoid errors
+            setStoreData(data.message[0] || {});
+            setAddress(data.message[0].address);
+            // console.log('====================================');
+            console.log(data.message[0]);
+            // console.log('====================================');
+            setDescription(data.message[0].description);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -168,10 +187,10 @@ const StoreSetting = () => {
                                 ))}
                             </span>
                         </div>
-                        <p>{storeData.description || 'No description available'}</p>
+                        <p>{description || 'No description available'}</p>
                         <div className="location">
                             <img src={location} alt="location" />
-                            <span style={{ margin: '0px 10px' }}>{storeData.address || 'No address available'}</span>
+                            <span style={{ margin: '0px 10px' }}>{address || 'No address available'}</span>
                         </div>
                         <div className="time">
                             <img src={clock1} alt="clock" />
@@ -198,9 +217,9 @@ const StoreSetting = () => {
                                     name="packageTitle"
                                     className="package-title"
                                     type="text"
-                                    placeholder="Package Title"
-                                    value={packageTitle}
-                                    onChange={handleInputChange}
+                                    placeholder="Store Name"
+                                    value={packageTitle}   // Ensure that value is tied to the state
+                                    onChange={(e) => setPackageTitle(e.target.value)}  // Update packageTitle directly
                                 />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Store Icon</div>
@@ -229,60 +248,71 @@ const StoreSetting = () => {
                                     />
                                 </div>
 
-
                                 {images && (
                                     <div style={{ position: 'relative', margin: '10px' }}>
                                         <img
-                                            src={`data:image/jpeg;base64,${images}`}
-                                            alt="uploaded"
-                                            style={{ objectFit: 'cover', width: '10%', height: 'auto' }}
+                                            src={`data:image/jpeg;base64,${images[0]}`}
+                                            style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
+                                            alt="Store"
                                         />
-                                        <button
-                                            onClick={handleRemoveImage}
+                                        <img
+                                            src={crossIcon}
+                                            alt="remove"
                                             style={{
                                                 position: 'absolute',
                                                 top: '5px',
-                                                background: 'none',
-                                                border: 'none',
+                                                right: '5px',
+                                                width: '20px',
                                                 cursor: 'pointer',
-                                                left: '55px',
                                             }}
-                                        >
-                                            <img src={crossIcon} alt="remove" style={{ width: '20px', height: '20px', position: 'absolute', left: '0px' }} />
-                                        </button>
+                                            onClick={handleRemoveImage}
+                                        />
                                     </div>
                                 )}
-
                                 <div className="grey" style={{ marginTop: '20px' }}>Description</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'description', value: e.currentTarget.textContent } })}>
-                                    {storeData.description || 'No description available'}
-                                </div>
+                                <input
+                                    name="description"
+                                    className="text-section"
+                                    type="text"
+                                    value={storeData.description || 'No description available'}
+                                    onChange={handleInputChange}
+                                />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Contact Email</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'emailAddress', value: e.currentTarget.textContent } })}>
-                                    {storeData.emailAddress || 'No email available'}
-                                </div>
+                                <input
+                                    name="emailAddress"
+                                    className="text-section"
+                                    type="email"
+                                    value={storeData.emailAddress || 'No email available'}
+                                    onChange={handleInputChange}
+                                />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Phone</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'contactNo', value: e.currentTarget.textContent } })}>
-                                    {storeData.contactNo || 'No phone number available'}
-                                </div>
+                                <input
+                                    name="contactNo"
+                                    className="text-section"
+                                    type="tel"
+                                    value={storeData.contactNo || 'No phone number available'}
+                                    onChange={handleInputChange}
+                                />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Address</div>
-                                <div className="text-section" style={{ padding: '10px 10px' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'address', value: e.currentTarget.textContent } })}>
-                                    {storeData.address || 'No address available'}
-                                </div>
+                                <input
+                                    name="address"
+                                    className="text-section"
+                                    type="text"
+                                    value={storeData.address || 'No address available'}
+                                    onChange={handleInputChange}
+                                />
 
                                 <div className="grey" style={{ marginTop: '20px' }}>Availability</div>
-                                <div className="text-section" style={{ padding: '10px 10px', flexDirection: 'row' }} contentEditable onInput={(e) => handleInputChange({ target: { name: 'workingHours', value: e.currentTarget.textContent } })}>
-                                    <div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span>Working hours</span>
-                                            <span className="grey">{storeData.workingHours || 'N/A'}</span>
-                                        </div>
-                                    </div>
-                                    <img src={edit} alt="edit" />
-                                </div>
+                                <input
+                                    name="workingHours"
+                                    className="text-section"
+                                    type="text"
+                                    value={storeData.workingHours || 'No hours available'}
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </motion.div>
                     </div>

@@ -31,6 +31,7 @@ const SignUp = () => {
     // Step 3: Store Information
     const [storeData, setStoreData] = useState({
         storeAddress: "",
+        category: "All",
         city: "",
         country: "",
         zip: "",
@@ -91,7 +92,7 @@ const SignUp = () => {
 
     const callApi = async (step) => {
         setLoading(true);
-        let payload = {};
+        let payload = {};        
 
         try {
             if (step === 1) {
@@ -147,7 +148,7 @@ const SignUp = () => {
             } else if (step === 5) {
                 // Handle final API call directly after successful verification
 
-                console.log(storeData);
+                console.log(storeData.storelogo_name,":", storeData.profilePic);
                 const finalResponse = await fetch('https://wellness.neardeal.me/WAPI/merchantSignup.php', {
                     method: 'POST',
                     headers: {
@@ -156,7 +157,7 @@ const SignUp = () => {
                     body: JSON.stringify({
                         userid: userId,
                         contactno: storeData.contact,
-                        category: "Spa",
+                        category: storeData.category,
                         storeaddress: storeData.storeAddress,
                         email: storeData.email,
                         storedoo: merchantData.dob,
