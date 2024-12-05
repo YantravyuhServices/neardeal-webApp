@@ -9,7 +9,6 @@ import crossIcon from "../assets/cross.svg";
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
 const NearAI = () => {
     const [isModalOpen, setModalOpen] = useState(false);
 
