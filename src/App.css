@@ -1,0 +1,1209 @@
+/* Login */
+.login-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5%;
+}
+
+/* Signup */
+.bg-grad{
+    background-image: linear-gradient(#ACABF44D, #F2F0F6, #F4A9A933);
+    height: 100vh !important;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.header-logo{
+    color: var(--black-main, #000);
+    font-family: Prompt;
+    font-size: 2.5rem;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+}
+.logo-img{
+    height: 2.5rem;
+    margin: 0 0.5%;
+}
+/* //------- Form Body ------------ */
+
+
+
+.form-header{
+    color: var(--Default-Black, #252936);
+    font-family: "Prompt";
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+.formFields{
+    border: 1px solid #000;
+    border-radius: 0.5rem;
+    padding: 2%;
+}
+
+#google-ic{
+    display: flex;
+    margin: 4% auto;
+    width: 4rem;
+    height: 4rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    border: 0.5px solid rgba(0, 0, 0, 0.20);
+}
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.fade-in {
+    animation: slideXIn 0.5s;
+}
+
+.fade-out {
+    animation: slideXOut 0.5s;
+}
+.slide-in{
+    animation: slideYIn 0.5s;
+}
+.slide-out{
+    animation: slideYOut 0.5s;
+}
+
+.upload-logo {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+}
+
+.upload-logo input[type="file"] {
+    display: none;
+}
+
+#logo_preview {
+    border: 2px dashed #ccc;
+    padding: 5%;
+    border-radius: 50%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideXIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideXOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideYIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideYOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* SideBar */
+
+.sidebar-profile {
+    position: relative;
+    width: 250px; /* Adjust as needed */
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.profile-container:hover {
+    background-color: #e9ecef;
+    border-radius: 8px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid #007bff; /* Optional: border color */
+}
+
+.profile-info {
+    text-align: left;
+}
+
+.profile-name {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.profile-email {
+    font-weight: 400;
+    color: #6c757d;
+}
+
+.dropdown-menu {
+    position: absolute;
+    bottom: -70px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 10px;
+}
+
+.logout-button {
+    background: #dc3545; /* Bootstrap danger color */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background: #c82333; /* Darker red on hover */
+}
+
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    background-color: white;
+}
+
+.sidebar div{
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .sidebar-navigation div{
+    width: 100%;
+}
+
+.sidebar .sidebar-navigation .sidebar-subtitle{
+    color: #637381;
+    font-size: 0.8rem;
+    padding: 0px 30px;
+}
+
+.sidebar .sidebar-navigation .logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.sidebar .sidebar-profile img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.sidebar .sidebar-navigation .sidebar-list{
+    color: #637381;
+    padding: 20px;
+}
+
+.sidebar .sidebar-navigation .sidebar-list span{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+.sidebar .sidebar-navigation .sidebar-list span img{
+    margin-right: 20px;
+}
+
+.sidebar .sidebar-profile{
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* SideBar */
+
+/* Booking */
+
+/* .booking-container-section{
+    height: 101vh;
+    overflow: hidden;
+} */
+
+
+.bg-grad{
+    background-image: linear-gradient(#ACABF44D, #F2F0F6, #F4A9A933);
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx SIDEBAR xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.header-logo{
+    color: var(--black-main, #000);
+    font-family: Prompt;
+    font-size: 1.8rem;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+	display: inline;
+	margin-left: 2.5%;
+}
+.logo-img{
+    height: 3rem;
+    margin: 0 0.5% 2.5% 0%;
+}
+.sidebarCat{
+	margin: 10% 0 5% 0%; /*TRBL*/
+	color: #919EAB;
+	font-family: Public Sans;
+    font-size: 1rem;
+    font-style: bold;
+    font-weight: 900;
+}
+.sidebarLinks {
+	font-family: Public Sans;
+	color: #637381;
+    font-size: 1rem;
+/*    font-style: bold;*/
+    font-weight: 300;
+	width: 100%;
+	padding: 5%;
+}
+.sidebarLinks:hover{
+	background-color: rgba(0, 167, 111, 10%);
+/*	opacity: 0.5;*/
+	color: rgba(0, 167, 111, 100%);
+}
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx BODY xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.mainSec{
+	padding: 3% 0% 0% 5%;
+
+}
+.secHead{
+	font-family: Prompt;
+	font-weight: 900;
+    font-size: 3rem;
+    margin: 0 0 2% 0;
+}
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.pagination .page-item .page-link {
+    color: #000;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #000;
+    border-color: #000;
+}
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx OffCanvas xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.offCanInvid{
+    color: #159A46;
+    font-size: 1.2rem;
+}
+.offCanCustName{
+    color: #159A46;
+    font-size: 0.8rem;
+}
+#custName{
+    color: #000;
+    font-size: 1rem;
+}
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx OffCanvas Order information xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.offCanCardHead{
+    background-color: #DFE3E8;
+    font-size: 1rem;
+}
+.offCanCardHeadBtn{
+    font-size: 0.8rem;
+    padding: 0 5%;
+}
+.offCanOfferType{
+    color: #159A46;
+    font-size: 0.6rem;
+}
+.offCanPackageDetail{
+    font-size: 0.8rem;
+    margin: -6% 0 5% 0;
+}
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx OffCanvas Customer information xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.offCanCardHead{
+    background-color: #DFE3E8;
+    font-size: 1rem;
+}
+.offCanCardHeadBtn{
+    font-size: 0.8rem;
+    padding: 0 5%;
+}
+.offCanOfferType{
+    color: #159A46;
+    font-size: 0.6rem;
+}
+.offCanPackageDetail{
+    font-size: 0.8rem;
+    margin: -6% 0 5% 0;
+}
+
+/* Booking */
+
+/* Create Package */
+/* The scrollbar container */
+.package-body {
+    overflow-y: auto;
+    height: 70vh;
+    padding: 0px 20px;
+}
+
+/* The scrollbar itself */
+.package-body::-webkit-scrollbar {
+    width: 12px; /* Change this value to adjust the width */
+}
+
+/* The part of the scrollbar you drag */
+.package-body::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change this value to adjust the color */
+    border-radius: 10px; /* Optional: adds rounded corners */
+}
+
+/* The part of the scrollbar that is not being dragged */
+.package-body::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change this value to adjust the color */
+}
+
+
+/* spa */
+.spa{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.spa img{
+    width: max-content;
+}
+
+.spa div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.spa button{
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.quill{
+    display: flex;
+    flex-direction: column;
+    background: #ffffff !important;
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.quill .ql-toolbar{
+    border: none !important;
+    justify-content: start;
+}
+
+.quill .ql-container{
+    border: none !important;
+    padding: 0px !important;
+    width: 100% !important;
+}
+
+.quill .ql-editor{
+    padding: 20px !important;
+    margin: 0px !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #F7F8F9;
+}
+
+.create-package{
+    padding: 40px 80px;
+}
+
+.create-package .heading{
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+.create-package div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.create-package div .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 20%;
+}
+
+.create-package div .right{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.create-package div .right .header{
+    background-color: #DFE3E8;
+    border-radius: 5px;
+    padding: 20px 15px;
+}
+
+.create-package div .right .header{
+    display: flex;
+}
+
+.create-package div .right .header .mid{
+    display: flex;
+    width: 70%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-package div .right .header .mid span{
+    align-items: center;
+}
+
+.create-package div .right .header .right{
+    width: 20%;
+}
+
+ .create-package div .right .header .left{
+    /* justify-content: center; */
+    display: flex;
+    align-items: center; 
+    width: 18%;
+}
+
+.create-package div .right .body{
+    background-color: #fff;
+    border-radius: 5px;
+    height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.create-package div .right .body::-webkit-scrollbar {
+    width: 12px; /* Change this value to adjust the width */
+}
+
+/* The part of the scrollbar you drag */
+.create-package div .right .body::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change this value to adjust the color */
+    border-radius: 10px; /* Optional: adds rounded corners */
+}
+
+/* The part of the scrollbar that is not being dragged */
+.create-package div .right .body::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change this value to adjust the color */
+}
+
+.create-package div .right .body .package-title{
+    margin: 15px 0px;
+    font-size: 30px;
+    border: none;
+    padding: 0px 10px;
+}
+
+.create-package div .right .body .package-title:focus{
+    outline: none;
+}
+
+.create-package div .right .body .image-upload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #E9ECEE;
+    border-radius: 5px;
+    padding: 30px;
+    background-color: #F7F8F9;
+}
+
+.create-package div .right .body .image-select img{
+    border-radius: 12px;
+    margin: 0px 10px;
+}
+
+.create-package div .right .body .image-select div img{
+    width: 72px ;
+    height: 72px ;
+
+}
+
+.create-package div .left button{
+    margin: 10px 10px;
+}
+
+.create-package div .right .body .text-section{
+    border: 1px solid #E9ECEE;
+    border-radius: 10px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-package div .right .body .text-section .heading{
+    display: flex;
+    justify-content: space-evenly;
+    width: 40%;
+}
+
+.create-package div .right .body .text-section .text-area{
+    background-color: #F7F8F9;
+    height: 20vh;
+    border: none;
+}
+
+.create-package div .right .body .text-section .text-area:focus{
+    outline: none;
+}
+
+.create-package div .right .body .url{
+    display: flex;
+    flex-direction: column;
+}
+
+.create-package div .right .body .url div input{
+    width: 95%;
+    border: 1px solid #E9ECEE;
+    padding: 10px;
+}
+
+.create-package div .right .body .url div input:focus{
+    outline: none;
+}
+
+.create-package div .right .body .add-on input{
+    border: 1px solid #E9ECEE;
+    padding: 10px;
+}
+
+.create-package div .right .body .add-on input:focus{
+    outline: none;
+}
+
+/* Availability */
+.avalibility{
+    padding: 40px 80px;
+}
+
+.avalibility .heading{
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+.avalibility div{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.avalibility div .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 20%;
+}
+
+.avalibility div .left span{
+    margin: 10px 10px;
+}
+
+.avalibility div .right{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.avalibility div .right .header{
+    background-color: #DFE3E8;
+    border-radius: 5px;
+    padding: 20px 15px;
+    justify-content: end;
+}
+
+.avalibility div .right .header span{
+    font-weight: bold;
+}
+
+.avalibility div .right .body{
+    background-color: #fff;
+    border-radius: 5px;
+    height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.avalibility div .right .body::-webkit-scrollbar {
+    width: 12px; /* Change this value to adjust the width */
+}
+
+/* The part of the scrollbar you drag */
+.avalibility div .right .body::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change this value to adjust the color */
+    border-radius: 10px; /* Optional: adds rounded corners */
+}
+
+/* The part of the scrollbar that is not being dragged */
+.avalibility div .right .body::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change this value to adjust the color */
+}
+
+.avalibility div .right .body hr{
+    background-color: black;
+    height: 1px;   
+}
+
+/* Limits */
+
+.limits{
+    padding: 40px 80px;
+}
+
+.limits .heading{
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+.limits div{
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+.limits div .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 20%;
+}
+
+.limits div .left span{
+    margin: 10px 10px;
+}
+
+.limits div .right{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.limits div .right .header{
+    background-color: #DFE3E8;
+    border-radius: 5px;
+    padding: 20px 15px;
+    justify-content: end;
+}
+
+.limits div .right .header span{
+    font-weight: bold;
+}
+
+.limits div .right .body{
+    background-color: #fff;
+    border-radius: 5px;
+    height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.limits div .right .body::-webkit-scrollbar {
+    width: 12px; /* Change this value to adjust the width */
+}
+
+/* The part of the scrollbar you drag */
+.limits div .right .body::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change this value to adjust the color */
+    border-radius: 10px; /* Optional: adds rounded corners */
+}
+
+/* The part of the scrollbar that is not being dragged */
+.limits div .right .body::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change this value to adjust the color */
+}
+
+.limits div .right .body  div .left, .limits div .right .body div .right{
+    width: 49%;
+    justify-content: start;
+}
+
+.limits div .right .body hr{
+    background-color: black;
+    height: 1px;   
+}
+
+/* Campaign */
+.campaign-ads, .campaign-blog{
+    padding: 20px 40px;
+    background-color: #fff;
+    height: fit-content;
+    border-radius: 10px;
+}
+
+.campaign-ads{
+    display: flex;
+    justify-content: space-between;
+}
+
+.campaign-ads div{
+    display: flex;
+    flex-direction: column;
+}
+
+.campaign-ads .edit{
+    display: flex;
+    width: 15%;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+.campaign-blog{
+    display: flex;
+}
+
+.campaign-blog .btn{
+    width: 28%;
+}
+
+.campaign-nearreel .item{
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.campaign-nearreel .item div, .campaign-nearreel .item{
+    display: flex;
+    flex-direction: row;
+}
+
+.campaign-nearreel .item .left img{
+    width: 5%;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.campaign-nearreel .item .left div{
+    flex-direction: column;
+}
+
+.campaign-nearreel .item .left div div{
+    flex-direction: row;
+}
+
+.campaign-nearreel .item .right div{
+    align-items: center;
+}
+
+/* Payment */
+
+.payment-table-container {
+    padding: 20px;
+  }
+  
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  
+  .payment-table th, .payment-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .payment-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  .payment-table th span {
+    font-size: 12px;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  
+  .payment-table td {
+    background-color: #ffffff;
+  }
+  
+  .payment-table td input[type="checkbox"] {
+    cursor: pointer;
+  }
+  
+  .payment-table .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .payment-table .status.uncaptured {
+    background-color: #e0f7fa;
+    color: #00796b;
+  }
+  
+  .payment-table .status.succeeded {
+    background-color: #e8f5e9;
+    color: #388e3c;
+  }
+  
+  /* Analytics */
+
+  .chart-container{
+    padding: 0px 20px;
+  }
+
+  .chart-container::-webkit-scrollbar {
+    width: 12px; /* Change this value to adjust the width */
+}
+
+/* The part of the scrollbar you drag */
+.chart-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Change this value to adjust the color */
+    border-radius: 10px; /* Optional: adds rounded corners */
+}
+
+/* The part of the scrollbar that is not being dragged */
+.chart-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Change this value to adjust the color */
+}
+
+  .analytics-dashboard {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    margin: auto;
+  }
+
+  .analytics-dashboard h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .chart-box {
+    width: 48%;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-box h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .chart-box canvas {
+    width: 100% !important;
+    height: 80% !important;
+  }
+  
+
+  /* Store */
+  
+.store{
+    /* padding: 40px 80px; */
+}
+
+.store .heading{
+    /* font-size: 1.5rem; */
+    /* font-weight: bolder; */
+    /* margin-bottom: 20px; */
+}
+
+.store div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.store div .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    width: 35%;
+    margin-top: 10px;
+}
+
+.store div .right{
+    display: flex;
+    flex-direction: column;
+    width: 63%;
+    margin-top: 10px;
+}
+
+.store .rating,.store .location, .store .time, .store .social-media{
+    display: flex;
+    justify-content: start;
+}
+
+.store .rating img{
+    width: 12px;
+    margin: 0px 3px;
+}
+
+.store .rating span{
+    align-items: center;
+    display: flex;
+}
+
+.store div .right .header{
+    background-color: #DFE3E8;
+    border-radius: 5px;
+    padding: 20px 15px;
+}
+
+.store div .right .header{
+    display: flex;
+}
+
+.store div .right .header .mid{
+    display: flex;
+    width: 70%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.store div .right .header .mid span{
+    align-items: center;
+}
+
+.store div .right .header .right{
+    width: 20%;
+}
+
+ .store div .right .header .left{
+    /* justify-content: center; */
+    display: flex;
+    align-items: center; 
+    width: 10%;
+}
+
+.store div .right .body{
+    background-color: #fff;
+    border-radius: 5px;
+    height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.store div .right .body .package-title{
+    margin: 15px 0px;
+    font-size: 30px;
+    border: none;
+    padding: 0px 10px;
+}
+
+.store div .right .body .package-title:focus{
+    outline: none;
+}
+
+.image-upload{
+    flex-direction: column;
+}
+
+.store div .right .body .image-upload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #E9ECEE;
+    border-radius: 5px;
+    padding: 30px;
+    background-color: #F7F8F9;
+}
+
+.image-select{
+    display: flex;
+    justify-content: start !important;
+}
+
+.store div .right .body .image-select img{
+    width: 72px ;
+    height: 72px;
+    border-radius: 12px;
+    margin: 0px 10px;
+}
+
+.store div .right .body .text-section{
+    border: 1px solid #E9ECEE;
+    border-radius: 10px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.store div .right .body .text-section .heading{
+    display: flex;
+    justify-content: space-evenly;
+    width: 23%;
+}
+
+.store div .right .body .text-section .text-area{
+    background-color: #F7F8F9;
+    height: 20vh;
+    border: none;
+    padding: 20px;
+}
+
+.store div .right .body .text-section .text-area:focus{
+    outline: none;
+}
+
+.store div .right .body .url{
+    display: flex;
+    flex-direction: column;
+}
+
+.store div .right .body .url div input{
+    width: 95%;
+    border: 1px solid #E9ECEE;
+    padding: 10px;
+}
+
+.store div .right .body .url div input:focus{
+    outline: none;
+}
+
+.store div .right .body .add-on input{
+    border: 1px solid #E9ECEE;
+    padding: 10px;
+}
+
+.store div .right .body .add-on input:focus{
+    outline: none;
+}
+
+/* Filter Package */
+.booking-nav-active{
+    background-color: #00A76F !important;
+    color: white;
+    border: none !important;
+} 
+
+#filter-package .offcanvas-body .remove-btn{
+    color: #00A76F;
+    border: 2px solid #85D5BA;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+#filter-package .offcanvas-body .nav{
+    padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+#filter-package .offcanvas-body button{
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin: 10px 10px;
+    background-color: white;  
+    border: 2px solid lightgray; 
+    font-weight: 400;
+}
+
+/*  */
+
+/* Near AI */
+.nearai-main{
+    background: url(./assets/nearai.svg);
+}
