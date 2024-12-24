@@ -3,15 +3,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'https://ext.videogen.io',
-  //       changeOrigin: true,
-  //       rewrite: (path) => path.replace(/^\/api/, ''),
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://ext.videogen.io',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
   plugins: [react()],
   // build: {
   //   rollupOptions: {

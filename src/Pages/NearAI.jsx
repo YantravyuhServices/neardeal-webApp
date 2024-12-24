@@ -50,7 +50,7 @@ const NearAI = () => {
     const getLanguages = async () => {
         const token = "3e61107713dd29dd11db3d9d758d74915f236209"; // Replace with your actual token
         try {
-          const response = await fetch("https://ext.videogen.io/v1/get-languages", {
+          const response = await fetch("/api/v1/get-languages", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ const NearAI = () => {
         const token = "3e61107713dd29dd11db3d9d758d74915f236209"; // Replace with your actual token
     
         try {
-          const response = await fetch("https://ext.videogen.io/v1/get-fonts", {
+          const response = await fetch("/api/v1/get-fonts", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ const NearAI = () => {
         const token = "3e61107713dd29dd11db3d9d758d74915f236209"; // Replace with your actual token
     
         try {
-          const response = await fetch("https://ext.videogen.io/v1/get-voices", {
+          const response = await fetch("/api/v1/get-voices", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -133,7 +133,7 @@ const NearAI = () => {
         const token = "3e61107713dd29dd11db3d9d758d74915f236209"; // Replace with your actual token
     
         try {
-          const response = await fetch("https://ext.videogen.io/v1/script-to-video", {
+          const response = await fetch("/api/v1/script-to-video", {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ const NearAI = () => {
         console.log(apiFileId);
         const token = "3e61107713dd29dd11db3d9d758d74915f236209"; // Replace with your actual token
         try {
-          const response = await fetch(`https://ext.videogen.io/v1/get-file?apiFileId=${apiFileId}`, {
+          const response = await fetch(`/api/v1/get-file?apiFileId=${apiFileId}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
